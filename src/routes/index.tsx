@@ -103,9 +103,16 @@ function Home() {
                 alt="Atelier CAO57 avec pont élévateur"
                 width={1200}
                 height={1200}
-                className="absolute inset-0 h-full w-full object-cover opacity-70"
+                className="absolute inset-0 h-full w-full object-cover opacity-60"
               />
-              <div className="absolute inset-0 bg-gradient-to-tr from-ink via-ink/70 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-tr from-ink via-ink/75 to-transparent" />
+              {/* Logo watermark */}
+              <img
+                src={logoAsset.url}
+                alt=""
+                aria-hidden="true"
+                className="pointer-events-none absolute -right-16 -bottom-16 w-[520px] max-w-[80%] opacity-[0.08] mix-blend-screen lg:-right-24 lg:-bottom-24 lg:w-[640px]"
+              />
               <div className="relative flex h-full flex-col justify-between p-8 lg:min-h-[520px] lg:p-12">
                 <div>
                   <span className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.3em] backdrop-blur">
@@ -156,20 +163,26 @@ function Home() {
               </div>
             </div>
 
-            {/* Rating card */}
+            {/* Services phares card */}
             <div className="flex flex-col justify-between rounded-2xl border border-border bg-card p-6 shadow-card lg:col-span-4">
-              <div className="text-[10px] font-bold uppercase tracking-[0.3em] text-muted-foreground">
-                Avis clients
+              <div className="text-[10px] font-bold uppercase tracking-[0.3em] text-primary">
+                Services phares
               </div>
-              <div>
-                <div className="font-display text-6xl leading-none tracking-wide">
-                  4.9<span className="text-3xl text-primary">/5</span>
-                </div>
-                <div className="mt-2 flex items-center gap-2 text-xs text-muted-foreground">
-                  <span className="text-primary">★★★★★</span>
-                  <span>Basé sur les retours locaux</span>
-                </div>
-              </div>
+              <ul className="mt-4 space-y-2 text-sm font-semibold">
+                {[
+                  { l: "Self-Garage", t: "20€/h" },
+                  { l: "Pneus", t: "15€/h" },
+                  { l: "Location", t: "39€" },
+                  { l: "Vente auto", t: "Stock" },
+                ].map((s) => (
+                  <li key={s.l} className="flex items-center justify-between border-b border-border pb-2 last:border-none">
+                    <span>{s.l}</span>
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-primary">
+                      {s.t}
+                    </span>
+                  </li>
+                ))}
+              </ul>
             </div>
           </div>
 
