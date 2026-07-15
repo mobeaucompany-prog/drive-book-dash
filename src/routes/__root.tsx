@@ -77,16 +77,36 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { title: "CAO57 — Centre Auto Occasion 57 · Forbach" },
+      {
+        name: "description",
+        content:
+          "Self-garage, montage de pneus, location et vente de véhicules à Forbach (57). Réservez votre pont élévateur en ligne.",
+      },
+      { name: "author", content: "CAO57" },
+      { property: "og:title", content: "CAO57 — Centre Auto Occasion 57" },
+      {
+        property: "og:description",
+        content:
+          "Self-garage pro, montage pneus, location et vente à Forbach. Réservation en ligne.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:site", content: "@Lovable" },
     ],
     links: [
+      {
+        rel: "preconnect",
+        href: "https://fonts.googleapis.com",
+      },
+      {
+        rel: "preconnect",
+        href: "https://fonts.gstatic.com",
+        crossOrigin: "anonymous",
+      },
+      {
+        rel: "stylesheet",
+        href: "https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;500;600;700&display=swap",
+      },
       {
         rel: "stylesheet",
         href: appCss,
