@@ -429,6 +429,73 @@ function Home() {
         </div>
       </section>
 
+      {/* AVIS CLIENTS BENTO */}
+      <section id="avis" className="border-b border-border py-16 lg:py-20">
+        <div className="mx-auto max-w-7xl px-6">
+          <div className="mb-10 flex flex-wrap items-end justify-between gap-4">
+            <div>
+              <div className="mb-2 text-[10px] font-bold uppercase tracking-[0.3em] text-primary">
+                Ils nous font confiance
+              </div>
+              <h2 className="font-display text-5xl tracking-wide lg:text-6xl">
+                AVIS CLIENTS
+              </h2>
+            </div>
+          </div>
+
+          <div className="grid gap-4 lg:grid-cols-12">
+            {/* Rating summary */}
+            <div className="flex flex-col justify-between rounded-2xl bg-ink p-8 text-white shadow-card lg:col-span-4">
+              <div className="text-[10px] font-bold uppercase tracking-[0.3em] text-primary">
+                Note globale
+              </div>
+              <div className="mt-6">
+                <div className="font-display text-8xl leading-none tracking-wide">
+                  4.9<span className="text-4xl text-primary">/5</span>
+                </div>
+                <div className="mt-3 flex items-center gap-2 text-sm text-white/70">
+                  <span className="text-primary text-lg">★★★★★</span>
+                  <span>Basé sur les retours locaux</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Testimonials */}
+            {[
+              {
+                q: "Matériel nickel, ambiance pro. J'ai fait mes plaquettes en 1h chrono.",
+                a: "Karim · Forbach",
+              },
+              {
+                q: "Le meilleur rapport qualité / prix du secteur. Je recommande à 100%.",
+                a: "Julie · Sarreguemines",
+              },
+              {
+                q: "Accueil au top, conseils précieux. Je reviendrai pour l'embrayage.",
+                a: "Mehdi · Saint-Avold",
+              },
+              {
+                q: "Voiture d'occasion impeccable, prix juste. Aucune mauvaise surprise.",
+                a: "Sophie · Metz",
+              },
+            ].map((t) => (
+              <div
+                key={t.a}
+                className="flex flex-col justify-between rounded-2xl border border-border bg-card p-6 shadow-card lg:col-span-4"
+              >
+                <div>
+                  <div className="text-primary text-lg">★★★★★</div>
+                  <p className="mt-4 text-sm leading-relaxed">"{t.q}"</p>
+                </div>
+                <div className="mt-6 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+                  {t.a}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* CONTACT BENTO */}
       <section id="contact" className="border-b border-border bg-secondary/40 py-16 lg:py-20">
         <div className="mx-auto max-w-7xl px-6">
