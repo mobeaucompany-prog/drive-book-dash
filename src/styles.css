@@ -4,8 +4,9 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/* CAO57 — Racing Dark design system.
-   Palette: noir profond, rouge racing, chrome/argent. */
+/* CAO57 — Showroom White design system.
+   Blanc pur, gris clairs, noir profond, accent rouge racing #E10600.
+   Titres: Bebas Neue · Corps: Barlow. */
 
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
@@ -31,62 +32,62 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
-  --color-chrome: var(--chrome);
+  --color-ink: var(--ink);
   --color-racing: var(--racing);
   --color-success: var(--success);
-  --font-display: "Archivo Black", system-ui, sans-serif;
-  --font-sans: "Inter", system-ui, sans-serif;
-  --shadow-racing: 0 0 24px rgba(225, 6, 0, 0.35);
+  --font-display: "Bebas Neue", system-ui, sans-serif;
+  --font-sans: "Barlow", system-ui, sans-serif;
+  --shadow-racing: 0 12px 30px -12px color-mix(in oklab, var(--racing) 45%, transparent);
+  --shadow-card: 0 1px 2px rgba(15, 23, 42, 0.04), 0 8px 24px -12px rgba(15, 23, 42, 0.08);
 }
 
 :root {
-  --radius: 0.25rem;
-  --background: oklch(0.13 0.005 285);
-  --foreground: oklch(0.98 0 0);
-  --card: oklch(0.17 0.005 285);
-  --card-foreground: oklch(0.98 0 0);
-  --popover: oklch(0.17 0.005 285);
-  --popover-foreground: oklch(0.98 0 0);
-  --primary: oklch(0.58 0.24 25); /* racing red #E10600 */
+  --radius: 0.5rem;
+  /* Base */
+  --background: oklch(0.99 0.002 240);        /* #fafbfc */
+  --foreground: oklch(0.2 0.005 240);         /* #1a1a1a-ish */
+  --card: oklch(1 0 0);                        /* pure white cards */
+  --card-foreground: oklch(0.2 0.005 240);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.2 0.005 240);
+  --primary: oklch(0.58 0.24 25);              /* racing red #E10600 */
   --primary-foreground: oklch(0.99 0 0);
-  --secondary: oklch(0.22 0.005 285);
-  --secondary-foreground: oklch(0.98 0 0);
-  --muted: oklch(0.2 0.005 285);
-  --muted-foreground: oklch(0.65 0.01 285);
-  --accent: oklch(0.22 0.005 285);
-  --accent-foreground: oklch(0.98 0 0);
+  --secondary: oklch(0.95 0.006 240);          /* light gray */
+  --secondary-foreground: oklch(0.2 0.005 240);
+  --muted: oklch(0.955 0.006 240);
+  --muted-foreground: oklch(0.5 0.01 240);
+  --accent: oklch(0.95 0.006 240);
+  --accent-foreground: oklch(0.2 0.005 240);
   --destructive: oklch(0.58 0.24 25);
   --destructive-foreground: oklch(0.99 0 0);
-  --border: oklch(1 0 0 / 8%);
-  --input: oklch(1 0 0 / 12%);
+  --border: oklch(0.9 0.008 240);
+  --input: oklch(0.9 0.008 240);
   --ring: oklch(0.58 0.24 25);
+  --ink: oklch(0.15 0.005 240);                /* deep ink for dark bento cards */
   --racing: oklch(0.58 0.24 25);
-  --chrome: oklch(0.78 0.005 285);
-  --success: oklch(0.7 0.17 155);
+  --success: oklch(0.68 0.17 155);
 }
 
 .dark {
-  --background: oklch(0.13 0.005 285);
+  --background: oklch(0.15 0.005 240);
   --foreground: oklch(0.98 0 0);
-  --card: oklch(0.17 0.005 285);
+  --card: oklch(0.2 0.005 240);
   --card-foreground: oklch(0.98 0 0);
-  --popover: oklch(0.17 0.005 285);
+  --popover: oklch(0.2 0.005 240);
   --popover-foreground: oklch(0.98 0 0);
   --primary: oklch(0.58 0.24 25);
   --primary-foreground: oklch(0.99 0 0);
-  --secondary: oklch(0.22 0.005 285);
+  --secondary: oklch(0.22 0.005 240);
   --secondary-foreground: oklch(0.98 0 0);
-  --muted: oklch(0.2 0.005 285);
-  --muted-foreground: oklch(0.65 0.01 285);
-  --accent: oklch(0.22 0.005 285);
+  --muted: oklch(0.22 0.005 240);
+  --muted-foreground: oklch(0.65 0.01 240);
+  --accent: oklch(0.22 0.005 240);
   --accent-foreground: oklch(0.98 0 0);
-  --destructive: oklch(0.58 0.24 25);
-  --destructive-foreground: oklch(0.99 0 0);
-  --border: oklch(1 0 0 / 8%);
+  --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 12%);
   --ring: oklch(0.58 0.24 25);
+  --ink: oklch(0.98 0 0);
   --racing: oklch(0.58 0.24 25);
-  --chrome: oklch(0.78 0.005 285);
   --success: oklch(0.7 0.17 155);
 }
 
@@ -95,15 +96,16 @@
     border-color: var(--color-border);
   }
 
-  html {
-    color-scheme: dark;
-  }
-
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    letter-spacing: 0.005em;
   }
 
   ::selection {
