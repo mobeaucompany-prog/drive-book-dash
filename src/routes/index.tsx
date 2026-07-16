@@ -4,18 +4,24 @@ import heroWorkshop from "@/assets/hero-workshop.jpg";
 import carGolf from "@/assets/car-golf.jpg";
 import carClio from "@/assets/car-clio.jpg";
 import carBmw from "@/assets/car-bmw.jpg";
+import repVidange from "@/assets/repair-vidange.jpg";
+import repFreinage from "@/assets/repair-freinage.jpg";
+import repDistribution from "@/assets/repair-distribution.jpg";
+import repEmbrayage from "@/assets/repair-embrayage.jpg";
+import repPneus from "@/assets/repair-pneus.jpg";
+import repDiagnostic from "@/assets/repair-diagnostic.jpg";
 
 export const Route = createFileRoute("/")({
   component: Home,
 });
 
 const reparations = [
-  { name: "Vidange & entretien", desc: "Huile, filtres, contrôle complet", price: "Dès 49€" },
-  { name: "Freinage", desc: "Plaquettes, disques, purge liquide", price: "Dès 89€" },
-  { name: "Distribution", desc: "Courroie, galets, pompe à eau", price: "Sur devis" },
-  { name: "Embrayage", desc: "Diagnostic et remplacement complet", price: "Sur devis" },
-  { name: "Pneumatiques", desc: "Montage, équilibrage, géométrie", price: "Dès 15€" },
-  { name: "Diagnostic électronique", desc: "Lecture valise multimarques", price: "39€" },
+  { img: repVidange, name: "Vidange & entretien", desc: "Huile, filtres, contrôle complet", price: "Dès 49€" },
+  { img: repFreinage, name: "Freinage", desc: "Plaquettes, disques, purge liquide", price: "Dès 89€" },
+  { img: repDistribution, name: "Distribution", desc: "Courroie, galets, pompe à eau", price: "Sur devis" },
+  { img: repEmbrayage, name: "Embrayage", desc: "Diagnostic et remplacement complet", price: "Sur devis" },
+  { img: repPneus, name: "Pneumatiques", desc: "Montage, équilibrage, géométrie", price: "Dès 15€" },
+  { img: repDiagnostic, name: "Diagnostic électronique", desc: "Lecture valise multimarques", price: "39€" },
 ];
 
 const vehicules = [
