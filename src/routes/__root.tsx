@@ -84,14 +84,18 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           "Self-garage, montage de pneus, location et vente de véhicules à Forbach (57). Réservez votre pont élévateur en ligne.",
       },
       { name: "author", content: "CAO57" },
-      { property: "og:title", content: "CAO57 — Centre Auto Occasion 57" },
+      { property: "og:title", content: "CAO57 — Centre Auto Occasion 57 · Forbach" },
       {
         property: "og:description",
         content:
-          "Self-garage pro, montage pneus, location et vente à Forbach. Réservation en ligne.",
+          "Self-garage, montage de pneus, location et vente de véhicules à Forbach (57). Réservez votre pont élévateur en ligne.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "CAO57 — Centre Auto Occasion 57 · Forbach" },
+      { name: "twitter:description", content: "Self-garage, montage de pneus, location et vente de véhicules à Forbach (57). Réservez votre pont élévateur en ligne." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/938c3db5-1a0f-40c1-94d7-9d0c3f476b6a/id-preview-482726a0--7ad90902-7d87-46c2-bd62-7fc8024f9386.lovable.app-1784199134103.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/938c3db5-1a0f-40c1-94d7-9d0c3f476b6a/id-preview-482726a0--7ad90902-7d87-46c2-bd62-7fc8024f9386.lovable.app-1784199134103.png" },
     ],
     links: [
       {
@@ -111,7 +115,6 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         rel: "stylesheet",
         href: appCss,
       },
-      { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
     ],
   }),
   shellComponent: RootShell,
