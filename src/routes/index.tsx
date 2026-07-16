@@ -46,6 +46,7 @@ function Home() {
       <QuickBar />
       <Repairs />
       <Vehicles />
+      <PromoBanner />
       <Workshop />
       <BookingStrip />
       <Reviews />
@@ -274,6 +275,57 @@ function Vehicles() {
           ))}
         </div>
       </div>
+    </section>
+  );
+}
+
+/* ---------- Promo banner (affiche punchy) ---------- */
+function PromoBanner() {
+  const stripe =
+    "repeating-linear-gradient(135deg,#facc15 0 22px,#0b0c0e 22px 44px)";
+  return (
+    <section className="relative overflow-hidden bg-carbon text-white">
+      <div className="h-4 w-full" style={{ background: stripe }} />
+      <div className="relative mx-auto grid max-w-7xl items-center gap-8 px-6 py-14 md:grid-cols-[1.4fr_1fr] md:py-20">
+        <div>
+          <div className="inline-flex items-center gap-2 rounded-sm bg-yellow-400 px-3 py-1 text-[11px] font-black uppercase tracking-widest text-carbon">
+            ★ Offre atelier
+          </div>
+          <h2 className="mt-4 font-display text-5xl font-black uppercase leading-[0.9] tracking-tight sm:text-6xl lg:text-7xl">
+            Loue ton garage
+            <br />
+            <span className="text-yellow-400">à petit prix</span>
+            <span className="text-racing"> !</span>
+          </h2>
+          <p className="mt-5 max-w-xl text-white/70">
+            Pont élévateur, démonte-pneus, fosse mécanique… Le matos pro à
+            l'heure, sans t'endetter. À Forbach, dispo 6j/7.
+          </p>
+          <div className="mt-6 flex flex-wrap gap-3">
+            <a href="#reserver" className="rounded-sm bg-yellow-400 px-6 py-3 text-[12px] font-black uppercase tracking-widest text-carbon hover:bg-yellow-300">
+              Réserver mon pont →
+            </a>
+            <a href="tel:+33620431191" className="rounded-sm border border-white/30 px-6 py-3 text-[12px] font-bold uppercase tracking-widest text-white hover:bg-white hover:text-carbon">
+              ☏ 06 20 43 11 91
+            </a>
+          </div>
+        </div>
+
+        <ul className="grid grid-cols-3 gap-0 border border-white/15 md:border-white/20">
+          {[
+            { p: "20€", u: "/h", n: "Pont élévateur" },
+            { p: "15€", u: "/h", n: "Démonte-pneus" },
+            { p: "15€", u: "/h", n: "Fosse méca" },
+          ].map((x, i) => (
+            <li key={x.n} className={"p-5 text-center " + (i < 2 ? "border-r border-white/15" : "")}>
+              <div className="font-display text-3xl font-black text-yellow-400">{x.p}</div>
+              <div className="text-[10px] font-semibold uppercase tracking-wider text-white/50">{x.u}</div>
+              <div className="mt-3 text-[11px] font-bold uppercase tracking-wider">{x.n}</div>
+            </li>
+          ))}
+        </ul>
+      </div>
+      <div className="h-4 w-full" style={{ background: stripe }} />
     </section>
   );
 }
