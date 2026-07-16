@@ -46,6 +46,7 @@ function Home() {
       <QuickBar />
       <Repairs />
       <Vehicles />
+      <PromoBanner />
       <Workshop />
       <BookingStrip />
       <Reviews />
