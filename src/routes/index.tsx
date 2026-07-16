@@ -208,26 +208,38 @@ function Home() {
             </a>
           </div>
 
-          <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {reparations.map((r, i) => (
               <div
                 key={r.name}
-                className="group flex flex-col justify-between rounded-xl border border-border bg-card p-6 shadow-card transition-all hover:-translate-y-1 hover:border-primary"
+                className="group flex flex-col overflow-hidden rounded-xl border border-border bg-card shadow-card transition-all hover:-translate-y-1 hover:border-primary"
               >
-                <div>
-                  <div className="font-display text-xs tracking-widest text-primary">
+                <div className="relative aspect-[4/3] overflow-hidden bg-secondary">
+                  <img
+                    src={r.img}
+                    alt={r.name}
+                    loading="lazy"
+                    width={800}
+                    height={600}
+                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
+                  <span className="absolute left-3 top-3 rounded-sm bg-ink/85 px-2.5 py-1 font-display text-[10px] tracking-widest text-primary backdrop-blur">
                     #{String(i + 1).padStart(2, "0")}
-                  </div>
-                  <h3 className="mt-3 font-display text-2xl tracking-wide">{r.name}</h3>
-                  <p className="mt-2 text-sm text-muted-foreground">{r.desc}</p>
+                  </span>
                 </div>
-                <div className="mt-6 flex items-center justify-between border-t border-border pt-4">
-                  <span className="text-sm font-bold uppercase tracking-wider text-foreground">
-                    {r.price}
-                  </span>
-                  <span className="text-[10px] font-bold uppercase tracking-widest text-primary opacity-0 transition-opacity group-hover:opacity-100">
-                    Réserver →
-                  </span>
+                <div className="flex flex-1 flex-col justify-between p-5">
+                  <div>
+                    <h3 className="font-display text-xl tracking-wide">{r.name}</h3>
+                    <p className="mt-2 text-sm text-muted-foreground">{r.desc}</p>
+                  </div>
+                  <div className="mt-5 flex items-center justify-between border-t border-border pt-4">
+                    <span className="text-sm font-bold uppercase tracking-wider text-foreground">
+                      {r.price}
+                    </span>
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-primary opacity-0 transition-opacity group-hover:opacity-100">
+                      Réserver →
+                    </span>
+                  </div>
                 </div>
               </div>
             ))}
