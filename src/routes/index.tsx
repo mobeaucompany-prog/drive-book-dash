@@ -152,10 +152,62 @@ function Hero() {
             <Stat n="-70%" l="vs garage classique" />
           </div>
         </div>
+
+        {/* Rental highlight card */}
+        <div className="lg:col-span-5 lg:pl-6">
+          <a
+            href="#atelier"
+            className="group relative block overflow-hidden rounded-sm border border-white/10 bg-gradient-to-br from-racing/95 to-racing/70 p-7 shadow-2xl transition hover:from-racing hover:to-racing/80"
+          >
+            <div
+              className="pointer-events-none absolute inset-0 opacity-15"
+              style={{
+                backgroundImage:
+                  "repeating-linear-gradient(45deg, #000 0 14px, transparent 14px 28px)",
+              }}
+            />
+            <div className="relative">
+              <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-black/30 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-white">
+                <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-yellow-300" />
+                Nouveau · Atelier libre
+              </div>
+              <h2 className="font-display text-4xl font-black leading-[0.95] text-white sm:text-5xl">
+                Loue ton garage
+                <br />
+                <span className="text-yellow-300">à petit prix !</span>
+              </h2>
+              <p className="mt-3 max-w-sm text-sm text-white/85">
+                Pont élévateur, démonte-pneus et fosse pro à l'heure.
+                Répare toi-même, on t'ouvre l'atelier.
+              </p>
+
+              <div className="mt-5 grid grid-cols-3 gap-2 text-center">
+                <PriceChip label="Pont" price="20€/h" />
+                <PriceChip label="Pneus" price="15€/h" />
+                <PriceChip label="Fosse" price="15€/h" />
+              </div>
+
+              <div className="mt-6 inline-flex items-center gap-2 text-[12px] font-bold uppercase tracking-wider text-white">
+                Réserver l'atelier
+                <span className="transition group-hover:translate-x-1">→</span>
+              </div>
+            </div>
+          </a>
+        </div>
       </div>
     </section>
   );
 }
+
+function PriceChip({ label, price }: { label: string; price: string }) {
+  return (
+    <div className="rounded-sm border border-white/25 bg-black/25 px-2 py-2">
+      <div className="font-display text-lg font-black text-yellow-300">{price}</div>
+      <div className="text-[9px] font-semibold uppercase tracking-[0.15em] text-white/80">{label}</div>
+    </div>
+  );
+}
+
 
 function Stat({ n, l }: { n: string; l: string }) {
   return (
