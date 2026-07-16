@@ -155,8 +155,7 @@ function Hero() {
             </a>
           </div>
 
-          <div className="mt-14 grid max-w-lg grid-cols-3 gap-6 border-t border-white/15 pt-6">
-            <Stat n="15+" l="Ans d'expérience" />
+          <div className="mt-14 grid max-w-lg grid-cols-2 gap-6 border-t border-white/15 pt-6">
             <Stat n="4,9/5" l="Avis Google" />
             <Stat n="-70%" l="vs garage classique" />
           </div>
