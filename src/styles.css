@@ -49,7 +49,7 @@
   --card-foreground: #0b0c0e;
   --popover: #ffffff;
   --popover-foreground: #0b0c0e;
-  --primary: #d50c1f;                 /* racing red */
+  --primary: #1e5fbf;                 /* workshop blue */
   --primary-foreground: #ffffff;
   --secondary: #f4f5f7;
   --secondary-foreground: #0b0c0e;
@@ -61,12 +61,12 @@
   --destructive-foreground: #ffffff;
   --border: #e5e7eb;
   --input: #e5e7eb;
-  --ring: #d50c1f;
+  --ring: #1e5fbf;
   --ink: #0b0c0e;
-  --carbon: #131519;                  /* deep dark for hero */
+  --carbon: #0f1114;                  /* deep dark for hero, matches sign */
   --steel: #5a6067;
   --smoke: #f4f5f7;
-  --racing: #d50c1f;
+  --racing: #1e5fbf;                  /* accent = workshop blue */
 }
 
 @layer base {

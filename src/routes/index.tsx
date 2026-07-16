@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import logoAsset from "@/assets/cao57-logo.png.asset.json";
-import heroWorkshop from "@/assets/hero-workshop.jpg";
+import logoAsset from "@/assets/cao57-logo-v2.png.asset.json";
+import heroWorkshop from "@/assets/garage-lifts.jpg.asset.json";
+import garageInterior from "@/assets/garage-interior.jpg.asset.json";
 import carGolf from "@/assets/car-golf.jpg";
 import carClio from "@/assets/car-clio.jpg";
 import carBmw from "@/assets/car-bmw.jpg";
@@ -79,17 +80,9 @@ function Nav() {
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-background/95 backdrop-blur">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-        <Link to="/" className="flex origin-left scale-[0.85] items-center gap-3">
-          <div className="grid size-24 place-items-center overflow-hidden rounded-sm bg-carbon">
-            <img src={logoAsset.url} alt="CAO57" className="h-20 w-20 scale-150 object-contain" />
-          </div>
-          <div className="leading-none">
-            <div className="font-display text-xl font-black tracking-tight">
-              CAO<span className="text-racing">57</span>
-            </div>
-            <div className="mt-1 text-[9px] font-semibold uppercase tracking-[0.24em] text-steel">
-              Centre Auto Occasion
-            </div>
+        <Link to="/" className="flex items-center">
+          <div className="grid h-16 w-44 place-items-center overflow-hidden rounded-sm bg-carbon">
+            <img src={logoAsset.url} alt="CAO57 — Centre Auto Occasion 57" className="h-full w-full object-cover" />
           </div>
         </Link>
 
@@ -118,8 +111,8 @@ function Hero() {
   return (
     <section className="relative overflow-hidden bg-carbon text-white">
       <img
-        src={heroWorkshop}
-        alt="Atelier CAO57"
+        src={heroWorkshop.url}
+        alt="Atelier CAO57 avec ponts élévateurs"
         className="absolute inset-0 h-full w-full object-cover opacity-55"
       />
       <div className="absolute inset-0 bg-gradient-to-r from-carbon via-carbon/70 to-transparent" />
