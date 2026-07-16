@@ -80,8 +80,8 @@ function Nav() {
     <header className="sticky top-0 z-40 border-b border-border bg-background/95 backdrop-blur">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
         <Link to="/" className="flex items-center gap-3">
-          <div className="grid size-24 place-items-center rounded-sm bg-carbon">
-            <img src={logoAsset.url} alt="CAO57" className="h-20 w-20 object-contain" />
+          <div className="grid size-24 place-items-center overflow-hidden rounded-sm bg-carbon">
+            <img src={logoAsset.url} alt="CAO57" className="h-20 w-20 scale-150 object-contain" />
           </div>
           <div className="leading-none">
             <div className="font-display text-xl font-black tracking-tight">
