@@ -4,9 +4,9 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/* CAO57 — Showroom White design system.
-   Blanc pur, gris clairs, noir profond, accent rouge racing #E10600.
-   Titres: Bebas Neue · Corps: Barlow. */
+/* CAO57 — Editorial magazine.
+   Palette: #FFFFFF fond, #111214 encre, #5A6067 gris acier, #A81E1E rouge profond.
+   Titres: Playfair Display (serif, italiques). Corps: Inter. */
 
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
@@ -33,83 +33,68 @@
   --color-input: var(--input);
   --color-ring: var(--ring);
   --color-ink: var(--ink);
-  --color-racing: var(--racing);
-  --color-success: var(--success);
-  --font-display: "Bebas Neue", system-ui, sans-serif;
-  --font-sans: "Barlow", system-ui, sans-serif;
-  --shadow-racing: 0 12px 30px -12px color-mix(in oklab, var(--racing) 45%, transparent);
-  --shadow-card: 0 1px 2px rgba(15, 23, 42, 0.04), 0 8px 24px -12px rgba(15, 23, 42, 0.08);
+  --color-steel: var(--steel);
+  --color-paper: var(--paper);
+  --font-display: "Playfair Display", ui-serif, Georgia, serif;
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
 }
 
 :root {
-  --radius: 0.5rem;
-  /* Base */
-  --background: oklch(0.99 0.002 240);        /* #fafbfc */
-  --foreground: oklch(0.2 0.005 240);         /* #1a1a1a-ish */
-  --card: oklch(1 0 0);                        /* pure white cards */
-  --card-foreground: oklch(0.2 0.005 240);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.2 0.005 240);
-  --primary: oklch(0.58 0.24 25);              /* racing red #E10600 */
-  --primary-foreground: oklch(0.99 0 0);
-  --secondary: oklch(0.95 0.006 240);          /* light gray */
-  --secondary-foreground: oklch(0.2 0.005 240);
-  --muted: oklch(0.955 0.006 240);
-  --muted-foreground: oklch(0.5 0.01 240);
-  --accent: oklch(0.95 0.006 240);
-  --accent-foreground: oklch(0.2 0.005 240);
-  --destructive: oklch(0.58 0.24 25);
-  --destructive-foreground: oklch(0.99 0 0);
-  --border: oklch(0.9 0.008 240);
-  --input: oklch(0.9 0.008 240);
-  --ring: oklch(0.58 0.24 25);
-  --ink: oklch(0.15 0.005 240);                /* deep ink for dark bento cards */
-  --racing: oklch(0.58 0.24 25);
-  --success: oklch(0.68 0.17 155);
-}
-
-.dark {
-  --background: oklch(0.15 0.005 240);
-  --foreground: oklch(0.98 0 0);
-  --card: oklch(0.2 0.005 240);
-  --card-foreground: oklch(0.98 0 0);
-  --popover: oklch(0.2 0.005 240);
-  --popover-foreground: oklch(0.98 0 0);
-  --primary: oklch(0.58 0.24 25);
-  --primary-foreground: oklch(0.99 0 0);
-  --secondary: oklch(0.22 0.005 240);
-  --secondary-foreground: oklch(0.98 0 0);
-  --muted: oklch(0.22 0.005 240);
-  --muted-foreground: oklch(0.65 0.01 240);
-  --accent: oklch(0.22 0.005 240);
-  --accent-foreground: oklch(0.98 0 0);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 12%);
-  --ring: oklch(0.58 0.24 25);
-  --ink: oklch(0.98 0 0);
-  --racing: oklch(0.58 0.24 25);
-  --success: oklch(0.7 0.17 155);
+  --radius: 0.125rem;
+  --background: #ffffff;
+  --foreground: #111214;
+  --card: #ffffff;
+  --card-foreground: #111214;
+  --popover: #ffffff;
+  --popover-foreground: #111214;
+  --primary: #a81e1e;
+  --primary-foreground: #ffffff;
+  --secondary: #f4f2ee;                 /* paper tint */
+  --secondary-foreground: #111214;
+  --muted: #f4f2ee;
+  --muted-foreground: #5a6067;
+  --accent: #f4f2ee;
+  --accent-foreground: #111214;
+  --destructive: #a81e1e;
+  --destructive-foreground: #ffffff;
+  --border: #111214;                     /* hairline ink rules */
+  --input: #d9d7d2;
+  --ring: #a81e1e;
+  --ink: #111214;
+  --steel: #5a6067;
+  --paper: #f4f2ee;
 }
 
 @layer base {
-  * {
-    border-color: var(--color-border);
-  }
-
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
+    font-feature-settings: "ss01", "cv11";
   }
 
   h1, h2, h3, h4 {
     font-family: var(--font-display);
-    letter-spacing: 0.005em;
+    letter-spacing: -0.015em;
   }
 
   ::selection {
-    background: var(--color-primary);
-    color: var(--color-primary-foreground);
+    background: var(--color-foreground);
+    color: var(--color-background);
   }
+}
+
+/* Editorial helpers */
+@utility kicker {
+  font-family: var(--font-sans);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--color-steel);
+}
+
+@utility rule-ink {
+  border-color: var(--color-ink);
 }
