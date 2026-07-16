@@ -16,559 +16,490 @@ export const Route = createFileRoute("/")({
 });
 
 const reparations = [
-  { img: repVidange, name: "Vidange & entretien", desc: "Huile, filtres, contrôle complet", price: "Dès 49 €" },
-  { img: repFreinage, name: "Freinage", desc: "Plaquettes, disques, purge liquide", price: "Dès 89 €" },
-  { img: repDistribution, name: "Distribution", desc: "Courroie, galets, pompe à eau", price: "Sur devis" },
-  { img: repEmbrayage, name: "Embrayage", desc: "Diagnostic et remplacement complet", price: "Sur devis" },
-  { img: repPneus, name: "Pneumatiques", desc: "Montage, équilibrage, géométrie", price: "Dès 15 €" },
-  { img: repDiagnostic, name: "Diagnostic électronique", desc: "Lecture valise multimarques", price: "39 €" },
+  { img: repVidange, name: "Vidange & entretien", desc: "Huile, filtres, contrôle multipoints.", price: "Dès 49 €" },
+  { img: repFreinage, name: "Freinage", desc: "Plaquettes, disques, purge liquide de frein.", price: "Dès 89 €" },
+  { img: repDistribution, name: "Distribution", desc: "Courroie, galets, pompe à eau.", price: "Sur devis" },
+  { img: repEmbrayage, name: "Embrayage", desc: "Diagnostic et remplacement complet.", price: "Sur devis" },
+  { img: repPneus, name: "Pneumatiques", desc: "Montage, équilibrage, géométrie 4 roues.", price: "Dès 15 €" },
+  { img: repDiagnostic, name: "Diagnostic électronique", desc: "Lecture valise multimarques toutes ECU.", price: "39 €" },
 ];
 
 const vehicules = [
-  { img: carGolf, name: "Volkswagen Golf VIII R", year: "2022", km: "45 000 km", energie: "Essence", price: "32 900 €", badge: "Coup de cœur" },
-  { img: carClio, name: "Renault Clio V TCe 100", year: "2022", km: "18 200 km", energie: "Essence", price: "16 400 €" },
-  { img: carBmw, name: "BMW X3 xDrive 30d", year: "2020", km: "65 000 km", energie: "Diesel", price: "41 200 €" },
+  { img: carGolf, name: "Volkswagen Golf VIII R", year: "2022", km: "45 000", energie: "Essence", bv: "DSG", price: "32 900", badge: "Coup de cœur" },
+  { img: carClio, name: "Renault Clio V TCe 100", year: "2022", km: "18 200", energie: "Essence", bv: "Manuelle", price: "16 400" },
+  { img: carBmw, name: "BMW X3 xDrive 30d", year: "2020", km: "65 000", energie: "Diesel", bv: "Auto", price: "41 200" },
 ];
 
 const locations = [
   { name: "Pont élévateur 2 colonnes", cap: "3,6 T · éclairage LED · air comprimé", price: "20 €", unit: "/ heure" },
   { name: "Démonte-pneus & équilibreuse", cap: "Jusqu'à 22\" · matériel professionnel", price: "15 €", unit: "/ heure" },
   { name: "Fosse mécanique", cap: "Éclairage intégré · outillage à disposition", price: "15 €", unit: "/ heure" },
-  { name: "Presse hydraulique 45 T", cap: "Roulements, silent-blocs, rotules", price: "10 €", unit: "/ utilisation" },
+  { name: "Presse hydraulique 45 T", cap: "Roulements, silent-blocs, rotules.", price: "10 €", unit: "/ utilisation" },
 ];
-
-function Logo({ className = "" }: { className?: string }) {
-  return (
-    <img
-      src={logoAsset.url}
-      alt="CAO57"
-      className={className}
-      width={64}
-      height={64}
-    />
-  );
-}
 
 function Home() {
   return (
     <div className="min-h-screen bg-background text-foreground">
-      {/* MASTHEAD */}
-      <header className="border-b-2 border-ink">
-        <div className="mx-auto max-w-6xl px-6 py-4">
-          <div className="flex items-center justify-between gap-6 text-[10px] font-semibold uppercase tracking-[0.28em] text-steel">
-            <span>Forbach · Moselle · 57</span>
-            <span className="hidden md:inline">Vol. I — Édition {new Date().getFullYear()}</span>
-            <a href="tel:+33620431191" className="hover:text-ink">06 20 43 11 91</a>
-          </div>
-        </div>
-        <div className="border-t border-ink/15">
-          <div className="mx-auto flex max-w-6xl items-end justify-between gap-6 px-6 py-8">
-            <Link to="/" className="flex items-end gap-4">
-              <div className="grid size-14 place-items-center bg-ink">
-                <Logo className="h-11 w-11 object-contain" />
-              </div>
-              <div className="leading-none">
-                <div className="font-display text-6xl font-black leading-[0.85] tracking-tight">
-                  CAO<span className="italic font-normal text-primary">57</span>
-                </div>
-                <div className="mt-2 text-[10px] font-semibold uppercase tracking-[0.28em] text-steel">
-                  Centre Auto Occasion · Depuis 2009
-                </div>
-              </div>
-            </Link>
-            <nav className="hidden items-center gap-7 text-[11px] font-semibold uppercase tracking-[0.22em] text-ink md:flex">
-              <a href="#reparations" className="border-b border-transparent pb-1 hover:border-primary">Réparations</a>
-              <a href="#vehicules" className="border-b border-transparent pb-1 hover:border-primary">Occasions</a>
-              <a href="#atelier" className="border-b border-transparent pb-1 hover:border-primary">Atelier libre</a>
-              <a href="#contact" className="border-b border-transparent pb-1 hover:border-primary">Contact</a>
-            </nav>
-          </div>
-        </div>
-      </header>
+      <TopBar />
+      <Nav />
+      <Hero />
+      <QuickBar />
+      <Repairs />
+      <Vehicles />
+      <Workshop />
+      <BookingStrip />
+      <Reviews />
+      <Contact />
+      <Footer />
+    </div>
+  );
+}
 
-      {/* HERO — feature story */}
-      <section className="border-b border-ink/15">
-        <div className="mx-auto max-w-6xl px-6 py-14 lg:py-20">
-          <div className="grid gap-10 lg:grid-cols-12 lg:gap-12">
-            <div className="lg:col-span-7">
-              <div className="kicker mb-6">Édito · L'atelier</div>
-              <h1 className="font-display text-5xl font-black leading-[0.9] tracking-tight sm:text-6xl lg:text-[5.5rem]">
-                Un vrai garage,
-                <br />
-                <span className="italic font-normal">tenu par des mécaniciens.</span>
-              </h1>
-              <div className="mt-8 grid gap-6 border-t border-ink/15 pt-6 sm:grid-cols-[1fr_auto] sm:items-end">
-                <p className="max-w-xl text-[15px] leading-relaxed text-steel">
-                  À Forbach depuis quinze ans, nous entretenons vos voitures,
-                  vendons des occasions triées sur le volet, et nous prêtons
-                  l'atelier — pont, fosse, démonte-pneus — à celles et ceux
-                  qui préfèrent mettre les mains dedans.
-                </p>
-                <div className="flex gap-3">
-                  <a
-                    href="#reserver"
-                    className="inline-flex items-center justify-center border-2 border-ink bg-ink px-6 py-3 text-[11px] font-bold uppercase tracking-[0.22em] text-background hover:bg-background hover:text-ink"
-                  >
-                    Prendre rendez-vous
-                  </a>
-                  <a
-                    href="tel:+33620431191"
-                    className="hidden items-center justify-center border-2 border-ink px-6 py-3 text-[11px] font-bold uppercase tracking-[0.22em] hover:bg-ink hover:text-background sm:inline-flex"
-                  >
-                    Appeler
-                  </a>
-                </div>
-              </div>
+/* ---------- Top utility bar ---------- */
+function TopBar() {
+  return (
+    <div className="bg-carbon text-white/80">
+      <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-2 text-[11px]">
+        <div className="flex items-center gap-6">
+          <span className="hidden sm:inline">📍 Forbach · Moselle · 57</span>
+          <span className="hidden md:inline">Ouvert lun. — sam. · 08h → 19h</span>
+        </div>
+        <div className="flex items-center gap-5">
+          <a href="tel:+33620431191" className="hover:text-white">☏ 06 20 43 11 91</a>
+          <a href="#compte" className="hidden sm:inline hover:text-white">Mon compte</a>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ---------- Sticky main nav ---------- */
+function Nav() {
+  return (
+    <header className="sticky top-0 z-40 border-b border-border bg-background/95 backdrop-blur">
+      <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
+        <Link to="/" className="flex items-center gap-3">
+          <div className="grid size-11 place-items-center rounded-sm bg-carbon">
+            <img src={logoAsset.url} alt="CAO57" className="h-8 w-8 object-contain" />
+          </div>
+          <div className="leading-none">
+            <div className="font-display text-xl font-black tracking-tight">
+              CAO<span className="text-racing">57</span>
             </div>
-
-            <figure className="lg:col-span-5">
-              <div className="overflow-hidden">
-                <img
-                  src={heroWorkshop}
-                  alt="Atelier CAO57 à Forbach"
-                  width={900}
-                  height={1200}
-                  className="aspect-[4/5] w-full grayscale-[15%] object-cover"
-                />
-              </div>
-              <figcaption className="mt-3 flex items-start justify-between gap-4 border-t border-ink pt-2 text-[10px] font-semibold uppercase tracking-[0.24em] text-steel">
-                <span>Photo · Atelier, rue de l'Artisanat, Forbach.</span>
-                <span className="text-primary">01</span>
-              </figcaption>
-            </figure>
+            <div className="mt-1 text-[9px] font-semibold uppercase tracking-[0.24em] text-steel">
+              Centre Auto Occasion
+            </div>
           </div>
+        </Link>
+
+        <nav className="hidden items-center gap-8 text-[13px] font-semibold text-ink md:flex">
+          <a href="#reparations" className="hover:text-racing">Réparations</a>
+          <a href="#vehicules" className="hover:text-racing">Occasions</a>
+          <a href="#atelier" className="hover:text-racing">Atelier libre</a>
+          <a href="#contact" className="hover:text-racing">Contact</a>
+        </nav>
+
+        <div className="flex items-center gap-3">
+          <a
+            href="#reserver"
+            className="inline-flex items-center gap-2 rounded-sm bg-racing px-5 py-2.5 text-[12px] font-bold uppercase tracking-wider text-white hover:bg-racing/90"
+          >
+            Prendre RDV
+          </a>
         </div>
-      </section>
+      </div>
+    </header>
+  );
+}
 
-      {/* SOMMAIRE — three pillars */}
-      <section className="border-b border-ink/15 bg-paper/60">
-        <div className="mx-auto max-w-6xl px-6 py-12">
-          <div className="mb-8 flex items-baseline justify-between border-b border-ink pb-4">
-            <div className="kicker">Sommaire</div>
-            <div className="font-display italic text-steel">Trois métiers, un même garage</div>
+/* ---------- Cinematic hero ---------- */
+function Hero() {
+  return (
+    <section className="relative overflow-hidden bg-carbon text-white">
+      <img
+        src={heroWorkshop}
+        alt="Atelier CAO57"
+        className="absolute inset-0 h-full w-full object-cover opacity-55"
+      />
+      <div className="absolute inset-0 bg-gradient-to-r from-carbon via-carbon/70 to-transparent" />
+      <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-carbon to-transparent" />
+
+      <div className="relative mx-auto grid max-w-7xl gap-10 px-6 py-24 lg:grid-cols-12 lg:py-36">
+        <div className="lg:col-span-7">
+          <div className="eyebrow mb-5 !text-white/70">
+            <span className="mr-3 inline-block h-[2px] w-8 translate-y-[-4px] bg-racing align-middle" />
+            Garage · Vente · Atelier libre
           </div>
-          <ol className="grid gap-0 md:grid-cols-3">
-            <SummaryItem
-              n="I."
-              title="Réparations"
-              text="Mécanique toutes marques, entretien, diagnostic."
-              href="#reparations"
-              page="p. 02"
-            />
-            <SummaryItem
-              n="II."
-              title="Véhicules d'occasion"
-              text="Sélection contrôlée, historique vérifié, garantie."
+          <h1 className="font-display text-5xl font-black leading-[0.95] tracking-tight sm:text-6xl lg:text-7xl">
+            L'auto,{" "}
+            <span className="text-racing">sans détour.</span>
+            <br />
+            <span className="text-white/85">Un vrai garage à Forbach.</span>
+          </h1>
+          <p className="mt-6 max-w-xl text-base leading-relaxed text-white/70">
+            Réparations toutes marques, occasions contrôlées et location
+            d'atelier pro à l'heure. Devis clair, travail net, prix affichés.
+          </p>
+          <div className="mt-8 flex flex-wrap gap-3">
+            <a
+              href="#reserver"
+              className="inline-flex items-center gap-2 rounded-sm bg-racing px-7 py-3.5 text-[12px] font-bold uppercase tracking-wider text-white hover:bg-racing/90"
+            >
+              Réserver un créneau →
+            </a>
+            <a
               href="#vehicules"
-              page="p. 03"
-              border
-            />
-            <SummaryItem
-              n="III."
-              title="Atelier libre"
-              text="Pont, fosse et outillage pro à louer à l'heure."
-              href="#atelier"
-              page="p. 04"
-              border
-            />
-          </ol>
-        </div>
-      </section>
+              className="inline-flex items-center gap-2 rounded-sm border border-white/30 px-7 py-3.5 text-[12px] font-bold uppercase tracking-wider text-white hover:bg-white hover:text-carbon"
+            >
+              Voir les occasions
+            </a>
+          </div>
 
-      {/* I. RÉPARATIONS */}
-      <section id="reparations" className="border-b border-ink/15">
-        <div className="mx-auto max-w-6xl px-6 py-16 lg:py-20">
-          <SectionHeader index="I" kicker="Notre métier premier" title="Réparations & entretien" pull="Devis clair sous 24 h. Toutes marques, pièces d'origine ou équivalentes." />
-
-          <div className="mt-12 grid gap-x-8 gap-y-14 md:grid-cols-2 lg:grid-cols-3">
-            {reparations.map((r, i) => (
-              <article key={r.name} className="group flex flex-col">
-                <div className="overflow-hidden">
-                  <img
-                    src={r.img}
-                    alt={r.name}
-                    loading="lazy"
-                    width={800}
-                    height={600}
-                    className="aspect-[4/3] w-full object-cover grayscale-[20%] transition-[filter] duration-500 group-hover:grayscale-0"
-                  />
-                </div>
-                <div className="mt-4 flex items-baseline gap-3 border-b border-ink pb-2">
-                  <span className="font-display text-sm italic text-primary">
-                    {String(i + 1).padStart(2, "0")}.
-                  </span>
-                  <h3 className="font-display text-2xl font-bold leading-tight">{r.name}</h3>
-                </div>
-                <p className="mt-3 text-sm leading-relaxed text-steel">{r.desc}</p>
-                <div className="mt-3 text-[11px] font-bold uppercase tracking-[0.22em]">
-                  {r.price}
-                </div>
-              </article>
-            ))}
+          <div className="mt-14 grid max-w-lg grid-cols-3 gap-6 border-t border-white/15 pt-6">
+            <Stat n="15+" l="Ans d'expérience" />
+            <Stat n="4,9/5" l="Avis Google" />
+            <Stat n="-70%" l="vs garage classique" />
           </div>
         </div>
-      </section>
+      </div>
+    </section>
+  );
+}
 
-      {/* II. OCCASIONS */}
-      <section id="vehicules" className="border-b border-ink/15 bg-paper/60">
-        <div className="mx-auto max-w-6xl px-6 py-16 lg:py-20">
-          <SectionHeader index="II" kicker="Vente" title="Occasions sélectionnées" pull="Chaque véhicule passe une révision complète avant sa mise en vente." />
+function Stat({ n, l }: { n: string; l: string }) {
+  return (
+    <div>
+      <div className="font-display text-2xl font-black text-white">{n}</div>
+      <div className="mt-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-white/60">{l}</div>
+    </div>
+  );
+}
 
-          <div className="mt-12 grid gap-x-8 gap-y-14 md:grid-cols-2 lg:grid-cols-3">
-            {vehicules.map((v, i) => (
-              <article key={v.name} className="flex flex-col">
-                <div className="relative overflow-hidden">
-                  <img
-                    src={v.img}
-                    alt={v.name}
-                    loading="lazy"
-                    width={600}
-                    height={450}
-                    className="aspect-[4/3] w-full object-cover"
-                  />
-                  {v.badge && (
-                    <span className="absolute left-0 top-0 bg-primary px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.24em] text-primary-foreground">
-                      {v.badge}
-                    </span>
-                  )}
-                </div>
-                <div className="mt-4 flex items-baseline gap-3 border-b border-ink pb-2">
-                  <span className="font-display text-sm italic text-primary">
-                    {String(i + 1).padStart(2, "0")}.
+/* ---------- Quick service bar ---------- */
+function QuickBar() {
+  const items = [
+    { i: "🔧", t: "Réparation", s: "Devis 24h" },
+    { i: "🚗", t: "Occasions", s: "Parc vérifié" },
+    { i: "🛠️", t: "Atelier libre", s: "Dès 15€/h" },
+    { i: "🛞", t: "Pneus", s: "Montage 15€" },
+  ];
+  return (
+    <div className="border-b border-border bg-smoke">
+      <div className="mx-auto grid max-w-7xl grid-cols-2 divide-x divide-border md:grid-cols-4">
+        {items.map((x) => (
+          <div key={x.t} className="flex items-center gap-4 px-6 py-5">
+            <span className="text-2xl">{x.i}</span>
+            <div>
+              <div className="font-display text-sm font-bold uppercase tracking-wide">{x.t}</div>
+              <div className="text-xs text-steel">{x.s}</div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* ---------- I. Réparations ---------- */
+function Repairs() {
+  return (
+    <section id="reparations" className="border-b border-border">
+      <div className="mx-auto max-w-7xl px-6 py-20">
+        <SectionHead eyebrow="Notre métier" title="Réparations & entretien" desc="Mécanique toutes marques. Devis clair sous 24h, pièces d'origine ou équivalentes." />
+        <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {reparations.map((r) => (
+            <article key={r.name} className="group overflow-hidden rounded-md border border-border bg-white transition hover:-translate-y-1 hover:shadow-xl">
+              <div className="relative aspect-[4/3] overflow-hidden">
+                <img src={r.img} alt={r.name} className="h-full w-full object-cover transition duration-500 group-hover:scale-105" />
+                <span className="absolute right-3 top-3 rounded-sm bg-white/95 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-ink">
+                  {r.price}
+                </span>
+              </div>
+              <div className="p-5">
+                <h3 className="font-display text-lg font-bold">{r.name}</h3>
+                <p className="mt-1.5 text-sm text-steel">{r.desc}</p>
+                <a href="#reserver" className="mt-4 inline-flex items-center gap-1 text-[12px] font-bold uppercase tracking-wider text-racing hover:gap-2">
+                  Réserver →
+                </a>
+              </div>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ---------- II. Véhicules ---------- */
+function Vehicles() {
+  return (
+    <section id="vehicules" className="border-b border-border bg-smoke">
+      <div className="mx-auto max-w-7xl px-6 py-20">
+        <div className="flex items-end justify-between gap-6">
+          <SectionHead eyebrow="Vente" title="Occasions sélectionnées" desc="Chaque véhicule passe une révision complète avant sa mise en vente." />
+          <a href="#" className="hidden shrink-0 rounded-sm border-2 border-ink px-5 py-2.5 text-[12px] font-bold uppercase tracking-wider hover:bg-ink hover:text-white md:inline-flex">
+            Tout le parc →
+          </a>
+        </div>
+
+        <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {vehicules.map((v) => (
+            <article key={v.name} className="group flex flex-col overflow-hidden rounded-md border border-border bg-white transition hover:shadow-xl">
+              <div className="relative aspect-[4/3] overflow-hidden bg-smoke">
+                <img src={v.img} alt={v.name} className="h-full w-full object-cover transition duration-500 group-hover:scale-105" />
+                {v.badge && (
+                  <span className="absolute left-3 top-3 rounded-sm bg-racing px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-white">
+                    {v.badge}
                   </span>
-                  <h3 className="font-display text-xl font-bold leading-tight">{v.name}</h3>
-                </div>
-                <dl className="mt-3 grid grid-cols-3 gap-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-steel">
-                  <div><dt className="text-ink/60">Année</dt><dd className="mt-1">{v.year}</dd></div>
-                  <div><dt className="text-ink/60">Km</dt><dd className="mt-1">{v.km}</dd></div>
-                  <div><dt className="text-ink/60">Énergie</dt><dd className="mt-1">{v.energie}</dd></div>
-                </dl>
-                <div className="mt-4 flex items-baseline justify-between">
-                  <div className="font-display text-3xl font-bold">{v.price}</div>
-                  <a href="#" className="text-[11px] font-bold uppercase tracking-[0.22em] text-primary hover:underline">
-                    Fiche →
+                )}
+              </div>
+              <div className="flex flex-1 flex-col p-5">
+                <h3 className="font-display text-lg font-bold leading-tight">{v.name}</h3>
+                <ul className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-[12px] text-steel">
+                  <li>{v.year}</li>
+                  <li>· {v.km} km</li>
+                  <li>· {v.energie}</li>
+                  <li>· {v.bv}</li>
+                </ul>
+                <div className="mt-5 flex items-end justify-between border-t border-border pt-4">
+                  <div>
+                    <div className="text-[10px] font-semibold uppercase tracking-wider text-steel">Prix TTC</div>
+                    <div className="font-display text-2xl font-black">{v.price} €</div>
+                  </div>
+                  <a href="#" className="rounded-sm bg-ink px-4 py-2 text-[11px] font-bold uppercase tracking-wider text-white hover:bg-racing">
+                    Fiche
                   </a>
                 </div>
-              </article>
-            ))}
-          </div>
+              </div>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
 
-          <div className="mt-14 flex items-center justify-between border-t border-ink pt-4">
-            <span className="kicker">Tout le parc</span>
-            <a href="#" className="font-display italic text-lg hover:text-primary">
-              Consulter l'inventaire complet →
+/* ---------- III. Atelier libre ---------- */
+function Workshop() {
+  return (
+    <section id="atelier" className="border-b border-border">
+      <div className="mx-auto max-w-7xl px-6 py-20">
+        <SectionHead eyebrow="Self-garage" title="Louez notre atelier à l'heure" desc="Vous savez faire ? Pont, fosse, démonte-pneus et outillage pro à disposition. Économisez jusqu'à 70 % vs un garage classique." />
+
+        <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {locations.map((l) => (
+            <div key={l.name} className="group relative overflow-hidden rounded-md border border-border bg-white p-6 transition hover:border-ink hover:shadow-lg">
+              <div className="flex items-baseline justify-between">
+                <span className="font-display text-3xl font-black text-racing">{l.price}</span>
+                <span className="text-[10px] font-semibold uppercase tracking-wider text-steel">{l.unit}</span>
+              </div>
+              <h3 className="mt-4 font-display text-base font-bold leading-tight">{l.name}</h3>
+              <p className="mt-2 text-[13px] leading-relaxed text-steel">{l.cap}</p>
+            </div>
+          ))}
+        </div>
+
+        <div className="mt-8 rounded-md bg-carbon p-6 text-white sm:p-8">
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm">
+              <span>✓ Air comprimé & électricité inclus</span>
+              <span>✓ Outillage pro à disposition</span>
+              <span>✓ Mécanicien sur place</span>
+              <span>✓ Café offert</span>
+            </div>
+            <a href="#reserver" className="rounded-sm bg-racing px-6 py-3 text-[12px] font-bold uppercase tracking-wider hover:bg-racing/90">
+              Réserver mon créneau →
             </a>
           </div>
         </div>
-      </section>
+      </div>
+    </section>
+  );
+}
 
-      {/* III. ATELIER LIBRE */}
-      <section id="atelier" className="border-b border-ink/15">
-        <div className="mx-auto max-w-6xl px-6 py-16 lg:py-20">
-          <SectionHeader index="III" kicker="Self-garage" title="L'atelier, à vous." pull="Vous savez faire ? Louez notre équipement à l'heure. Vous économisez jusqu'à 70 % vs un garage classique." />
+/* ---------- Booking strip ---------- */
+function BookingStrip() {
+  return (
+    <section id="reserver" className="border-b border-border bg-smoke">
+      <div className="mx-auto max-w-7xl px-6 py-16">
+        <SectionHead eyebrow="Réservation" title="Prendre un rendez-vous" desc="Choisissez votre prestation et votre créneau. Confirmation sous 24h." />
+        <form className="mt-10 grid gap-4 rounded-md border border-border bg-white p-6 sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_auto] lg:items-end">
+          <Field label="Prestation">
+            <select className="input">
+              <option>Réparation / entretien</option>
+              <option>Pont élévateur (libre-service)</option>
+              <option>Démonte-pneus (libre-service)</option>
+              <option>Fosse mécanique (libre-service)</option>
+              <option>Diagnostic électronique</option>
+            </select>
+          </Field>
+          <Field label="Date">
+            <input type="date" className="input" />
+          </Field>
+          <Field label="Créneau">
+            <select className="input">
+              <option>08:00 — 10:00</option>
+              <option>10:00 — 12:00</option>
+              <option>14:00 — 16:00</option>
+              <option>16:00 — 18:00</option>
+            </select>
+          </Field>
+          <button className="h-[46px] rounded-sm bg-racing px-8 text-[12px] font-bold uppercase tracking-wider text-white hover:bg-racing/90">
+            Vérifier
+          </button>
+        </form>
+      </div>
+    </section>
+  );
+}
 
-          <div className="mt-12 grid gap-10 lg:grid-cols-12">
-            <div className="lg:col-span-5">
-              <blockquote className="font-display text-3xl italic leading-tight lg:text-4xl">
-                « Le pont est libre, l'air comprimé est branché, le café est
-                sur la table. Vous n'avez plus qu'à ouvrir votre capot. »
-              </blockquote>
-              <div className="mt-6 kicker">— Karim, gérant</div>
-
-              <ul className="mt-10 divide-y divide-ink/20 border-y border-ink/20">
-                {[
-                  "Air comprimé & électricité inclus",
-                  "Outillage professionnel à disposition",
-                  "Conseils d'un mécanicien sur place",
-                  "Parking gratuit, atelier chauffé",
-                ].map((f) => (
-                  <li key={f} className="flex items-baseline gap-4 py-3 text-sm">
-                    <span className="font-display italic text-primary">✦</span>
-                    <span>{f}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            <div className="lg:col-span-7">
-              <div className="grid gap-0 sm:grid-cols-2">
-                {locations.map((l, i) => (
-                  <div
-                    key={l.name}
-                    className={
-                      "flex flex-col justify-between border-ink/20 p-6 " +
-                      (i % 2 === 0 ? "sm:border-r " : "") +
-                      (i < 2 ? "border-b " : "sm:border-b-0 border-b")
-                    }
-                  >
-                    <div>
-                      <div className="font-display text-sm italic text-primary">
-                        № {String(i + 1).padStart(2, "0")}
-                      </div>
-                      <h3 className="mt-2 font-display text-xl font-bold leading-tight">
-                        {l.name}
-                      </h3>
-                      <p className="mt-2 text-[13px] leading-relaxed text-steel">
-                        {l.cap}
-                      </p>
-                    </div>
-                    <div className="mt-6 flex items-baseline gap-2 border-t border-ink pt-3">
-                      <span className="font-display text-3xl font-bold">{l.price}</span>
-                      <span className="text-[10px] font-semibold uppercase tracking-[0.22em] text-steel">
-                        {l.unit}
-                      </span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {/* Booking */}
-          <div id="reserver" className="mt-14 border-t-2 border-ink pt-8">
-            <div className="mb-6 flex items-baseline justify-between">
-              <div className="kicker">Réservation</div>
-              <div className="font-display italic text-steel">Réponse sous 24 h</div>
-            </div>
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-[1.2fr_1fr_1fr_auto]">
-              <SelectField label="Prestation">
-                <option>Réparation / entretien</option>
-                <option>Pont élévateur (libre)</option>
-                <option>Démonte-pneus (libre)</option>
-                <option>Fosse mécanique (libre)</option>
-              </SelectField>
-              <InputField label="Date" type="date" />
-              <SelectField label="Créneau">
-                <option>08:00 — 10:00</option>
-                <option>10:00 — 12:00</option>
-                <option>14:00 — 16:00</option>
-                <option>16:00 — 18:00</option>
-              </SelectField>
-              <button className="self-end border-2 border-ink bg-ink px-8 py-3 text-[11px] font-bold uppercase tracking-[0.22em] text-background hover:bg-background hover:text-ink">
-                Vérifier
-              </button>
-            </div>
+/* ---------- Reviews ---------- */
+function Reviews() {
+  const items = [
+    { q: "Matériel nickel, ambiance pro. Plaquettes changées en une heure chrono.", a: "Karim", city: "Forbach" },
+    { q: "Meilleur rapport qualité-prix du secteur. Honnêtes, francs, efficaces.", a: "Julie", city: "Sarreguemines" },
+    { q: "Voiture d'occasion impeccable, prix juste, aucune mauvaise surprise.", a: "Sophie", city: "Metz" },
+  ];
+  return (
+    <section className="border-b border-border">
+      <div className="mx-auto max-w-7xl px-6 py-20">
+        <div className="flex items-end justify-between gap-6">
+          <SectionHead eyebrow="Avis clients" title="Ils nous font confiance" />
+          <div className="hidden text-right md:block">
+            <div className="font-display text-3xl font-black">4,9<span className="text-racing">/5</span></div>
+            <div className="micro mt-1">Sur Google · 210+ avis</div>
           </div>
         </div>
-      </section>
-
-      {/* CHRONIQUES / AVIS */}
-      <section className="border-b border-ink/15 bg-paper/60">
-        <div className="mx-auto max-w-6xl px-6 py-16">
-          <div className="mb-10 flex items-baseline justify-between border-b border-ink pb-4">
-            <div>
-              <div className="kicker">Courrier des lecteurs</div>
-              <h2 className="mt-2 font-display text-3xl font-bold">Ce qu'ils en disent</h2>
-            </div>
-            <div className="font-display text-2xl italic">
-              4,9<span className="text-primary">/5</span> · Google
-            </div>
-          </div>
-          <div className="grid gap-x-8 gap-y-10 md:grid-cols-3">
-            {[
-              { q: "Matériel nickel, ambiance pro. Plaquettes changées en une heure chrono.", a: "Karim", city: "Forbach" },
-              { q: "Meilleur rapport qualité-prix du secteur. Honnêtes, francs, efficaces.", a: "Julie", city: "Sarreguemines" },
-              { q: "Voiture d'occasion impeccable, prix juste, aucune mauvaise surprise.", a: "Sophie", city: "Metz" },
-            ].map((t, i) => (
-              <figure key={t.a} className="flex flex-col">
-                <span className="font-display text-5xl leading-none italic text-primary">“</span>
-                <blockquote className="mt-2 font-display text-lg leading-snug">
-                  {t.q}
-                </blockquote>
-                <figcaption className="mt-6 flex items-baseline justify-between border-t border-ink pt-2 text-[10px] font-semibold uppercase tracking-[0.22em]">
-                  <span>{t.a} — {t.city}</span>
-                  <span className="text-steel">{String(i + 1).padStart(2, "0")}</span>
-                </figcaption>
-              </figure>
-            ))}
-          </div>
+        <div className="mt-10 grid gap-5 md:grid-cols-3">
+          {items.map((t) => (
+            <figure key={t.a} className="rounded-md border border-border bg-white p-6">
+              <div className="text-racing">★★★★★</div>
+              <blockquote className="mt-3 text-[15px] leading-relaxed">« {t.q} »</blockquote>
+              <figcaption className="mt-5 border-t border-border pt-3 text-[12px] font-semibold uppercase tracking-wider text-steel">
+                {t.a} — {t.city}
+              </figcaption>
+            </figure>
+          ))}
         </div>
-      </section>
+      </div>
+    </section>
+  );
+}
 
-      {/* CONTACT */}
-      <section id="contact" className="border-b border-ink/15">
-        <div className="mx-auto max-w-6xl px-6 py-16 lg:py-20">
-          <SectionHeader index="IV" kicker="Nous trouver" title="Forbach, 57600." />
+/* ---------- Contact ---------- */
+function Contact() {
+  return (
+    <section id="contact" className="border-b border-border bg-carbon text-white">
+      <div className="mx-auto grid max-w-7xl gap-10 px-6 py-20 lg:grid-cols-12">
+        <div className="lg:col-span-5">
+          <div className="eyebrow mb-3">Nous trouver</div>
+          <h2 className="font-display text-4xl font-black leading-tight lg:text-5xl">
+            Forbach, <span className="text-racing">57600.</span>
+          </h2>
+          <p className="mt-4 text-white/70">Passez à l'atelier ou appelez-nous. Réponse rapide, accueil sans blabla.</p>
 
-          <div className="mt-12 grid gap-10 lg:grid-cols-12">
-            <div className="lg:col-span-5">
-              <dl className="divide-y divide-ink/20 border-y border-ink/20">
-                <ContactRow label="Adresse" value="Forbach (57), Moselle" />
-                <ContactRow label="Téléphone" value="06 20 43 11 91" />
-                <ContactRow label="Horaires" value="Lun — Sam · 08h → 19h" />
-                <ContactRow label="Diagnostic" value="Sur rendez-vous · 39 €" />
-              </dl>
-
-              <a
-                href="tel:+33620431191"
-                className="mt-8 inline-flex items-center gap-3 border-b-2 border-ink pb-1 font-display text-2xl italic hover:text-primary"
-              >
-                Appeler l'atelier →
-              </a>
-            </div>
-
-            <form className="lg:col-span-7">
-              <div className="grid gap-6 sm:grid-cols-2">
-                <InputField label="Nom" placeholder="Votre nom" />
-                <InputField label="Téléphone" placeholder="06 XX XX XX XX" />
-              </div>
-              <div className="mt-6">
-                <InputField label="Email" placeholder="vous@exemple.com" type="email" />
-              </div>
-              <div className="mt-6">
-                <label className="kicker">Message</label>
-                <textarea
-                  rows={5}
-                  className="mt-2 w-full resize-none border-b-2 border-ink bg-transparent px-1 py-2 text-sm outline-none focus:border-primary"
-                  placeholder="Votre demande…"
-                />
-              </div>
-              <button
-                type="button"
-                className="mt-6 border-2 border-ink bg-ink px-8 py-3 text-[11px] font-bold uppercase tracking-[0.22em] text-background hover:bg-background hover:text-ink"
-              >
-                Envoyer
-              </button>
-            </form>
-          </div>
+          <dl className="mt-8 divide-y divide-white/10 border-y border-white/10">
+            <Row label="Téléphone" value="06 20 43 11 91" />
+            <Row label="Adresse" value="Forbach (57), Moselle" />
+            <Row label="Horaires" value="Lun — Sam · 08h → 19h" />
+            <Row label="Diagnostic" value="Sur RDV · 39 €" />
+          </dl>
         </div>
-      </section>
 
-      {/* COLOPHON */}
-      <footer className="border-t-2 border-ink">
-        <div className="mx-auto flex max-w-6xl flex-col items-start justify-between gap-6 px-6 py-8 md:flex-row md:items-center">
+        <form className="rounded-md bg-white p-6 text-ink lg:col-span-7 lg:p-8">
+          <div className="grid gap-4 sm:grid-cols-2">
+            <Field label="Nom"><input className="input" placeholder="Votre nom" /></Field>
+            <Field label="Téléphone"><input className="input" placeholder="06 XX XX XX XX" /></Field>
+          </div>
+          <div className="mt-4">
+            <Field label="Email"><input type="email" className="input" placeholder="vous@exemple.com" /></Field>
+          </div>
+          <div className="mt-4">
+            <Field label="Message">
+              <textarea rows={5} className="input resize-none" placeholder="Votre demande…" />
+            </Field>
+          </div>
+          <button type="button" className="mt-5 rounded-sm bg-racing px-8 py-3 text-[12px] font-bold uppercase tracking-wider text-white hover:bg-racing/90">
+            Envoyer
+          </button>
+        </form>
+      </div>
+    </section>
+  );
+}
+
+function Row({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="flex items-baseline justify-between py-3">
+      <dt className="text-[11px] font-semibold uppercase tracking-wider text-white/50">{label}</dt>
+      <dd className="font-display text-base font-semibold">{value}</dd>
+    </div>
+  );
+}
+
+/* ---------- Footer ---------- */
+function Footer() {
+  return (
+    <footer className="bg-ink text-white/70">
+      <div className="mx-auto grid max-w-7xl gap-8 px-6 py-10 md:grid-cols-4">
+        <div>
           <div className="flex items-center gap-3">
-            <div className="grid size-10 place-items-center bg-ink">
-              <Logo className="h-7 w-7 object-contain" />
+            <div className="grid size-10 place-items-center rounded-sm bg-white/5">
+              <img src={logoAsset.url} alt="CAO57" className="h-7 w-7 object-contain" />
             </div>
-            <div>
-              <div className="font-display text-xl font-black leading-none">
-                CAO<span className="italic font-normal text-primary">57</span>
-              </div>
-              <div className="mt-1 text-[10px] font-semibold uppercase tracking-[0.22em] text-steel">
-                Centre Auto Occasion · Forbach
-              </div>
-            </div>
+            <div className="font-display text-lg font-black text-white">CAO<span className="text-racing">57</span></div>
           </div>
-          <div className="text-[10px] font-semibold uppercase tracking-[0.22em] text-steel">
-            © {new Date().getFullYear()} — Ouvert 6 jours sur 7
-          </div>
-          <div className="flex gap-6 text-[10px] font-semibold uppercase tracking-[0.22em]">
-            <a href="#" className="hover:text-primary">Mentions</a>
-            <a href="#" className="hover:text-primary">CGV</a>
-            <a href="#" className="hover:text-primary">Instagram</a>
+          <p className="mt-4 text-xs">Centre Auto Occasion 57 · Forbach. Réparation, vente, atelier libre.</p>
+        </div>
+        <FooterCol title="Services" items={["Réparations", "Diagnostic", "Pneumatiques", "Atelier libre"]} />
+        <FooterCol title="Ventes" items={["Occasions", "Neuf-livraison", "Reprise", "Financement"]} />
+        <FooterCol title="Contact" items={["06 20 43 11 91", "Forbach (57)", "Lun–Sam 08h→19h"]} />
+      </div>
+      <div className="border-t border-white/10">
+        <div className="mx-auto flex max-w-7xl flex-col justify-between gap-3 px-6 py-5 text-[11px] uppercase tracking-wider md:flex-row">
+          <span>© {new Date().getFullYear()} CAO57 — Tous droits réservés</span>
+          <div className="flex gap-5">
+            <a href="#" className="hover:text-white">Mentions légales</a>
+            <a href="#" className="hover:text-white">CGV</a>
+            <a href="#" className="hover:text-white">Instagram</a>
           </div>
         </div>
-      </footer>
-    </div>
-  );
-}
-
-function SectionHeader({
-  index,
-  kicker,
-  title,
-  pull,
-}: {
-  index: string;
-  kicker: string;
-  title: string;
-  pull?: string;
-}) {
-  return (
-    <div className="grid gap-6 border-b border-ink pb-4 lg:grid-cols-12 lg:items-end">
-      <div className="lg:col-span-1">
-        <div className="font-display text-4xl italic text-primary">{index}.</div>
       </div>
-      <div className="lg:col-span-6">
-        <div className="kicker mb-3">{kicker}</div>
-        <h2 className="font-display text-4xl font-bold leading-[0.95] tracking-tight lg:text-5xl">
-          {title}
-        </h2>
-      </div>
-      {pull && (
-        <p className="max-w-md text-[15px] leading-relaxed text-steel lg:col-span-5 lg:text-right">
-          {pull}
-        </p>
-      )}
-    </div>
+    </footer>
   );
 }
 
-function SummaryItem({
-  n,
-  title,
-  text,
-  href,
-  page,
-  border = false,
-}: {
-  n: string;
-  title: string;
-  text: string;
-  href: string;
-  page: string;
-  border?: boolean;
-}) {
-  return (
-    <li className={"flex items-start gap-5 py-6 md:py-2 " + (border ? "md:border-l md:border-ink/20 md:pl-6" : "")}>
-      <span className="font-display text-3xl italic text-primary">{n}</span>
-      <a href={href} className="group flex-1">
-        <div className="flex items-baseline justify-between gap-3">
-          <h3 className="font-display text-2xl font-bold leading-tight group-hover:text-primary">
-            {title}
-          </h3>
-          <span className="text-[10px] font-semibold uppercase tracking-[0.22em] text-steel">{page}</span>
-        </div>
-        <p className="mt-2 text-[13px] leading-relaxed text-steel">{text}</p>
-      </a>
-    </li>
-  );
-}
-
-function ContactRow({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="flex items-baseline justify-between gap-6 py-4">
-      <dt className="kicker">{label}</dt>
-      <dd className="font-display text-xl">{value}</dd>
-    </div>
-  );
-}
-
-function InputField({
-  label,
-  placeholder,
-  type = "text",
-}: {
-  label: string;
-  placeholder?: string;
-  type?: string;
-}) {
+function FooterCol({ title, items }: { title: string; items: string[] }) {
   return (
     <div>
-      <label className="kicker">{label}</label>
-      <input
-        type={type}
-        placeholder={placeholder}
-        className="mt-2 w-full border-b-2 border-ink bg-transparent px-1 py-2 text-sm outline-none placeholder:text-ink/40 focus:border-primary"
-      />
+      <div className="text-[11px] font-bold uppercase tracking-wider text-white">{title}</div>
+      <ul className="mt-4 space-y-2 text-sm">
+        {items.map((i) => (
+          <li key={i}><a href="#" className="hover:text-white">{i}</a></li>
+        ))}
+      </ul>
     </div>
   );
 }
 
-function SelectField({
-  label,
-  children,
-}: {
-  label: string;
-  children: React.ReactNode;
-}) {
+/* ---------- Small building blocks ---------- */
+function SectionHead({ eyebrow, title, desc }: { eyebrow: string; title: string; desc?: string }) {
   return (
-    <div>
-      <label className="kicker">{label}</label>
-      <select className="mt-2 w-full appearance-none border-b-2 border-ink bg-transparent px-1 py-2 text-sm outline-none focus:border-primary">
-        {children}
-      </select>
+    <div className="max-w-2xl">
+      <div className="eyebrow mb-3">{eyebrow}</div>
+      <h2 className="font-display text-4xl font-black leading-[1.05] tracking-tight lg:text-5xl">
+        {title}
+      </h2>
+      {desc && <p className="mt-4 text-base leading-relaxed text-steel">{desc}</p>}
     </div>
+  );
+}
+
+function Field({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <label className="block">
+      <span className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wider text-steel">{label}</span>
+      {children}
+    </label>
   );
 }
