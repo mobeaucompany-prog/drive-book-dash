@@ -4,15 +4,15 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/* CAO57 — Editorial magazine.
-   Palette: #FFFFFF fond, #111214 encre, #5A6067 gris acier, #A81E1E rouge profond.
-   Titres: Playfair Display (serif, italiques). Corps: Inter. */
+/* CAO57 — Automotive brand.
+   Inspiré des sites constructeurs (Porsche, Jaguar) et enseignes auto (Feu Vert).
+   Palette: fond blanc, encre noire profonde, gris acier, rouge racing. */
 
 @theme inline {
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
+  --radius-sm: calc(var(--radius) - 2px);
+  --radius-md: var(--radius);
+  --radius-lg: calc(var(--radius) + 2px);
+  --radius-xl: calc(var(--radius) + 6px);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -34,35 +34,39 @@
   --color-ring: var(--ring);
   --color-ink: var(--ink);
   --color-steel: var(--steel);
-  --color-paper: var(--paper);
-  --font-display: "Playfair Display", ui-serif, Georgia, serif;
+  --color-smoke: var(--smoke);
+  --color-carbon: var(--carbon);
+  --color-racing: var(--racing);
+  --font-display: "Archivo", ui-sans-serif, system-ui, sans-serif;
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
 }
 
 :root {
-  --radius: 0.125rem;
+  --radius: 0.25rem;
   --background: #ffffff;
-  --foreground: #111214;
+  --foreground: #0b0c0e;
   --card: #ffffff;
-  --card-foreground: #111214;
+  --card-foreground: #0b0c0e;
   --popover: #ffffff;
-  --popover-foreground: #111214;
-  --primary: #a81e1e;
+  --popover-foreground: #0b0c0e;
+  --primary: #d50c1f;                 /* racing red */
   --primary-foreground: #ffffff;
-  --secondary: #f4f2ee;                 /* paper tint */
-  --secondary-foreground: #111214;
-  --muted: #f4f2ee;
+  --secondary: #f4f5f7;
+  --secondary-foreground: #0b0c0e;
+  --muted: #f4f5f7;
   --muted-foreground: #5a6067;
-  --accent: #f4f2ee;
-  --accent-foreground: #111214;
-  --destructive: #a81e1e;
+  --accent: #eef0f3;
+  --accent-foreground: #0b0c0e;
+  --destructive: #d50c1f;
   --destructive-foreground: #ffffff;
-  --border: #111214;                     /* hairline ink rules */
-  --input: #d9d7d2;
-  --ring: #a81e1e;
-  --ink: #111214;
+  --border: #e5e7eb;
+  --input: #e5e7eb;
+  --ring: #d50c1f;
+  --ink: #0b0c0e;
+  --carbon: #131519;                  /* deep dark for hero */
   --steel: #5a6067;
-  --paper: #f4f2ee;
+  --smoke: #f4f5f7;
+  --racing: #d50c1f;
 }
 
 @layer base {
@@ -71,30 +75,29 @@
     color: var(--color-foreground);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
-    font-feature-settings: "ss01", "cv11";
   }
 
   h1, h2, h3, h4 {
     font-family: var(--font-display);
-    letter-spacing: -0.015em;
-  }
-
-  ::selection {
-    background: var(--color-foreground);
-    color: var(--color-background);
+    letter-spacing: -0.02em;
+    font-weight: 800;
   }
 }
 
-/* Editorial helpers */
-@utility kicker {
-  font-family: var(--font-sans);
-  font-size: 10px;
+@utility eyebrow {
+  font-family: var(--font-display);
+  font-size: 11px;
   font-weight: 700;
-  letter-spacing: 0.28em;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--color-racing);
+}
+
+@utility micro {
+  font-family: var(--font-display);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--color-steel);
-}
-
-@utility rule-ink {
-  border-color: var(--color-ink);
 }
