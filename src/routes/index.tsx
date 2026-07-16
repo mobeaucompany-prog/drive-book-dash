@@ -116,7 +116,7 @@ function Home() {
               </a>
             </div>
             <div className="mt-10 flex gap-8 border-t border-border pt-6">
-              <Stat n="15+" l="Ans d'expérience" />
+              
               <Stat n="6j/7" l="Ouvert" />
               <Stat n="4.9/5" l="Avis clients" />
             </div>
