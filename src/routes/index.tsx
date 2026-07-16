@@ -81,8 +81,8 @@ function Nav() {
     <header className="sticky top-0 z-40 border-b border-border bg-background/95 backdrop-blur">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
         <Link to="/" className="flex items-center">
-          <div className="grid h-16 w-44 place-items-center overflow-hidden rounded-sm bg-carbon">
-            <img src={logoAsset.url} alt="CAO57 — Centre Auto Occasion 57" className="h-full w-full object-cover" />
+          <div className="grid h-16 w-44 place-items-center overflow-hidden rounded-sm bg-carbon p-2">
+            <img src={logoAsset.url} alt="CAO57 — Centre Auto Occasion 57" className="h-full w-full object-contain" />
           </div>
         </Link>
 
