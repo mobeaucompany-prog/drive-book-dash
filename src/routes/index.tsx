@@ -86,7 +86,7 @@ function Nav() {
 
         <nav className="hidden items-center gap-8 text-[13px] font-semibold text-ink md:flex">
           <a href="#reparations" className="hover:text-racing">Réparations</a>
-          <a href="#vehicules" className="hover:text-racing">Occasions</a>
+          <Link to="/occasions" className="hover:text-racing">Occasions</Link>
           <a href="#atelier" className="hover:text-racing">Atelier libre</a>
           <a href="#contact" className="hover:text-racing">Contact</a>
         </nav>
