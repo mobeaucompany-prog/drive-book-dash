@@ -280,9 +280,9 @@ function Vehicles() {
       <div className="mx-auto max-w-7xl px-6 py-20">
         <div className="flex items-end justify-between gap-6">
           <SectionHead eyebrow="Vente" title="Occasions sélectionnées" desc="Chaque véhicule passe une révision complète avant sa mise en vente." />
-          <a href="#" className="hidden shrink-0 rounded-sm border-2 border-ink px-5 py-2.5 text-[12px] font-bold uppercase tracking-wider hover:bg-ink hover:text-white md:inline-flex">
+          <Link to="/occasions" className="hidden shrink-0 rounded-sm border-2 border-ink px-5 py-2.5 text-[12px] font-bold uppercase tracking-wider hover:bg-ink hover:text-white md:inline-flex">
             Tout le parc →
-          </a>
+          </Link>
         </div>
 
         <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
