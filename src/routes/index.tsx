@@ -2,15 +2,13 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import logoAsset from "@/assets/cao57-logo-v4.png.asset.json";
 import heroWorkshop from "@/assets/garage-lifts.jpg.asset.json";
 import garageInterior from "@/assets/garage-interior.jpg.asset.json";
-import carGolf from "@/assets/car-golf.jpg";
-import carClio from "@/assets/car-clio.jpg";
-import carBmw from "@/assets/car-bmw.jpg";
 import repVidange from "@/assets/repair-vidange.jpg";
 import repFreinage from "@/assets/repair-freinage.jpg";
 import repDistribution from "@/assets/repair-distribution.jpg";
 import repEmbrayage from "@/assets/repair-embrayage.jpg";
 import repPneus from "@/assets/repair-pneus.jpg";
 import repDiagnostic from "@/assets/repair-diagnostic.jpg";
+import { annonces } from "@/data/annonces";
 
 export const Route = createFileRoute("/")({
   component: Home,
@@ -25,11 +23,18 @@ const reparations = [
   { img: repDiagnostic, name: "Diagnostic électronique", desc: "Lecture valise multimarques toutes ECU.", price: "39 €" },
 ];
 
-const vehicules = [
-  { img: carGolf, name: "Volkswagen Golf VIII R", year: "2022", km: "45 000", energie: "Essence", bv: "DSG", price: "32 900", badge: "Coup de cœur" },
-  { img: carClio, name: "Renault Clio V TCe 100", year: "2022", km: "18 200", energie: "Essence", bv: "Manuelle", price: "16 400" },
-  { img: carBmw, name: "BMW X3 xDrive 30d", year: "2020", km: "65 000", energie: "Diesel", bv: "Auto", price: "41 200" },
-];
+const frNum = (n: number) => n.toLocaleString("fr-FR");
+const vehicules = annonces.slice(0, 3).map((a) => ({
+  id: a.id,
+  img: a.images[0],
+  name: a.titre,
+  year: String(a.annee),
+  km: frNum(a.km),
+  energie: a.energie,
+  bv: a.boite === "Manuelle" ? "Manuelle" : "Auto",
+  price: frNum(a.prix),
+  badge: a.badge as string | undefined,
+}));
 
 const locations = [
   { name: "Pont élévateur 2 colonnes", cap: "3,6 T · éclairage LED · air comprimé", price: "20 €", unit: "/ heure" },
