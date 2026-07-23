@@ -2,15 +2,13 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import logoAsset from "@/assets/cao57-logo-v4.png.asset.json";
 import heroWorkshop from "@/assets/garage-lifts.jpg.asset.json";
 import garageInterior from "@/assets/garage-interior.jpg.asset.json";
-import carGolf from "@/assets/car-golf.jpg";
-import carClio from "@/assets/car-clio.jpg";
-import carBmw from "@/assets/car-bmw.jpg";
 import repVidange from "@/assets/repair-vidange.jpg";
 import repFreinage from "@/assets/repair-freinage.jpg";
 import repDistribution from "@/assets/repair-distribution.jpg";
 import repEmbrayage from "@/assets/repair-embrayage.jpg";
 import repPneus from "@/assets/repair-pneus.jpg";
 import repDiagnostic from "@/assets/repair-diagnostic.jpg";
+import { annonces } from "@/data/annonces";
 
 export const Route = createFileRoute("/")({
   component: Home,
@@ -25,11 +23,18 @@ const reparations = [
   { img: repDiagnostic, name: "Diagnostic électronique", desc: "Lecture valise multimarques toutes ECU.", price: "39 €" },
 ];
 
-const vehicules = [
-  { img: carGolf, name: "Volkswagen Golf VIII R", year: "2022", km: "45 000", energie: "Essence", bv: "DSG", price: "32 900", badge: "Coup de cœur" },
-  { img: carClio, name: "Renault Clio V TCe 100", year: "2022", km: "18 200", energie: "Essence", bv: "Manuelle", price: "16 400" },
-  { img: carBmw, name: "BMW X3 xDrive 30d", year: "2020", km: "65 000", energie: "Diesel", bv: "Auto", price: "41 200" },
-];
+const frNum = (n: number) => n.toLocaleString("fr-FR");
+const vehicules = annonces.slice(0, 3).map((a) => ({
+  id: a.id,
+  img: a.images[0],
+  name: a.titre,
+  year: String(a.annee),
+  km: frNum(a.km),
+  energie: a.energie,
+  bv: a.boite === "Manuelle" ? "Manuelle" : "Auto",
+  price: frNum(a.prix),
+  badge: a.badge as string | undefined,
+}));
 
 const locations = [
   { name: "Pont élévateur 2 colonnes", cap: "3,6 T · éclairage LED · air comprimé", price: "20 €", unit: "/ heure" },
@@ -287,7 +292,7 @@ function Vehicles() {
 
         <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {vehicules.map((v) => (
-            <article key={v.name} className="group flex flex-col overflow-hidden rounded-md border border-border bg-white transition hover:shadow-xl">
+            <article key={v.id} className="group flex flex-col overflow-hidden rounded-md border border-border bg-white transition hover:shadow-xl">
               <div className="relative aspect-[4/3] overflow-hidden bg-smoke">
                 <img src={v.img} alt={v.name} className="h-full w-full object-cover transition duration-500 group-hover:scale-105" />
                 {v.badge && (
@@ -309,9 +314,9 @@ function Vehicles() {
                     <div className="text-[10px] font-semibold uppercase tracking-wider text-steel">Prix TTC</div>
                     <div className="font-display text-2xl font-black">{v.price} €</div>
                   </div>
-                  <a href="#" className="rounded-sm bg-ink px-4 py-2 text-[11px] font-bold uppercase tracking-wider text-white hover:bg-racing">
+                  <Link to="/occasions" className="rounded-sm bg-ink px-4 py-2 text-[11px] font-bold uppercase tracking-wider text-white hover:bg-racing">
                     Fiche
-                  </a>
+                  </Link>
                 </div>
               </div>
             </article>
