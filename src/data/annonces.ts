@@ -113,4 +113,42 @@ export const annonces: Annonce[] = [
       "4 pneus neufs",
     ],
   },
+  {
+    id: "vw-polo-14-tdi-2006",
+    titre: "Volkswagen Polo 1.4 TDi 80 ch 3 portes",
+    marque: "Volkswagen",
+    prix: 3300,
+    annee: 2006,
+    km: 191000,
+    energie: "Diesel",
+    boite: "Manuelle",
+    ville: "Forbach",
+    cp: "57600",
+    publieLe: "Aujourd'hui",
+    badge: "Garantie 6 mois",
+    images: [],
+    description:
+      "Volkswagen Polo 1.4 Diesel — 2006 — 190 000 km — 3 portes.\n\n" +
+      "Nous proposons à la vente cette Volkswagen Polo 1.4 diesel de 2006, un véhicule très bien entretenu avec carnet d'entretien complet.\n\n" +
+      "La mécanique du véhicule est entièrement saine. Le véhicule roule parfaitement et ne nécessite aucun frais à prévoir.\n\n" +
+      "Les plus :\n✔ Garantie 6 mois incluse\n✔ Aucun frais à prévoir\n✔ Véhicule idéal pour un jeune conducteur ou une jeune conductrice grâce à sa faible consommation et son faible coût d'entretien et d'assurance\n✔ Véhicule prêt à prendre la route\n\n" +
+      "Pour plus d'informations ou pour convenir d'un rendez-vous, n'hésitez pas à nous contacter.\n\n" +
+      "Visible sur rendez-vous au Centre Auto Occasion 57 (CAO57) — Forbach.",
+    equipements: [
+      "3 portes",
+      "Climatisation",
+      "Régulateur de vitesse",
+      "Vitres électriques",
+      "Rétroviseurs électriques",
+      "Lunette arrière dégivrante",
+      "Radars de stationnement avant et arrière",
+      "Autoradio CarPlay",
+      "Possibilité de raccorder une caméra de recul directement sur le poste",
+      "ABS / ESP",
+    ],
+    entretien: [
+      "Vidange moteur + tous les filtres (13/07/2026)",
+      "Kit distribution + pompe à eau (13/07/2026)",
+    ],
+  },
 ];
