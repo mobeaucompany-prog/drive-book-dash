@@ -197,7 +197,7 @@ function Hero() {
                 <span className="transition group-hover:translate-x-1">→</span>
               </div>
             </div>
-          </a>
+          </Link>
         </div>
       </div>
     </section>
