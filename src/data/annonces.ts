@@ -126,7 +126,11 @@ export const annonces: Annonce[] = [
     cp: "57600",
     publieLe: "Aujourd'hui",
     badge: "Garantie 6 mois",
-    images: [],
+    images: [
+      "/occasions/polo-tdi-avant.jpg",
+      "/occasions/polo-tdi-arriere.jpg",
+      "/occasions/polo-tdi-interieur.jpg",
+    ],
     description:
       "Volkswagen Polo 1.4 Diesel — 2006 — 190 000 km — 3 portes.\n\n" +
       "Nous proposons à la vente cette Volkswagen Polo 1.4 diesel de 2006, un véhicule très bien entretenu avec carnet d'entretien complet.\n\n" +
