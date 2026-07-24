@@ -160,8 +160,8 @@ function Hero() {
 
         {/* Rental highlight card */}
         <div className="lg:col-span-5 lg:pl-6">
-          <a
-            href="#atelier"
+          <Link
+            to="/atelier"
             className="group relative block overflow-hidden rounded-sm border border-white/10 bg-gradient-to-br from-racing/95 to-racing/70 p-7 shadow-2xl transition hover:from-racing hover:to-racing/80"
           >
             <div
