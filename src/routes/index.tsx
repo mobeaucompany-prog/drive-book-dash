@@ -92,7 +92,7 @@ function Nav() {
         <nav className="hidden items-center gap-8 text-[13px] font-semibold text-ink md:flex">
           <a href="#reparations" className="hover:text-racing">Réparations</a>
           <Link to="/occasions" className="hover:text-racing">Occasions</Link>
-          <a href="#atelier" className="hover:text-racing">Atelier libre</a>
+          <Link to="/atelier" className="hover:text-racing">Atelier libre</Link>
           <a href="#contact" className="hover:text-racing">Contact</a>
         </nav>
 
@@ -160,8 +160,8 @@ function Hero() {
 
         {/* Rental highlight card */}
         <div className="lg:col-span-5 lg:pl-6">
-          <a
-            href="#atelier"
+          <Link
+            to="/atelier"
             className="group relative block overflow-hidden rounded-sm border border-white/10 bg-gradient-to-br from-racing/95 to-racing/70 p-7 shadow-2xl transition hover:from-racing hover:to-racing/80"
           >
             <div
@@ -197,7 +197,7 @@ function Hero() {
                 <span className="transition group-hover:translate-x-1">→</span>
               </div>
             </div>
-          </a>
+          </Link>
         </div>
       </div>
     </section>
