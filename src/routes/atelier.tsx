@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
+import logoAsset from "@/assets/cao57-logo-v4.png.asset.json";
 
 export const Route = createFileRoute("/atelier")({
   head: () => ({
