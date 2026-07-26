@@ -119,22 +119,42 @@ function AtelierPage() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       {/* Header simple */}
-      <header className="sticky top-0 z-40 border-b border-border bg-white/95 backdrop-blur">
+      {/* Top utility bar */}
+      <div className="bg-carbon text-white/80">
+        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-2 text-[11px]">
+          <div className="flex items-center gap-6">
+            <span className="hidden sm:inline">📍 Forbach · Moselle · 57</span>
+            <span className="hidden md:inline">Ouvert lun. — sam. · 08h → 19h</span>
+          </div>
+          <div className="flex items-center gap-5">
+            <a href="tel:+33620431191" className="hover:text-white">☏ 06 20 43 11 91</a>
+            <a href="/#compte" className="hidden sm:inline hover:text-white">Mon compte</a>
+          </div>
+        </div>
+      </div>
+
+      {/* Sticky main nav */}
+      <header className="sticky top-0 z-40 border-b border-border bg-background/95 backdrop-blur">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-          <Link to="/" className="font-display text-lg font-black tracking-tight">
-            CAO<span className="text-racing">57</span>
+          <Link to="/" className="flex items-center">
+            <img src={logoAsset.url} alt="CAO57 — Centre Auto Occasion 57" className="w-auto" style={{ height: "4.5rem" }} />
           </Link>
-          <nav className="flex items-center gap-6 text-[13px] font-semibold">
-            <Link to="/" className="hover:text-racing">Accueil</Link>
+
+          <nav className="hidden items-center gap-8 text-[13px] font-semibold text-ink md:flex">
+            <a href="/#reparations" className="hover:text-racing">Réparations</a>
             <Link to="/occasions" className="hover:text-racing">Occasions</Link>
-            <span className="text-racing">Atelier libre</span>
+            <Link to="/atelier" className="text-racing">Atelier libre</Link>
+            <a href="/#contact" className="hover:text-racing">Contact</a>
+          </nav>
+
+          <div className="flex items-center gap-3">
             <a
               href="#reserver"
-              className="hidden rounded-sm bg-racing px-4 py-2 text-[11px] font-bold uppercase tracking-wider text-white hover:bg-racing/90 sm:inline-flex"
+              className="inline-flex items-center gap-2 rounded-sm bg-racing px-5 py-2.5 text-[12px] font-bold uppercase tracking-wider text-white hover:bg-racing/90"
             >
-              Réserver
+              Prendre RDV
             </a>
-          </nav>
+          </div>
         </div>
       </header>
 
