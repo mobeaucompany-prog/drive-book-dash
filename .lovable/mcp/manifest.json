@@ -1,0 +1,99 @@
+{
+  "version": 1,
+  "sdk_version": "0.24.0",
+  "path": "/mcp",
+  "auth": {
+    "type": "none"
+  },
+  "mcp": {
+    "server": {
+      "name": "cao57-mcp",
+      "version": "0.1.0",
+      "title": "CAO57 — Centre Auto Occasion 57"
+    },
+    "tools": [
+      {
+        "name": "list_vehicles",
+        "title": "Lister les véhicules d'occasion",
+        "description": "Retourne la liste des véhicules d'occasion publiés au catalogue CAO57 (Forbach). Filtres optionnels par marque, énergie, prix max et kilométrage max.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "marque": {
+              "description": "Filtrer par marque (ex : Volkswagen, Citroën).",
+              "type": "string"
+            },
+            "energie": {
+              "description": "Filtrer par type d'énergie.",
+              "type": "string",
+              "enum": [
+                "Essence",
+                "Diesel",
+                "Hybride",
+                "Électrique"
+              ]
+            },
+            "prixMax": {
+              "description": "Prix maximum en euros.",
+              "type": "number",
+              "exclusiveMinimum": 0
+            },
+            "kmMax": {
+              "description": "Kilométrage maximum.",
+              "type": "number",
+              "exclusiveMinimum": 0
+            }
+          }
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "get_vehicle",
+        "title": "Détails d'un véhicule",
+        "description": "Retourne la fiche complète d'un véhicule d'occasion CAO57 (description, équipements, entretien, photos) à partir de son identifiant.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Identifiant de l'annonce, ex : 'vw-polo-12-united-2008'."
+            }
+          },
+          "required": [
+            "id"
+          ]
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "list_services",
+        "title": "Services et tarifs CAO57",
+        "description": "Retourne le catalogue des services proposés par le garage CAO57 : réparations, atelier libre (avec tarifs horaires) et vente d'occasions.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {}
+        },
+        "outputSchema": null
+      }
+    ]
+  }
+}
