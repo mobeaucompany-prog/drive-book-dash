@@ -359,7 +359,7 @@ function SiteHeader() {
       <div className="bg-carbon text-white/80">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-2 text-[11px]">
           <div className="flex items-center gap-6">
-            <span className="hidden sm:inline">📍 Forbach · Moselle · 57</span>
+            <span className="hidden sm:inline">📍 2 Allée des Cyprès · 57600 Forbach</span>
             <span className="hidden md:inline">Ouvert lun. — sam. · 08h → 19h</span>
           </div>
           <div className="flex items-center gap-5">
