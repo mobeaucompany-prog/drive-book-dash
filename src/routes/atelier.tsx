@@ -275,6 +275,100 @@ function AtelierPage() {
         </div>
       </section>
 
+      {/* TikTok — immersion vidéo */}
+      <section className="relative overflow-hidden border-b border-border bg-carbon text-white">
+        <div className="pointer-events-none absolute -left-24 top-24 h-72 w-72 rounded-full bg-cyan-400/10 blur-3xl" />
+        <div className="pointer-events-none absolute -right-24 bottom-10 h-72 w-72 rounded-full bg-pink-500/10 blur-3xl" />
+
+        <div className="relative mx-auto grid max-w-7xl items-center gap-12 px-6 py-20 lg:grid-cols-[0.8fr_1.2fr]">
+          <div>
+            <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-2 text-[11px] font-bold uppercase tracking-[0.18em] text-white/85">
+              <span className="relative grid size-5 place-items-center font-black">
+                <span className="absolute translate-x-[-1px] text-cyan-300">♪</span>
+                <span className="absolute translate-x-[1px] text-pink-400">♪</span>
+                <span className="relative">♪</span>
+              </span>
+              Sur TikTok
+            </div>
+
+            <h2 className="font-display text-4xl font-black leading-[0.98] tracking-tight sm:text-5xl lg:text-6xl">
+              Retrouvez-nous
+              <br />
+              <span className="text-racing">sur TikTok.</span>
+            </h2>
+            <p className="mt-5 max-w-lg text-base leading-relaxed text-white/70">
+              Découvrez l&apos;atelier en vidéo, le matériel disponible et les
+              retours de ceux qui ont déjà loué leur pont chez CAO57.
+            </p>
+
+            <div className="mt-7 space-y-3 text-sm text-white/80">
+              <p className="flex items-center gap-3">
+                <span className="grid size-7 place-items-center rounded-full bg-white/10 text-racing">✓</span>
+                Visites et coulisses de l&apos;atelier
+              </p>
+              <p className="flex items-center gap-3">
+                <span className="grid size-7 place-items-center rounded-full bg-white/10 text-racing">✓</span>
+                Conseils et démonstrations du matériel
+              </p>
+              <p className="flex items-center gap-3">
+                <span className="grid size-7 place-items-center rounded-full bg-white/10 text-racing">✓</span>
+                Retours d&apos;expérience de nos clients
+              </p>
+            </div>
+
+            <a
+              href="https://www.tiktok.com/@jeremy.preiss"
+              target="_blank"
+              rel="noreferrer"
+              className="mt-8 inline-flex items-center gap-3 rounded-sm bg-white px-6 py-3.5 text-[12px] font-black uppercase tracking-wider text-carbon transition hover:-translate-y-0.5 hover:shadow-xl"
+            >
+              Suivre @jeremy.preiss
+              <span aria-hidden="true">↗</span>
+            </a>
+          </div>
+
+          <div className="grid gap-6 sm:grid-cols-2">
+            <article className="group relative mx-auto w-full max-w-[330px] overflow-hidden rounded-[1.5rem] border border-white/15 bg-black p-2 shadow-2xl">
+              <div className="absolute left-1/2 top-4 z-10 h-1.5 w-12 -translate-x-1/2 rounded-full bg-black/70" />
+              <video
+                controls
+                playsInline
+                preload="metadata"
+                poster="/atelier/tiktok-visite-atelier.jpg"
+                className="aspect-[9/16] w-full rounded-[1.1rem] bg-black object-cover"
+                aria-label="Visite vidéo de l'atelier libre CAO57"
+              >
+                <source src="/atelier/tiktok-visite-atelier.mp4" type="video/mp4" />
+                Votre navigateur ne prend pas en charge la lecture vidéo.
+              </video>
+              <div className="pointer-events-none absolute inset-x-2 bottom-2 rounded-b-[1.1rem] bg-gradient-to-t from-black/90 via-black/30 to-transparent px-4 pb-12 pt-20">
+                <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-white/60">Dans les coulisses</div>
+                <h3 className="mt-1 font-display text-lg font-black text-white">Visite de l&apos;atelier</h3>
+              </div>
+            </article>
+
+            <article className="group relative mx-auto w-full max-w-[330px] overflow-hidden rounded-[1.5rem] border border-white/15 bg-black p-2 shadow-2xl sm:translate-y-10">
+              <div className="absolute left-1/2 top-4 z-10 h-1.5 w-12 -translate-x-1/2 rounded-full bg-black/70" />
+              <video
+                controls
+                playsInline
+                preload="metadata"
+                poster="/atelier/tiktok-retour-client.jpg"
+                className="aspect-[9/16] w-full rounded-[1.1rem] bg-black object-cover"
+                aria-label="Retour d'un client après la location d'un pont CAO57"
+              >
+                <source src="/atelier/tiktok-retour-client.mp4" type="video/mp4" />
+                Votre navigateur ne prend pas en charge la lecture vidéo.
+              </video>
+              <div className="pointer-events-none absolute inset-x-2 bottom-2 rounded-b-[1.1rem] bg-gradient-to-t from-black/90 via-black/30 to-transparent px-4 pb-12 pt-20">
+                <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-white/60">Ils ont testé</div>
+                <h3 className="mt-1 font-display text-lg font-black text-white">Retour client</h3>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
       {/* Tarifs */}
       <section id="tarifs" className="border-b border-border bg-smoke">
         <div className="mx-auto max-w-7xl px-6 py-20">
