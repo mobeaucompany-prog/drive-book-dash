@@ -1,14 +1,23 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import type { FormEvent } from "react";
 import logoAsset from "@/assets/cao57-logo-v4.png.asset.json";
+import { createWorkshopReservation, getWorkshopAvailability } from "@/lib/workshop-reservations";
 
 export const Route = createFileRoute("/atelier")({
   head: () => ({
     meta: [
       { title: "Atelier libre — CAO57 Forbach · Pont, fosse, démonte-pneus à l'heure" },
-      { name: "description", content: "Louez un pont élévateur, une fosse mécanique ou un démonte-pneus à l'heure chez CAO57 Forbach. Atelier pro, tarifs clairs, réservation en ligne." },
+      {
+        name: "description",
+        content:
+          "Louez un pont élévateur, une fosse mécanique ou un démonte-pneus à l'heure chez CAO57 Forbach. Atelier pro, tarifs clairs, réservation en ligne.",
+      },
       { property: "og:title", content: "Atelier libre — CAO57 Forbach" },
-      { property: "og:description", content: "Pont 20€/h, fosse 15€/h, démonte-pneus 15€/h. Réservez votre créneau en ligne." },
+      {
+        property: "og:description",
+        content: "Pont 20€/h, fosse 15€/h, démonte-pneus 15€/h. Réservez votre créneau en ligne.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -73,16 +82,6 @@ const equipments: Equipment[] = [
 
 const hours = ["08:00", "09:00", "10:00", "11:00", "14:00", "15:00", "16:00", "17:00"];
 
-// Disponibilité fictive déterministe pour garder l'UI cohérente entre les rendus.
-function isBooked(equipId: string, dayIndex: number, hour: string) {
-  const seed =
-    equipId.charCodeAt(0) * 7 +
-    equipId.charCodeAt(1) * 3 +
-    dayIndex * 13 +
-    parseInt(hour, 10) * 5;
-  return seed % 7 < 2; // ~28% des créneaux occupés
-}
-
 function startOfWeek(d: Date) {
   const date = new Date(d);
   const day = (date.getDay() + 6) % 7; // lundi = 0
@@ -95,10 +94,29 @@ function formatDay(d: Date) {
   return d.toLocaleDateString("fr-FR", { weekday: "short", day: "2-digit", month: "2-digit" });
 }
 
+function slotDate(date: Date, hour: string) {
+  const result = new Date(date);
+  const [hoursValue, minutesValue] = hour.split(":").map(Number);
+  result.setHours(hoursValue, minutesValue, 0, 0);
+  return result;
+}
+
+type PickedSlot = {
+  timestamp: number;
+  iso: string;
+  label: string;
+};
+
 function AtelierPage() {
   const [selectedEquip, setSelectedEquip] = useState<string>(equipments[0].id);
   const [weekOffset, setWeekOffset] = useState(0);
-  const [pick, setPick] = useState<{ day: number; hour: string } | null>(null);
+  const [picks, setPicks] = useState<PickedSlot[]>([]);
+  const [availability, setAvailability] = useState<Map<number, "pending" | "confirmed">>(new Map());
+  const [calendarLoading, setCalendarLoading] = useState(true);
+  const [calendarError, setCalendarError] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [formError, setFormError] = useState("");
+  const [requestAccepted, setRequestAccepted] = useState(false);
 
   const weekStart = useMemo(() => {
     const d = startOfWeek(new Date());
@@ -116,6 +134,119 @@ function AtelierPage() {
 
   const current = equipments.find((e) => e.id === selectedEquip)!;
 
+  useEffect(() => {
+    let active = true;
+    const from = new Date(weekStart);
+    const to = new Date(weekStart);
+    to.setDate(to.getDate() + 7);
+
+    setCalendarLoading(true);
+    setCalendarError("");
+    getWorkshopAvailability({
+      data: {
+        equipmentId: selectedEquip as "pont" | "pneus" | "fosse" | "presse",
+        from: from.toISOString(),
+        to: to.toISOString(),
+      },
+    })
+      .then((slots) => {
+        if (!active) return;
+        setAvailability(
+          new Map(slots.map((slot) => [new Date(slot.startsAt).getTime(), slot.status])),
+        );
+      })
+      .catch(() => {
+        if (!active) return;
+        setCalendarError("Impossible de charger les réservations. Réessayez dans un instant.");
+      })
+      .finally(() => {
+        if (active) setCalendarLoading(false);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [selectedEquip, weekStart]);
+
+  const selectEquipment = (equipmentId: string) => {
+    setSelectedEquip(equipmentId);
+    setPicks([]);
+    setFormError("");
+  };
+
+  const toggleSlot = (date: Date, hour: string) => {
+    const value = slotDate(date, hour);
+    const timestamp = value.getTime();
+    if (availability.has(timestamp) || value < new Date()) return;
+
+    setPicks((currentPicks) => {
+      if (currentPicks.some((slot) => slot.timestamp === timestamp)) {
+        return currentPicks.filter((slot) => slot.timestamp !== timestamp);
+      }
+      return [
+        ...currentPicks,
+        {
+          timestamp,
+          iso: value.toISOString(),
+          label: value.toLocaleString("fr-FR", {
+            weekday: "long",
+            day: "2-digit",
+            month: "long",
+            hour: "2-digit",
+            minute: "2-digit",
+          }),
+        },
+      ].sort((a, b) => a.timestamp - b.timestamp);
+    });
+  };
+
+  const submitReservation = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setFormError("");
+
+    if (picks.length === 0) {
+      setFormError("Sélectionnez au moins un créneau dans l’agenda.");
+      return;
+    }
+
+    const form = new FormData(event.currentTarget);
+    setSubmitting(true);
+    try {
+      await createWorkshopReservation({
+        data: {
+          equipmentId: selectedEquip as "pont" | "pneus" | "fosse" | "presse",
+          customerName: String(form.get("customerName") ?? ""),
+          customerEmail: String(form.get("customerEmail") ?? ""),
+          customerPhone: String(form.get("customerPhone") ?? ""),
+          vehicle: String(form.get("vehicle") ?? ""),
+          description: String(form.get("description") ?? ""),
+          slots: picks.map((slot) => slot.iso),
+        },
+      });
+      event.currentTarget.reset();
+      setPicks([]);
+      setRequestAccepted(true);
+
+      const from = new Date(weekStart);
+      const to = new Date(weekStart);
+      to.setDate(to.getDate() + 7);
+      const slots = await getWorkshopAvailability({
+        data: {
+          equipmentId: selectedEquip as "pont" | "pneus" | "fosse" | "presse",
+          from: from.toISOString(),
+          to: to.toISOString(),
+        },
+      });
+      setAvailability(
+        new Map(slots.map((slot) => [new Date(slot.startsAt).getTime(), slot.status])),
+      );
+    } catch (error) {
+      setFormError(error instanceof Error ? error.message : "La demande n’a pas pu être envoyée.");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       {/* Header simple */}
@@ -127,8 +258,12 @@ function AtelierPage() {
             <span className="hidden md:inline">Ouvert lun. — sam. · 08h → 19h</span>
           </div>
           <div className="flex items-center gap-5">
-            <a href="tel:+33620431191" className="hover:text-white">☏ 06 20 43 11 91</a>
-            <a href="/#compte" className="hidden sm:inline hover:text-white">Mon compte</a>
+            <a href="tel:+33620431191" className="hover:text-white">
+              ☏ 06 20 43 11 91
+            </a>
+            <a href="/#compte" className="hidden sm:inline hover:text-white">
+              Mon compte
+            </a>
           </div>
         </div>
       </div>
@@ -137,14 +272,27 @@ function AtelierPage() {
       <header className="sticky top-0 z-40 border-b border-border bg-background/95 backdrop-blur">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
           <Link to="/" className="flex items-center">
-            <img src={logoAsset.url} alt="CAO57 — Centre Auto Occasion 57" className="w-auto" style={{ height: "4.5rem" }} />
+            <img
+              src={logoAsset.url}
+              alt="CAO57 — Centre Auto Occasion 57"
+              className="w-auto"
+              style={{ height: "4.5rem" }}
+            />
           </Link>
 
           <nav className="hidden items-center gap-8 text-[13px] font-semibold text-ink md:flex">
-            <Link to="/reparations" className="hover:text-racing">Réparations</Link>
-            <Link to="/occasions" className="hover:text-racing">Occasions</Link>
-            <Link to="/atelier" className="text-racing">Atelier libre</Link>
-            <a href="/#contact" className="hover:text-racing">Contact</a>
+            <Link to="/reparations" className="hover:text-racing">
+              Réparations
+            </Link>
+            <Link to="/occasions" className="hover:text-racing">
+              Occasions
+            </Link>
+            <Link to="/atelier" className="text-racing">
+              Atelier libre
+            </Link>
+            <a href="/#contact" className="hover:text-racing">
+              Contact
+            </a>
           </nav>
 
           <div className="flex items-center gap-3">
@@ -180,9 +328,9 @@ function AtelierPage() {
               <span className="text-racing">à l'heure.</span>
             </h1>
             <p className="mt-6 max-w-xl text-base leading-relaxed text-white/75">
-              Pont élévateur, fosse mécanique, démonte-pneus et outillage pro à
-              disposition. Vous faites le boulot, on met le matériel et l'espace.
-              Économisez jusqu'à 70 % vs un garage classique.
+              Pont élévateur, fosse mécanique, démonte-pneus et outillage pro à disposition. Vous
+              faites le boulot, on met le matériel et l'espace. Économisez jusqu'à 70 % vs un garage
+              classique.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <a
@@ -214,11 +362,13 @@ function AtelierPage() {
           <div className="max-w-2xl">
             <div className="eyebrow mb-3">L'atelier</div>
             <h2 className="font-display text-4xl font-black leading-[1.05] tracking-tight lg:text-5xl">
-              Un vrai atelier pro,<br />rien que pour vous.
+              Un vrai atelier pro,
+              <br />
+              rien que pour vous.
             </h2>
             <p className="mt-4 text-base leading-relaxed text-steel">
-              Espace propre, bien éclairé, équipé comme un garage professionnel.
-              Vous travaillez dans de bonnes conditions, avec le bon matériel sous la main.
+              Espace propre, bien éclairé, équipé comme un garage professionnel. Vous travaillez
+              dans de bonnes conditions, avec le bon matériel sous la main.
             </p>
           </div>
 
@@ -297,21 +447,27 @@ function AtelierPage() {
               <span className="text-racing">sur TikTok.</span>
             </h2>
             <p className="mt-5 max-w-lg text-base leading-relaxed text-white/70">
-              Découvrez l&apos;atelier en vidéo, le matériel disponible et les
-              retours de ceux qui ont déjà loué leur pont chez CAO57.
+              Découvrez l&apos;atelier en vidéo, le matériel disponible et les retours de ceux qui
+              ont déjà loué leur pont chez CAO57.
             </p>
 
             <div className="mt-7 space-y-3 text-sm text-white/80">
               <p className="flex items-center gap-3">
-                <span className="grid size-7 place-items-center rounded-full bg-white/10 text-racing">✓</span>
+                <span className="grid size-7 place-items-center rounded-full bg-white/10 text-racing">
+                  ✓
+                </span>
                 Visites et coulisses de l&apos;atelier
               </p>
               <p className="flex items-center gap-3">
-                <span className="grid size-7 place-items-center rounded-full bg-white/10 text-racing">✓</span>
+                <span className="grid size-7 place-items-center rounded-full bg-white/10 text-racing">
+                  ✓
+                </span>
                 Conseils et démonstrations du matériel
               </p>
               <p className="flex items-center gap-3">
-                <span className="grid size-7 place-items-center rounded-full bg-white/10 text-racing">✓</span>
+                <span className="grid size-7 place-items-center rounded-full bg-white/10 text-racing">
+                  ✓
+                </span>
                 Retours d&apos;expérience de nos clients
               </p>
             </div>
@@ -342,8 +498,12 @@ function AtelierPage() {
                 Votre navigateur ne prend pas en charge la lecture vidéo.
               </video>
               <div className="pointer-events-none absolute inset-x-2 bottom-2 rounded-b-[1.1rem] bg-gradient-to-t from-black/90 via-black/30 to-transparent px-4 pb-12 pt-20">
-                <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-white/60">Dans les coulisses</div>
-                <h3 className="mt-1 font-display text-lg font-black text-white">Visite de l&apos;atelier</h3>
+                <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-white/60">
+                  Dans les coulisses
+                </div>
+                <h3 className="mt-1 font-display text-lg font-black text-white">
+                  Visite de l&apos;atelier
+                </h3>
               </div>
             </article>
 
@@ -361,7 +521,9 @@ function AtelierPage() {
                 Votre navigateur ne prend pas en charge la lecture vidéo.
               </video>
               <div className="pointer-events-none absolute inset-x-2 bottom-2 rounded-b-[1.1rem] bg-gradient-to-t from-black/90 via-black/30 to-transparent px-4 pb-12 pt-20">
-                <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-white/60">Ils ont testé</div>
+                <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-white/60">
+                  Ils ont testé
+                </div>
                 <h3 className="mt-1 font-display text-lg font-black text-white">Retour client</h3>
               </div>
             </article>
@@ -388,7 +550,7 @@ function AtelierPage() {
               return (
                 <button
                   key={e.id}
-                  onClick={() => { setSelectedEquip(e.id); setPick(null); }}
+                  onClick={() => selectEquipment(e.id)}
                   className={`group relative overflow-hidden rounded-md border p-6 text-left transition ${
                     active
                       ? "border-ink bg-carbon text-white shadow-lg"
@@ -396,18 +558,22 @@ function AtelierPage() {
                   }`}
                 >
                   <div className="flex items-baseline justify-between">
-                    <span className="font-display text-3xl font-black text-racing">
-                      {e.price}
-                    </span>
-                    <span className={`text-[10px] font-semibold uppercase tracking-wider ${active ? "text-white/60" : "text-steel"}`}>
+                    <span className="font-display text-3xl font-black text-racing">{e.price}</span>
+                    <span
+                      className={`text-[10px] font-semibold uppercase tracking-wider ${active ? "text-white/60" : "text-steel"}`}
+                    >
                       {e.unit}
                     </span>
                   </div>
                   <h3 className="mt-4 font-display text-base font-bold leading-tight">{e.name}</h3>
-                  <p className={`mt-2 text-[13px] leading-relaxed ${active ? "text-white/70" : "text-steel"}`}>
+                  <p
+                    className={`mt-2 text-[13px] leading-relaxed ${active ? "text-white/70" : "text-steel"}`}
+                  >
                     {e.cap}
                   </p>
-                  <p className={`mt-4 text-[11px] font-semibold uppercase tracking-wider ${active ? "text-racing" : "text-steel"}`}>
+                  <p
+                    className={`mt-4 text-[11px] font-semibold uppercase tracking-wider ${active ? "text-racing" : "text-steel"}`}
+                  >
                     {active ? "▸ Sélectionné" : "Voir disponibilités"}
                   </p>
                 </button>
@@ -425,13 +591,15 @@ function AtelierPage() {
               <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-steel">
                 Disponibilités
               </p>
-              <h2 className="mt-2 font-display text-3xl font-black">
-                {current.short}
-              </h2>
+              <h2 className="mt-2 font-display text-3xl font-black">{current.short}</h2>
               <p className="mt-2 text-sm text-steel">
                 Semaine du{" "}
                 <strong className="text-ink">
-                  {weekStart.toLocaleDateString("fr-FR", { day: "2-digit", month: "long", year: "numeric" })}
+                  {weekStart.toLocaleDateString("fr-FR", {
+                    day: "2-digit",
+                    month: "long",
+                    year: "numeric",
+                  })}
                 </strong>
               </p>
             </div>
@@ -461,15 +629,25 @@ function AtelierPage() {
           {/* Légende */}
           <div className="mt-6 flex flex-wrap gap-4 text-[12px]">
             <span className="inline-flex items-center gap-2">
-              <span className="inline-block size-3 rounded-sm border border-border bg-white" /> Libre
+              <span className="inline-block size-3 rounded-sm border border-border bg-white" />{" "}
+              Libre
             </span>
             <span className="inline-flex items-center gap-2">
               <span className="inline-block size-3 rounded-sm bg-racing" /> Sélectionné
             </span>
             <span className="inline-flex items-center gap-2">
-              <span className="inline-block size-3 rounded-sm bg-steel/40" /> Occupé
+              <span className="inline-block size-3 rounded-sm bg-amber-400" /> En attente
+            </span>
+            <span className="inline-flex items-center gap-2">
+              <span className="inline-block size-3 rounded-sm bg-steel/50" /> Occupé
             </span>
           </div>
+
+          {calendarError && (
+            <div className="mt-6 rounded-md border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+              {calendarError}
+            </div>
+          )}
 
           {/* Grille */}
           <div className="mt-6 overflow-x-auto rounded-md border border-border bg-white">
@@ -495,23 +673,39 @@ function AtelierPage() {
                     <td className="border-b border-r border-border p-3 font-mono text-[12px] font-semibold text-ink">
                       {h}
                     </td>
-                    {days.map((_, i) => {
-                      const booked = isBooked(current.id, i + weekOffset * 6, h);
-                      const selected = pick && pick.day === i && pick.hour === h;
+                    {days.map((day, i) => {
+                      const timestamp = slotDate(day, h).getTime();
+                      const slotStatus = availability.get(timestamp);
+                      const inPast = timestamp < Date.now();
+                      const unavailable = Boolean(slotStatus) || inPast;
+                      const selected = picks.some((slot) => slot.timestamp === timestamp);
                       return (
-                        <td key={i} className="border-b border-r border-border p-1.5 last:border-r-0">
+                        <td
+                          key={i}
+                          className="border-b border-r border-border p-1.5 last:border-r-0"
+                        >
                           <button
-                            disabled={booked}
-                            onClick={() => setPick({ day: i, hour: h })}
+                            disabled={unavailable || calendarLoading || Boolean(calendarError)}
+                            onClick={() => toggleSlot(day, h)}
                             className={`h-10 w-full rounded-sm text-[11px] font-semibold uppercase tracking-wider transition ${
-                              booked
-                                ? "cursor-not-allowed bg-steel/25 text-white/70"
-                                : selected
-                                ? "bg-racing text-white shadow"
-                                : "bg-white text-ink hover:bg-racing/10 hover:text-racing border border-border"
+                              slotStatus === "pending"
+                                ? "cursor-not-allowed bg-amber-400 text-amber-950"
+                                : slotStatus === "confirmed" || inPast
+                                  ? "cursor-not-allowed bg-steel/25 text-white/70"
+                                  : selected
+                                    ? "bg-racing text-white shadow"
+                                    : "bg-white text-ink hover:bg-racing/10 hover:text-racing border border-border"
                             }`}
                           >
-                            {booked ? "Occupé" : selected ? "Choisi" : "Libre"}
+                            {calendarLoading
+                              ? "…"
+                              : slotStatus === "pending"
+                                ? "En attente"
+                                : slotStatus === "confirmed" || inPast
+                                  ? "Occupé"
+                                  : selected
+                                    ? "Choisi"
+                                    : "Libre"}
                           </button>
                         </td>
                       );
@@ -530,34 +724,45 @@ function AtelierPage() {
               </p>
               <p className="mt-2 font-display text-lg font-bold">
                 {current.name}
-                {pick ? (
-                  <>
-                    {" · "}
-                    {formatDay(days[pick.day])} à {pick.hour}
-                  </>
+                {picks.length > 0 ? (
+                  <span className="text-racing">
+                    {" "}
+                    · {picks.length} créneau{picks.length > 1 ? "x" : ""}
+                  </span>
                 ) : (
-                  <span className="text-steel"> — choisissez un créneau libre</span>
+                  <span className="text-steel"> — choisissez un ou plusieurs créneaux</span>
                 )}
               </p>
+              {picks.length > 0 && (
+                <ul className="mt-3 flex flex-wrap gap-2">
+                  {picks.map((slot) => (
+                    <li
+                      key={slot.timestamp}
+                      className="rounded-full bg-racing/10 px-3 py-1 text-xs font-semibold text-racing"
+                    >
+                      {slot.label}
+                    </li>
+                  ))}
+                </ul>
+              )}
               <p className="mt-1 text-sm text-steel">
-                Tarif : <strong className="text-ink">{current.price}</strong> {current.unit}
+                Tarif indicatif : <strong className="text-ink">{current.price}</strong>{" "}
+                {current.unit}
               </p>
             </div>
             <a
-              href={
-                pick
-                  ? `#reserver?equip=${current.id}&day=${pick.day}&h=${pick.hour}`
-                  : "#reserver"
-              }
+              href="#reserver"
               className={`rounded-sm px-6 py-3 text-center text-[12px] font-bold uppercase tracking-wider transition ${
-                pick
+                picks.length > 0
                   ? "bg-racing text-white hover:bg-racing/90"
                   : "cursor-not-allowed bg-steel/30 text-white/70"
               }`}
-              aria-disabled={!pick}
-              onClick={(e) => { if (!pick) e.preventDefault(); }}
+              aria-disabled={picks.length === 0}
+              onClick={(e) => {
+                if (picks.length === 0) e.preventDefault();
+              }}
             >
-              Confirmer la réservation →
+              Continuer la demande →
             </a>
           </div>
         </div>
@@ -587,56 +792,140 @@ function AtelierPage() {
           <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-racing">
             Réservation atelier
           </p>
-          <h2 className="mt-2 font-display text-3xl font-black">Confirmez votre créneau</h2>
+          <h2 className="mt-2 font-display text-3xl font-black">Envoyez votre demande</h2>
           <p className="mt-3 text-white/70">
-            Un membre de l'équipe valide votre demande sous 24h. Paiement sur place.
+            Les créneaux restent en attente jusqu’à la validation du garage. Vous recevrez ensuite
+            la confirmation par e-mail.
           </p>
-          <form className="mt-8 grid gap-4 sm:grid-cols-2">
-            <label className="text-sm">
-              <span className="mb-2 block text-[11px] font-semibold uppercase tracking-wider text-white/60">Équipement</span>
-              <select defaultValue={current.id} className="w-full rounded-sm border border-white/20 bg-white/10 px-3 py-2.5 text-white">
-                {equipments.map((e) => (
-                  <option key={e.id} value={e.id} className="text-ink">{e.name}</option>
+          <div className="mt-6 rounded-md border border-white/15 bg-white/5 p-5">
+            <div className="text-[11px] font-semibold uppercase tracking-wider text-white/50">
+              Votre sélection
+            </div>
+            <div className="mt-2 font-display text-lg font-bold">{current.name}</div>
+            {picks.length > 0 ? (
+              <ul className="mt-3 space-y-1.5 text-sm text-white/75">
+                {picks.map((slot) => (
+                  <li key={slot.timestamp}>✓ {slot.label}</li>
                 ))}
-              </select>
-            </label>
+              </ul>
+            ) : (
+              <p className="mt-2 text-sm text-amber-300">
+                Aucun créneau sélectionné dans l’agenda.
+              </p>
+            )}
+          </div>
+
+          <form onSubmit={submitReservation} className="mt-8 grid gap-4 sm:grid-cols-2">
             <label className="text-sm">
-              <span className="mb-2 block text-[11px] font-semibold uppercase tracking-wider text-white/60">Date</span>
+              <span className="mb-2 block text-[11px] font-semibold uppercase tracking-wider text-white/60">
+                Nom complet
+              </span>
               <input
-                type="date"
-                defaultValue={pick ? days[pick.day].toISOString().slice(0, 10) : undefined}
-                className="w-full rounded-sm border border-white/20 bg-white/10 px-3 py-2.5 text-white"
+                required
+                name="customerName"
+                type="text"
+                autoComplete="name"
+                placeholder="Prénom Nom"
+                className="w-full rounded-sm border border-white/20 bg-white/10 px-3 py-2.5 text-white placeholder:text-white/40"
               />
             </label>
             <label className="text-sm">
-              <span className="mb-2 block text-[11px] font-semibold uppercase tracking-wider text-white/60">Créneau</span>
-              <select defaultValue={pick?.hour} className="w-full rounded-sm border border-white/20 bg-white/10 px-3 py-2.5 text-white">
-                {hours.map((h) => <option key={h} value={h} className="text-ink">{h}</option>)}
-              </select>
+              <span className="mb-2 block text-[11px] font-semibold uppercase tracking-wider text-white/60">
+                Téléphone
+              </span>
+              <input
+                required
+                name="customerPhone"
+                type="tel"
+                autoComplete="tel"
+                placeholder="06 XX XX XX XX"
+                className="w-full rounded-sm border border-white/20 bg-white/10 px-3 py-2.5 text-white placeholder:text-white/40"
+              />
             </label>
             <label className="text-sm">
-              <span className="mb-2 block text-[11px] font-semibold uppercase tracking-wider text-white/60">Durée</span>
-              <select className="w-full rounded-sm border border-white/20 bg-white/10 px-3 py-2.5 text-white">
-                <option className="text-ink">1 heure</option>
-                <option className="text-ink">2 heures</option>
-                <option className="text-ink">3 heures</option>
-                <option className="text-ink">Demi-journée</option>
-              </select>
+              <span className="mb-2 block text-[11px] font-semibold uppercase tracking-wider text-white/60">
+                E-mail
+              </span>
+              <input
+                required
+                name="customerEmail"
+                type="email"
+                autoComplete="email"
+                placeholder="vous@exemple.fr"
+                className="w-full rounded-sm border border-white/20 bg-white/10 px-3 py-2.5 text-white placeholder:text-white/40"
+              />
+            </label>
+            <label className="text-sm">
+              <span className="mb-2 block text-[11px] font-semibold uppercase tracking-wider text-white/60">
+                Véhicule
+              </span>
+              <input
+                required
+                name="vehicle"
+                type="text"
+                placeholder="Ex : Golf VII 1.6 TDI"
+                className="w-full rounded-sm border border-white/20 bg-white/10 px-3 py-2.5 text-white placeholder:text-white/40"
+              />
             </label>
             <label className="text-sm sm:col-span-2">
-              <span className="mb-2 block text-[11px] font-semibold uppercase tracking-wider text-white/60">Nom & téléphone</span>
-              <input type="text" placeholder="Prénom Nom · 06 XX XX XX XX" className="w-full rounded-sm border border-white/20 bg-white/10 px-3 py-2.5 text-white placeholder:text-white/40" />
+              <span className="mb-2 block text-[11px] font-semibold uppercase tracking-wider text-white/60">
+                Intervention prévue
+              </span>
+              <textarea
+                required
+                name="description"
+                rows={4}
+                placeholder="Décrivez précisément les travaux prévus et votre besoin éventuel d’assistance…"
+                className="w-full rounded-sm border border-white/20 bg-white/10 px-3 py-2.5 text-white placeholder:text-white/40"
+              />
             </label>
-            <label className="text-sm sm:col-span-2">
-              <span className="mb-2 block text-[11px] font-semibold uppercase tracking-wider text-white/60">Intervention prévue</span>
-              <textarea rows={3} placeholder="Ex : vidange + filtres sur Golf VII" className="w-full rounded-sm border border-white/20 bg-white/10 px-3 py-2.5 text-white placeholder:text-white/40" />
-            </label>
-            <button type="submit" className="sm:col-span-2 rounded-sm bg-racing px-6 py-3 text-[12px] font-bold uppercase tracking-wider text-white hover:bg-racing/90">
-              Envoyer la demande →
+            {formError && (
+              <div className="sm:col-span-2 rounded-md border border-red-400/30 bg-red-500/10 p-4 text-sm text-red-200">
+                {formError}
+              </div>
+            )}
+            <button
+              type="submit"
+              disabled={submitting || picks.length === 0}
+              className="sm:col-span-2 rounded-sm bg-racing px-6 py-3 text-[12px] font-bold uppercase tracking-wider text-white hover:bg-racing/90 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              {submitting ? "Envoi en cours…" : "Valider ma demande →"}
             </button>
           </form>
         </div>
       </section>
+
+      {requestAccepted && (
+        <div
+          className="fixed inset-0 z-[70] grid place-items-center bg-black/65 px-6"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="request-success-title"
+        >
+          <div className="w-full max-w-lg rounded-md bg-white p-8 text-center text-ink shadow-2xl sm:p-10">
+            <div className="mx-auto grid size-14 place-items-center rounded-full bg-green-100 text-2xl font-bold text-green-700">
+              ✓
+            </div>
+            <h2 id="request-success-title" className="mt-5 font-display text-3xl font-black">
+              Demande prise en compte
+            </h2>
+            <p className="mt-3 leading-relaxed text-steel">
+              Votre demande a bien été transmise au garage. Elle vous sera confirmée au plus vite
+              par e-mail.
+            </p>
+            <p className="mt-3 text-sm text-steel">
+              Les créneaux sélectionnés apparaissent temporairement « En attente » dans l’agenda.
+            </p>
+            <button
+              type="button"
+              onClick={() => setRequestAccepted(false)}
+              className="mt-7 rounded-sm bg-racing px-7 py-3 text-[12px] font-bold uppercase tracking-wider text-white"
+            >
+              Fermer
+            </button>
+          </div>
+        </div>
+      )}
 
       <footer className="bg-white">
         <div className="mx-auto max-w-7xl px-6 py-8 text-center text-xs text-steel">
