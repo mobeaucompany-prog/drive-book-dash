@@ -141,7 +141,7 @@ function AtelierPage() {
           </Link>
 
           <nav className="hidden items-center gap-8 text-[13px] font-semibold text-ink md:flex">
-            <a href="/#reparations" className="hover:text-racing">Réparations</a>
+            <Link to="/reparations" className="hover:text-racing">Réparations</Link>
             <Link to="/occasions" className="hover:text-racing">Occasions</Link>
             <Link to="/atelier" className="text-racing">Atelier libre</Link>
             <a href="/#contact" className="hover:text-racing">Contact</a>
