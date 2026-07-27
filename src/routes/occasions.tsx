@@ -377,7 +377,7 @@ function SiteHeader() {
           <nav className="hidden items-center gap-8 text-[13px] font-semibold text-ink md:flex">
             <a href="/#reparations" className="hover:text-racing">Réparations</a>
             <Link to="/occasions" className="text-racing">Occasions</Link>
-            <a href="/#atelier" className="hover:text-racing">Atelier libre</a>
+            <Link to="/atelier" className="hover:text-racing">Atelier libre</Link>
             <a href="/#contact" className="hover:text-racing">Contact</a>
           </nav>
 
