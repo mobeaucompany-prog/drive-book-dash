@@ -177,14 +177,35 @@ function OccasionsPage() {
 }
 
 function AnnonceCard({ a, onOpen }: { a: Annonce; onOpen: () => void }) {
+  const [imgIndex, setImgIndex] = useState(0);
+  const hasGallery = a.images.length > 1;
+
+  const showPrevious = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+    setImgIndex((current) => (current - 1 + a.images.length) % a.images.length);
+  };
+
+  const showNext = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+    setImgIndex((current) => (current + 1) % a.images.length);
+  };
+
   return (
-    <button
+    <article
       onClick={onOpen}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          onOpen();
+        }
+      }}
+      role="button"
+      tabIndex={0}
       className="group flex flex-col overflow-hidden rounded-md border border-border bg-white text-left transition hover:shadow-xl"
     >
       <div className="relative aspect-[4/3] overflow-hidden bg-smoke">
         <CarImage
-          src={a.images[0]}
+          src={a.images[imgIndex]}
           alt={a.titre}
           className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
         />
@@ -192,6 +213,39 @@ function AnnonceCard({ a, onOpen }: { a: Annonce; onOpen: () => void }) {
           <span className="absolute left-3 top-3 rounded-sm bg-racing px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-white">
             {a.badge}
           </span>
+        )}
+        {hasGallery && (
+          <>
+            <button
+              type="button"
+              onClick={showPrevious}
+              className="absolute left-3 top-1/2 z-10 grid size-10 -translate-y-1/2 place-items-center rounded-full bg-black/65 text-xl font-bold text-white shadow-lg transition hover:scale-105 hover:bg-black focus:outline-none focus:ring-2 focus:ring-white"
+              aria-label={`Photo précédente de ${a.titre}`}
+            >
+              ‹
+            </button>
+            <button
+              type="button"
+              onClick={showNext}
+              className="absolute right-3 top-1/2 z-10 grid size-10 -translate-y-1/2 place-items-center rounded-full bg-black/65 text-xl font-bold text-white shadow-lg transition hover:scale-105 hover:bg-black focus:outline-none focus:ring-2 focus:ring-white"
+              aria-label={`Photo suivante de ${a.titre}`}
+            >
+              ›
+            </button>
+            <span className="absolute bottom-3 right-3 rounded-full bg-black/70 px-2.5 py-1 text-[10px] font-bold tracking-wider text-white">
+              {imgIndex + 1} / {a.images.length}
+            </span>
+            <div className="absolute bottom-3 left-1/2 flex -translate-x-1/2 gap-1.5">
+              {a.images.map((_, index) => (
+                <span
+                  key={index}
+                  className={`block size-1.5 rounded-full shadow ${
+                    index === imgIndex ? "bg-white" : "bg-white/45"
+                  }`}
+                />
+              ))}
+            </div>
+          </>
         )}
       </div>
       <div className="flex flex-1 flex-col p-4">
@@ -208,12 +262,21 @@ function AnnonceCard({ a, onOpen }: { a: Annonce; onOpen: () => void }) {
           <span>{a.publieLe}</span>
         </div>
       </div>
-    </button>
+    </article>
   );
 }
 
 function FicheModal({ a, onClose }: { a: Annonce; onClose: () => void }) {
   const [imgIndex, setImgIndex] = useState(0);
+  const hasGallery = a.images.length > 1;
+
+  const previousImage = () => {
+    setImgIndex((current) => (current - 1 + a.images.length) % a.images.length);
+  };
+
+  const nextImage = () => {
+    setImgIndex((current) => (current + 1) % a.images.length);
+  };
 
   return (
     <div
@@ -233,11 +296,34 @@ function FicheModal({ a, onClose }: { a: Annonce; onClose: () => void }) {
         </button>
 
         <div className="overflow-hidden rounded-t-md">
-          <div className="aspect-[16/10] bg-smoke">
+          <div className="relative aspect-[16/10] bg-smoke">
             <CarImage src={a.images[imgIndex]} alt={a.titre} className="h-full w-full object-cover" />
+            {hasGallery && (
+              <>
+                <button
+                  type="button"
+                  onClick={previousImage}
+                  className="absolute left-4 top-1/2 z-10 grid size-12 -translate-y-1/2 place-items-center rounded-full bg-black/65 text-3xl font-bold text-white shadow-xl transition hover:scale-105 hover:bg-black focus:outline-none focus:ring-2 focus:ring-white"
+                  aria-label="Afficher la photo précédente"
+                >
+                  ‹
+                </button>
+                <button
+                  type="button"
+                  onClick={nextImage}
+                  className="absolute right-4 top-1/2 z-10 grid size-12 -translate-y-1/2 place-items-center rounded-full bg-black/65 text-3xl font-bold text-white shadow-xl transition hover:scale-105 hover:bg-black focus:outline-none focus:ring-2 focus:ring-white"
+                  aria-label="Afficher la photo suivante"
+                >
+                  ›
+                </button>
+                <span className="absolute bottom-4 right-4 rounded-full bg-black/70 px-3 py-1.5 text-[11px] font-bold tracking-wider text-white">
+                  {imgIndex + 1} / {a.images.length}
+                </span>
+              </>
+            )}
           </div>
-          {a.images.length > 1 && (
-            <div className="flex gap-2 bg-carbon p-3">
+          {hasGallery && (
+            <div className="flex gap-2 overflow-x-auto bg-carbon p-3">
               {a.images.map((src, i) => (
                 <button
                   key={i}
