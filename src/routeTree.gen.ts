@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AtelierRouteImport } from './routes/atelier'
 import { Route as McpRouteImport } from './routes/mcp'
 import { Route as OccasionsRouteImport } from './routes/occasions'
+import { Route as ReparationsRouteImport } from './routes/reparations'
 import { Route as Char91DotmcpChar93ListToolsRouteImport } from './routes/[.mcp]/list-tools'
 import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
 import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[.mcp]/invoke-tool/$tool'
@@ -35,6 +36,11 @@ const McpRoute = McpRouteImport.update({
 const OccasionsRoute = OccasionsRouteImport.update({
   id: '/occasions',
   path: '/occasions',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReparationsRoute = ReparationsRouteImport.update({
+  id: '/reparations',
+  path: '/reparations',
   getParentRoute: () => rootRouteImport,
 } as any)
 const Char91DotmcpChar93ListToolsRoute =
@@ -61,6 +67,7 @@ export interface FileRoutesByFullPath {
   '/atelier': typeof AtelierRoute
   '/mcp': typeof McpRoute
   '/occasions': typeof OccasionsRoute
+  '/reparations': typeof ReparationsRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
@@ -70,6 +77,7 @@ export interface FileRoutesByTo {
   '/atelier': typeof AtelierRoute
   '/mcp': typeof McpRoute
   '/occasions': typeof OccasionsRoute
+  '/reparations': typeof ReparationsRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
@@ -80,6 +88,7 @@ export interface FileRoutesById {
   '/atelier': typeof AtelierRoute
   '/mcp': typeof McpRoute
   '/occasions': typeof OccasionsRoute
+  '/reparations': typeof ReparationsRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
@@ -91,6 +100,7 @@ export interface FileRouteTypes {
     | '/atelier'
     | '/mcp'
     | '/occasions'
+    | '/reparations'
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
     | '/.mcp/invoke-tool/$tool'
@@ -100,6 +110,7 @@ export interface FileRouteTypes {
     | '/atelier'
     | '/mcp'
     | '/occasions'
+    | '/reparations'
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
     | '/.mcp/invoke-tool/$tool'
@@ -109,6 +120,7 @@ export interface FileRouteTypes {
     | '/atelier'
     | '/mcp'
     | '/occasions'
+    | '/reparations'
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
     | '/.mcp/invoke-tool/$tool'
@@ -119,6 +131,7 @@ export interface RootRouteChildren {
   AtelierRoute: typeof AtelierRoute
   McpRoute: typeof McpRoute
   OccasionsRoute: typeof OccasionsRoute
+  ReparationsRoute: typeof ReparationsRoute
   Char91DotmcpChar93ListToolsRoute: typeof Char91DotmcpChar93ListToolsRoute
   Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   Char91DotmcpChar93InvokeToolToolRoute: typeof Char91DotmcpChar93InvokeToolToolRoute
@@ -154,6 +167,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OccasionsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/reparations': {
+      id: '/reparations'
+      path: '/reparations'
+      fullPath: '/reparations'
+      preLoaderRoute: typeof ReparationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/.mcp/list-tools': {
       id: '/.mcp/list-tools'
       path: '/.mcp/list-tools'
@@ -183,6 +203,7 @@ const rootRouteChildren: RootRouteChildren = {
   AtelierRoute: AtelierRoute,
   McpRoute: McpRoute,
   OccasionsRoute: OccasionsRoute,
+  ReparationsRoute: ReparationsRoute,
   Char91DotmcpChar93ListToolsRoute: Char91DotmcpChar93ListToolsRoute,
   Char91DotwellKnownChar93OauthProtectedResourceRoute:
     Char91DotwellKnownChar93OauthProtectedResourceRoute,
