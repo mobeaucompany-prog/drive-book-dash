@@ -85,7 +85,7 @@ async function sendEmail(input: { to: string; subject: string; html: string }) {
   const from = process.env.RESERVATION_FROM_EMAIL;
 
   if (!apiKey || !from) {
-    throw new Error("Le service d’e-mail des réservations n’est pas encore configuré.");
+    return false;
   }
 
   const response = await fetch("https://api.resend.com/emails", {
@@ -108,6 +108,8 @@ async function sendEmail(input: { to: string; subject: string; html: string }) {
     console.error("Resend error", response.status, detail);
     throw new Error("L’e-mail de réservation n’a pas pu être envoyé.");
   }
+
+  return true;
 }
 
 export const getWorkshopAvailability = createServerFn({ method: "GET" })
@@ -171,11 +173,13 @@ export const createWorkshopReservation = createServerFn({ method: "POST" })
     const rejectUrl = `${origin}/reservation/${token}?action=reject`;
     const safeDescription = escapeHtml(data.description).replaceAll("\n", "<br>");
 
-    try {
-      await sendEmail({
-        to: "mobeau.company@gmail.com",
-        subject: `Nouvelle demande atelier — ${equipmentNames[data.equipmentId]}`,
-        html: `
+    const adminEmail = process.env.RESERVATION_ADMIN_EMAIL;
+    if (adminEmail) {
+      try {
+        await sendEmail({
+          to: adminEmail,
+          subject: `Nouvelle demande atelier — ${equipmentNames[data.equipmentId]}`,
+          html: `
           <div style="font-family:Arial,sans-serif;max-width:680px;margin:auto;color:#111827">
             <div style="background:#0f1114;color:white;padding:24px;border-radius:8px 8px 0 0">
               <p style="margin:0;color:#60a5fa;font-weight:700">CAO57 · DEMANDE EN ATTENTE</p>
@@ -197,17 +201,10 @@ export const createWorkshopReservation = createServerFn({ method: "POST" })
               <p style="margin-top:24px;font-size:12px;color:#6b7280">Ces liens expirent automatiquement après 24 heures.</p>
             </div>
           </div>`,
-      });
-    } catch (emailError) {
-      await db
-        .from("workshop_reservations")
-        .update({ status: "rejected", decided_at: new Date().toISOString() })
-        .eq("id", reservationId);
-      await db
-        .from("workshop_reservation_slots")
-        .update({ status: "rejected" })
-        .eq("reservation_id", reservationId);
-      throw emailError;
+        });
+      } catch (emailError) {
+        console.error("Admin reservation email could not be sent", emailError);
+      }
     }
 
     return { success: true, reservationId: reservationId as string };
@@ -239,12 +236,13 @@ export const decideWorkshopReservation = createServerFn({ method: "POST" })
     const reservation = result as ReservationResult;
     const confirmed = reservation.status === "confirmed";
 
-    await sendEmail({
-      to: reservation.customer_email,
-      subject: confirmed
-        ? "Votre réservation atelier CAO57 est confirmée"
-        : "Réponse à votre demande atelier CAO57",
-      html: `
+    try {
+      await sendEmail({
+        to: reservation.customer_email,
+        subject: confirmed
+          ? "Votre réservation atelier CAO57 est confirmée"
+          : "Réponse à votre demande atelier CAO57",
+        html: `
         <div style="font-family:Arial,sans-serif;max-width:640px;margin:auto;color:#111827">
           <div style="background:#0f1114;color:white;padding:24px;border-radius:8px 8px 0 0">
             <p style="margin:0;color:#60a5fa;font-weight:700">CAO57 · FORBACH</p>
@@ -262,7 +260,10 @@ export const decideWorkshopReservation = createServerFn({ method: "POST" })
             <p style="margin-top:24px"><strong>CAO57</strong><br>2 Allée des Cyprès, 57600 Forbach<br>06 20 43 11 91</p>
           </div>
         </div>`,
-    });
+      });
+    } catch (emailError) {
+      console.error("Customer reservation email could not be sent", emailError);
+    }
 
     return { status: reservation.status };
   });
