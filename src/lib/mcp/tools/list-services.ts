@@ -25,6 +25,7 @@ const services = {
   },
   contact: {
     entreprise: "CAO57 — Centre Auto Occasion 57",
+    adresse: "2 Allée des Cyprès",
     ville: "Forbach",
     codePostal: "57600",
   },
