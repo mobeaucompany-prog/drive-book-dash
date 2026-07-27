@@ -68,7 +68,7 @@ function TopBar() {
     <div className="bg-carbon text-white/80">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-2 text-[11px]">
         <div className="flex items-center gap-6">
-          <span className="hidden sm:inline">📍 Forbach · Moselle · 57</span>
+          <span className="hidden sm:inline">📍 2 Allée des Cyprès · 57600 Forbach</span>
           <span className="hidden md:inline">Ouvert lun. — sam. · 08h → 19h</span>
         </div>
         <div className="flex items-center gap-5">
@@ -499,7 +499,7 @@ function Contact() {
 
           <dl className="mt-8 divide-y divide-white/10 border-y border-white/10">
             <Row label="Téléphone" value="06 20 43 11 91" />
-            <Row label="Adresse" value="Forbach (57), Moselle" />
+            <Row label="Adresse" value="2 Allée des Cyprès, 57600 Forbach" />
             <Row label="Horaires" value="Lun — Sam · 08h → 19h" />
             <Row label="Diagnostic" value="Sur RDV · 39 €" />
           </dl>
@@ -552,7 +552,7 @@ function Footer() {
         </div>
         <FooterCol title="Services" items={["Réparations", "Diagnostic", "Pneumatiques", "Atelier libre"]} />
         <FooterCol title="Ventes" items={["Occasions", "Neuf-livraison", "Reprise", "Financement"]} />
-        <FooterCol title="Contact" items={["06 20 43 11 91", "Forbach (57)", "Lun–Sam 08h→19h"]} />
+        <FooterCol title="Contact" items={["06 20 43 11 91", "2 Allée des Cyprès, 57600 Forbach", "Lun–Sam 08h→19h"]} />
       </div>
       <div className="border-t border-white/10">
         <div className="mx-auto flex max-w-7xl flex-col justify-between gap-3 px-6 py-5 text-[11px] uppercase tracking-wider md:flex-row">
