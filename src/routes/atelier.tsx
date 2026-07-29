@@ -245,7 +245,12 @@ function AtelierPage() {
         },
       });
       setAvailability(
-        new Map(slots.map((slot) => [new Date(slot.startsAt).getTime(), slot.status])),
+        new Map(
+          (slots as { startsAt: string; status: "pending" | "confirmed" }[]).map((slot) => [
+            new Date(slot.startsAt).getTime(),
+            slot.status,
+          ]),
+        ),
       );
     } catch (error) {
       setFormError(error instanceof Error ? error.message : "La demande n’a pas pu être envoyée.");
