@@ -114,6 +114,63 @@ type PickedSlot = {
   label: string;
 };
 
+function calculateSelectionPrice(equipmentId: string, selectedSlots: PickedSlot[]) {
+  if (selectedSlots.length === 0) return 0;
+
+  const hourlyPrices: Record<string, number> = {
+    pneus: 15,
+    fosse: 15,
+    presse: 10,
+  };
+
+  if (equipmentId !== "pont") {
+    return (hourlyPrices[equipmentId] ?? 0) * selectedSlots.length;
+  }
+
+  const slotsByDay = new Map<string, Set<number>>();
+  selectedSlots.forEach((slot) => {
+    const date = new Date(slot.timestamp);
+    const dayKey = `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
+    const dayHours = slotsByDay.get(dayKey) ?? new Set<number>();
+    dayHours.add(date.getHours());
+    slotsByDay.set(dayKey, dayHours);
+  });
+
+  const morningHours = [8, 9, 10, 11];
+  const afternoonHours = [14, 15, 16, 17];
+
+  return Array.from(slotsByDay.values()).reduce((total, selectedHours) => {
+    const fullMorning = morningHours.every((hour) => selectedHours.has(hour));
+    const fullAfternoon = afternoonHours.every((hour) => selectedHours.has(hour));
+
+    if (fullMorning && fullAfternoon) return total + 120;
+
+    let dayTotal = total;
+    const forfaitHours = new Set<number>();
+
+    if (fullMorning) {
+      dayTotal += 60;
+      morningHours.forEach((hour) => forfaitHours.add(hour));
+    }
+
+    if (fullAfternoon) {
+      dayTotal += 60;
+      afternoonHours.forEach((hour) => forfaitHours.add(hour));
+    }
+
+    const remainingHours = Array.from(selectedHours).filter((hour) => !forfaitHours.has(hour));
+    return dayTotal + remainingHours.length * 20;
+  }, 0);
+}
+
+function formatPrice(amount: number) {
+  return new Intl.NumberFormat("fr-FR", {
+    style: "currency",
+    currency: "EUR",
+    minimumFractionDigits: 0,
+  }).format(amount);
+}
+
 function AtelierPage() {
   const [selectedEquip, setSelectedEquip] = useState<string>(equipments[0].id);
   const [weekOffset, setWeekOffset] = useState(0);
@@ -140,6 +197,10 @@ function AtelierPage() {
   }, [weekStart]);
 
   const current = equipments.find((e) => e.id === selectedEquip)!;
+  const selectionPrice = useMemo(
+    () => calculateSelectionPrice(selectedEquip, picks),
+    [selectedEquip, picks],
+  );
 
   useEffect(() => {
     let active = true;
@@ -773,9 +834,22 @@ function AtelierPage() {
                   ))}
                 </ul>
               )}
-              <p className="mt-1 text-sm text-steel">
-                Tarif indicatif : <strong className="text-ink">{current.price}</strong>{" "}
-                {current.unit}
+              <p className="mt-3 text-sm text-steel">
+                {picks.length > 0 ? (
+                  <>
+                    Tarif calculé :{" "}
+                    <strong className="text-xl text-racing">{formatPrice(selectionPrice)}</strong>
+                    {selectedEquip === "pont" && picks.length >= 4 && (
+                      <span className="ml-2 text-xs">
+                        · forfait demi-journée ou journée appliqué automatiquement
+                      </span>
+                    )}
+                  </>
+                ) : (
+                  <>
+                    Tarif : <strong className="text-ink">{current.price}</strong> {current.unit}
+                  </>
+                )}
               </p>
             </div>
             <a
@@ -831,11 +905,19 @@ function AtelierPage() {
             </div>
             <div className="mt-2 font-display text-lg font-bold">{current.name}</div>
             {picks.length > 0 ? (
-              <ul className="mt-3 space-y-1.5 text-sm text-white/75">
-                {picks.map((slot) => (
-                  <li key={slot.timestamp}>✓ {slot.label}</li>
-                ))}
-              </ul>
+              <>
+                <ul className="mt-3 space-y-1.5 text-sm text-white/75">
+                  {picks.map((slot) => (
+                    <li key={slot.timestamp}>✓ {slot.label}</li>
+                  ))}
+                </ul>
+                <div className="mt-4 border-t border-white/15 pt-4">
+                  <span className="text-sm text-white/60">Tarif calculé</span>
+                  <strong className="ml-3 font-display text-2xl text-racing">
+                    {formatPrice(selectionPrice)}
+                  </strong>
+                </div>
+              </>
             ) : (
               <p className="mt-2 text-sm text-amber-300">
                 Aucun créneau sélectionné dans l’agenda.
