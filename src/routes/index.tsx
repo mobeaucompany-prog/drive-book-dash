@@ -37,7 +37,7 @@ const vehicules = annonces.slice(0, 3).map((a) => ({
 }));
 
 const locations = [
-  { name: "Pont élévateur 2 colonnes", cap: "3,6 T · éclairage LED · air comprimé", price: "20 €", unit: "/ heure" },
+  { name: "Pont élévateur 2 colonnes", cap: "3,6 T · 20€/h · forfait 1/2 journée 60€ · journée 120€", price: "20 €", unit: "/ heure" },
   { name: "Démonte-pneus & équilibreuse", cap: "Jusqu'à 22\" · matériel professionnel", price: "15 €", unit: "/ heure" },
   { name: "Fosse mécanique", cap: "Éclairage intégré · outillage à disposition", price: "15 €", unit: "/ heure" },
   { name: "Presse hydraulique 45 T", cap: "Roulements, silent-blocs, rotules.", price: "10 €", unit: "/ utilisation" },
@@ -361,14 +361,17 @@ function PromoBanner() {
 
         <ul className="grid grid-cols-3 gap-0 border border-white/15 md:border-white/20">
           {[
-            { p: "20€", u: "/h", n: "Pont élévateur" },
-            { p: "15€", u: "/h", n: "Démonte-pneus" },
-            { p: "15€", u: "/h", n: "Fosse méca" },
+            { p: "20€", u: "/h", n: "Pont élévateur", sub: "60€ 1/2 j · 120€/j" },
+            { p: "15€", u: "/h", n: "Démonte-pneus", sub: "" },
+            { p: "15€", u: "/h", n: "Fosse méca", sub: "" },
           ].map((x, i) => (
             <li key={x.n} className={"p-5 text-center " + (i < 2 ? "border-r border-white/15" : "")}>
               <div className="font-display text-3xl font-black text-yellow-400">{x.p}</div>
               <div className="text-[10px] font-semibold uppercase tracking-wider text-white/50">{x.u}</div>
               <div className="mt-3 text-[11px] font-bold uppercase tracking-wider">{x.n}</div>
+              {x.sub && (
+                <div className="mt-1 text-[10px] font-semibold text-yellow-400/90">{x.sub}</div>
+              )}
             </li>
           ))}
         </ul>

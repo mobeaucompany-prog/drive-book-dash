@@ -31,6 +31,8 @@ export const Route = createFileRoute("/atelier")({
 const PHOTO_PONTS = "/atelier/atelier-ponts.jpg";
 const PHOTO_ESPACE = "/atelier/atelier-espace.jpg";
 
+type Forfait = { label: string; price: string };
+
 type Equipment = {
   id: string;
   name: string;
@@ -39,6 +41,7 @@ type Equipment = {
   unit: string;
   cap: string;
   includes: string[];
+  forfaits?: Forfait[];
 };
 
 const equipments: Equipment[] = [
@@ -50,6 +53,10 @@ const equipments: Equipment[] = [
     unit: "/ heure",
     cap: "Capacité 3,6 T · éclairage LED · air comprimé intégré",
     includes: ["Air comprimé", "Éclairage LED", "Prises 230V/400V", "Chandelles de sécurité"],
+    forfaits: [
+      { label: "Demi-journée", price: "60 €" },
+      { label: "Journée", price: "120 €" },
+    ],
   },
   {
     id: "pneus",
@@ -149,7 +156,7 @@ function AtelierPage() {
         to: to.toISOString(),
       },
     })
-      .then((slots) => {
+      .then((slots: { startsAt: string; status: "pending" | "confirmed" }[]) => {
         if (!active) return;
         setAvailability(
           new Map(slots.map((slot) => [new Date(slot.startsAt).getTime(), slot.status])),
@@ -238,7 +245,12 @@ function AtelierPage() {
         },
       });
       setAvailability(
-        new Map(slots.map((slot) => [new Date(slot.startsAt).getTime(), slot.status])),
+        new Map(
+          (slots as { startsAt: string; status: "pending" | "confirmed" }[]).map((slot) => [
+            new Date(slot.startsAt).getTime(),
+            slot.status,
+          ]),
+        ),
       );
     } catch (error) {
       setFormError(error instanceof Error ? error.message : "La demande n’a pas pu être envoyée.");
@@ -571,6 +583,22 @@ function AtelierPage() {
                   >
                     {e.cap}
                   </p>
+                  {e.forfaits && (
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      {e.forfaits.map((f) => (
+                        <span
+                          key={f.label}
+                          className={`rounded-sm border px-2 py-1 text-[11px] font-semibold ${
+                            active
+                              ? "border-white/25 bg-white/10 text-white"
+                              : "border-border bg-smoke text-ink"
+                          }`}
+                        >
+                          {f.label} · <span className="text-racing">{f.price}</span>
+                        </span>
+                      ))}
+                    </div>
+                  )}
                   <p
                     className={`mt-4 text-[11px] font-semibold uppercase tracking-wider ${active ? "text-racing" : "text-steel"}`}
                   >
