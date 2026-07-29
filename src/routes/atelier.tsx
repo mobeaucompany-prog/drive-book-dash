@@ -279,7 +279,8 @@ function AtelierPage() {
       return;
     }
 
-    const form = new FormData(event.currentTarget);
+    const formElement = event.currentTarget;
+    const form = new FormData(formElement);
     setSubmitting(true);
     setRequestWhatsappUrl("");
     try {
@@ -313,7 +314,7 @@ function AtelierPage() {
       setRequestWhatsappUrl(
         `https://wa.me/${GARAGE_WHATSAPP_NUMBER}?text=${encodeURIComponent(whatsappMessage)}`,
       );
-      event.currentTarget.reset();
+      formElement.reset();
       setPicks([]);
       setRequestAccepted(true);
 
