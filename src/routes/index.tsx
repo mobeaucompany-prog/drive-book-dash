@@ -37,7 +37,7 @@ const vehicules = annonces.slice(0, 3).map((a) => ({
 }));
 
 const locations = [
-  { name: "Pont élévateur 2 colonnes", cap: "3,6 T · éclairage LED · air comprimé", price: "20 €", unit: "/ heure" },
+  { name: "Pont élévateur 2 colonnes", cap: "3,6 T · 20€/h · forfait 1/2 journée 60€ · journée 120€", price: "20 €", unit: "/ heure" },
   { name: "Démonte-pneus & équilibreuse", cap: "Jusqu'à 22\" · matériel professionnel", price: "15 €", unit: "/ heure" },
   { name: "Fosse mécanique", cap: "Éclairage intégré · outillage à disposition", price: "15 €", unit: "/ heure" },
   { name: "Presse hydraulique 45 T", cap: "Roulements, silent-blocs, rotules.", price: "10 €", unit: "/ utilisation" },
