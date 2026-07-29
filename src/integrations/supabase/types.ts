@@ -14,13 +14,109 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      workshop_reservation_slots: {
+        Row: {
+          created_at: string
+          equipment_id: string
+          id: string
+          reservation_id: string
+          slot_start: string
+          status: string
+        }
+        Insert: {
+          created_at?: string
+          equipment_id: string
+          id?: string
+          reservation_id: string
+          slot_start: string
+          status?: string
+        }
+        Update: {
+          created_at?: string
+          equipment_id?: string
+          id?: string
+          reservation_id?: string
+          slot_start?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "workshop_reservation_slots_reservation_id_fkey"
+            columns: ["reservation_id"]
+            isOneToOne: false
+            referencedRelation: "workshop_reservations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      workshop_reservations: {
+        Row: {
+          approval_token_hash: string
+          created_at: string
+          customer_email: string
+          customer_name: string
+          customer_phone: string
+          decided_at: string | null
+          description: string
+          equipment_id: string
+          expires_at: string
+          id: string
+          status: string
+          vehicle: string
+        }
+        Insert: {
+          approval_token_hash: string
+          created_at?: string
+          customer_email: string
+          customer_name: string
+          customer_phone: string
+          decided_at?: string | null
+          description: string
+          equipment_id: string
+          expires_at?: string
+          id?: string
+          status?: string
+          vehicle: string
+        }
+        Update: {
+          approval_token_hash?: string
+          created_at?: string
+          customer_email?: string
+          customer_name?: string
+          customer_phone?: string
+          decided_at?: string | null
+          description?: string
+          equipment_id?: string
+          expires_at?: string
+          id?: string
+          status?: string
+          vehicle?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      cleanup_expired_workshop_reservations: { Args: never; Returns: undefined }
+      create_workshop_reservation: {
+        Args: {
+          p_customer_email: string
+          p_customer_name: string
+          p_customer_phone: string
+          p_description: string
+          p_equipment_id: string
+          p_slots: string[]
+          p_token_hash: string
+          p_vehicle: string
+        }
+        Returns: string
+      }
+      decide_workshop_reservation: {
+        Args: { p_decision: string; p_token_hash: string }
+        Returns: Json
+      }
     }
     Enums: {
       [_ in never]: never
