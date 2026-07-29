@@ -361,14 +361,17 @@ function PromoBanner() {
 
         <ul className="grid grid-cols-3 gap-0 border border-white/15 md:border-white/20">
           {[
-            { p: "20€", u: "/h", n: "Pont élévateur" },
-            { p: "15€", u: "/h", n: "Démonte-pneus" },
-            { p: "15€", u: "/h", n: "Fosse méca" },
+            { p: "20€", u: "/h", n: "Pont élévateur", sub: "60€ 1/2 j · 120€/j" },
+            { p: "15€", u: "/h", n: "Démonte-pneus", sub: "" },
+            { p: "15€", u: "/h", n: "Fosse méca", sub: "" },
           ].map((x, i) => (
             <li key={x.n} className={"p-5 text-center " + (i < 2 ? "border-r border-white/15" : "")}>
               <div className="font-display text-3xl font-black text-yellow-400">{x.p}</div>
               <div className="text-[10px] font-semibold uppercase tracking-wider text-white/50">{x.u}</div>
               <div className="mt-3 text-[11px] font-bold uppercase tracking-wider">{x.n}</div>
+              {x.sub && (
+                <div className="mt-1 text-[10px] font-semibold text-yellow-400/90">{x.sub}</div>
+              )}
             </li>
           ))}
         </ul>
