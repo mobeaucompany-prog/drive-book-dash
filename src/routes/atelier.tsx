@@ -839,11 +839,6 @@ function AtelierPage() {
                   <>
                     Tarif calculé :{" "}
                     <strong className="text-xl text-racing">{formatPrice(selectionPrice)}</strong>
-                    {selectedEquip === "pont" && picks.length >= 4 && (
-                      <span className="ml-2 text-xs">
-                        · forfait demi-journée ou journée appliqué automatiquement
-                      </span>
-                    )}
                   </>
                 ) : (
                   <>
