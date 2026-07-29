@@ -336,7 +336,39 @@ function AtelierPage() {
         ),
       );
     } catch (error) {
-      setFormError(error instanceof Error ? error.message : "La demande n’a pas pu être envoyée.");
+      const message = error instanceof Error ? error.message : "La demande n’a pas pu être envoyée.";
+
+      if (message.includes("créneaux vient d’être demandé")) {
+        try {
+          const from = new Date(weekStart);
+          const to = new Date(weekStart);
+          to.setDate(to.getDate() + 7);
+          const refreshedSlots = (await getWorkshopAvailability({
+            data: {
+              equipmentId: selectedEquip as "pont" | "pneus" | "fosse" | "presse",
+              from: from.toISOString(),
+              to: to.toISOString(),
+            },
+          })) as { startsAt: string; status: "pending" | "confirmed" }[];
+
+          const refreshedAvailability = new Map(
+            refreshedSlots.map((slot) => [new Date(slot.startsAt).getTime(), slot.status] as const),
+          );
+          setAvailability(refreshedAvailability);
+          setPicks((currentPicks) =>
+            currentPicks.filter((slot) => !refreshedAvailability.has(slot.timestamp)),
+          );
+          setFormError(
+            "L’agenda a été actualisé : les créneaux devenus indisponibles ont été retirés. Vérifiez votre sélection puis réessayez.",
+          );
+        } catch {
+          setFormError(
+            "Un créneau n’est plus disponible. Actualisez la page puis choisissez un autre horaire.",
+          );
+        }
+      } else {
+        setFormError(message);
+      }
     } finally {
       setSubmitting(false);
     }
