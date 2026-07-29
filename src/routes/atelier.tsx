@@ -156,7 +156,7 @@ function AtelierPage() {
         to: to.toISOString(),
       },
     })
-      .then((slots) => {
+      .then((slots: { startsAt: string; status: "pending" | "confirmed" }[]) => {
         if (!active) return;
         setAvailability(
           new Map(slots.map((slot) => [new Date(slot.startsAt).getTime(), slot.status])),
