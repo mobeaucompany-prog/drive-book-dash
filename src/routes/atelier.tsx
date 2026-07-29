@@ -30,6 +30,7 @@ export const Route = createFileRoute("/atelier")({
    public/atelier/atelier-espace.jpg (espace de travail) */
 const PHOTO_PONTS = "/atelier/atelier-ponts.jpg";
 const PHOTO_ESPACE = "/atelier/atelier-espace.jpg";
+const GARAGE_WHATSAPP_NUMBER = "33783226379";
 
 type Forfait = { label: string; price: string };
 
@@ -181,6 +182,7 @@ function AtelierPage() {
   const [submitting, setSubmitting] = useState(false);
   const [formError, setFormError] = useState("");
   const [requestAccepted, setRequestAccepted] = useState(false);
+  const [requestWhatsappUrl, setRequestWhatsappUrl] = useState("");
 
   const weekStart = useMemo(() => {
     const d = startOfWeek(new Date());
@@ -279,6 +281,7 @@ function AtelierPage() {
 
     const form = new FormData(event.currentTarget);
     setSubmitting(true);
+    setRequestWhatsappUrl("");
     try {
       await createWorkshopReservation({
         data: {
@@ -291,6 +294,25 @@ function AtelierPage() {
           slots: picks.map((slot) => slot.iso),
         },
       });
+      const whatsappMessage = [
+        "Bonjour, une nouvelle demande de réservation vient d’être enregistrée sur le site CAO57.",
+        "",
+        `Client : ${String(form.get("customerName") ?? "")}`,
+        `Téléphone : ${String(form.get("customerPhone") ?? "")}`,
+        `E-mail : ${String(form.get("customerEmail") ?? "")}`,
+        `Véhicule : ${String(form.get("vehicle") ?? "")}`,
+        `Équipement : ${current.name}`,
+        `Tarif indicatif : ${formatPrice(selectionPrice)}`,
+        "",
+        "Créneaux demandés :",
+        ...picks.map((slot) => `• ${slot.label}`),
+        "",
+        `Intervention prévue : ${String(form.get("description") ?? "")}`,
+      ].join("\n");
+
+      setRequestWhatsappUrl(
+        `https://wa.me/${GARAGE_WHATSAPP_NUMBER}?text=${encodeURIComponent(whatsappMessage)}`,
+      );
       event.currentTarget.reset();
       setPicks([]);
       setRequestAccepted(true);
@@ -1021,10 +1043,20 @@ function AtelierPage() {
             <p className="mt-3 text-sm text-steel">
               Les créneaux sélectionnés apparaissent temporairement « En attente » dans l’agenda.
             </p>
+            {requestWhatsappUrl && (
+              <a
+                href={requestWhatsappUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="mt-7 inline-flex w-full items-center justify-center rounded-sm bg-[#25D366] px-7 py-3 text-[12px] font-bold uppercase tracking-wider text-white hover:bg-[#20bd5a]"
+              >
+                Envoyer la demande sur WhatsApp
+              </a>
+            )}
             <button
               type="button"
               onClick={() => setRequestAccepted(false)}
-              className="mt-7 rounded-sm bg-racing px-7 py-3 text-[12px] font-bold uppercase tracking-wider text-white"
+              className="mt-3 rounded-sm border border-border px-7 py-3 text-[12px] font-bold uppercase tracking-wider text-ink hover:bg-smoke"
             >
               Fermer
             </button>
