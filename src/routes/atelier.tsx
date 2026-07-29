@@ -31,6 +31,8 @@ export const Route = createFileRoute("/atelier")({
 const PHOTO_PONTS = "/atelier/atelier-ponts.jpg";
 const PHOTO_ESPACE = "/atelier/atelier-espace.jpg";
 
+type Forfait = { label: string; price: string };
+
 type Equipment = {
   id: string;
   name: string;
@@ -39,6 +41,7 @@ type Equipment = {
   unit: string;
   cap: string;
   includes: string[];
+  forfaits?: Forfait[];
 };
 
 const equipments: Equipment[] = [
@@ -50,6 +53,10 @@ const equipments: Equipment[] = [
     unit: "/ heure",
     cap: "Capacité 3,6 T · éclairage LED · air comprimé intégré",
     includes: ["Air comprimé", "Éclairage LED", "Prises 230V/400V", "Chandelles de sécurité"],
+    forfaits: [
+      { label: "Demi-journée", price: "60 €" },
+      { label: "Journée", price: "120 €" },
+    ],
   },
   {
     id: "pneus",
