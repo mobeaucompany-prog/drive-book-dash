@@ -77,6 +77,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
+      { name: "google-site-verification", content: "iYoEtAylsVOpcBOeBiyCRPRs9xMrIGo00cBWSgLcbh0" },
       { title: "CAO57 — Centre Auto Occasion 57 · Forbach" },
       {
         name: "description",
