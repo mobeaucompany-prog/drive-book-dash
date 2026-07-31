@@ -11,6 +11,26 @@ import repDiagnostic from "@/assets/repair-diagnostic.jpg";
 import { annonces } from "@/data/annonces";
 
 export const Route = createFileRoute("/")({
+  head: () => ({
+    meta: [
+      { title: "CAO57 — Centre Auto Occasion 57 · Forbach" },
+      {
+        name: "description",
+        content:
+          "Self-garage, montage de pneus, location et vente de véhicules à Forbach (57). Réservez votre pont élévateur en ligne.",
+      },
+      { property: "og:title", content: "CAO57 — Centre Auto Occasion 57 · Forbach" },
+      {
+        property: "og:description",
+        content:
+          "Self-garage, montage de pneus, location et vente de véhicules à Forbach (57). Réservez votre pont élévateur en ligne.",
+      },
+      { property: "og:url", content: "https://centreautooccasion57.com" },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+    ],
+    links: [{ rel: "canonical", href: "https://centreautooccasion57.com" }],
+  }),
   component: Home,
 });
 
