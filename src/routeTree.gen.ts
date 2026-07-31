@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as ReparationsRouteImport } from './routes/reparations'
 import { Route as OccasionsRouteImport } from './routes/occasions'
 import { Route as McpRouteImport } from './routes/mcp'
@@ -19,6 +20,11 @@ import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } fr
 import { Route as Char91DotmcpChar93ListToolsRouteImport } from './routes/[.mcp]/list-tools'
 import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[.mcp]/invoke-tool/$tool'
 
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ReparationsRoute = ReparationsRouteImport.update({
   id: '/reparations',
   path: '/reparations',
@@ -74,6 +80,7 @@ export interface FileRoutesByFullPath {
   '/mcp': typeof McpRoute
   '/occasions': typeof OccasionsRoute
   '/reparations': typeof ReparationsRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/reservation/$token': typeof ReservationTokenRoute
@@ -85,6 +92,7 @@ export interface FileRoutesByTo {
   '/mcp': typeof McpRoute
   '/occasions': typeof OccasionsRoute
   '/reparations': typeof ReparationsRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/reservation/$token': typeof ReservationTokenRoute
@@ -97,6 +105,7 @@ export interface FileRoutesById {
   '/mcp': typeof McpRoute
   '/occasions': typeof OccasionsRoute
   '/reparations': typeof ReparationsRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/reservation/$token': typeof ReservationTokenRoute
@@ -110,6 +119,7 @@ export interface FileRouteTypes {
     | '/mcp'
     | '/occasions'
     | '/reparations'
+    | '/sitemap.xml'
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
     | '/reservation/$token'
@@ -121,6 +131,7 @@ export interface FileRouteTypes {
     | '/mcp'
     | '/occasions'
     | '/reparations'
+    | '/sitemap.xml'
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
     | '/reservation/$token'
@@ -132,6 +143,7 @@ export interface FileRouteTypes {
     | '/mcp'
     | '/occasions'
     | '/reparations'
+    | '/sitemap.xml'
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
     | '/reservation/$token'
@@ -144,6 +156,7 @@ export interface RootRouteChildren {
   McpRoute: typeof McpRoute
   OccasionsRoute: typeof OccasionsRoute
   ReparationsRoute: typeof ReparationsRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   Char91DotmcpChar93ListToolsRoute: typeof Char91DotmcpChar93ListToolsRoute
   Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   ReservationTokenRoute: typeof ReservationTokenRoute
@@ -152,6 +165,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/reparations': {
       id: '/reparations'
       path: '/reparations'
@@ -224,6 +244,7 @@ const rootRouteChildren: RootRouteChildren = {
   McpRoute: McpRoute,
   OccasionsRoute: OccasionsRoute,
   ReparationsRoute: ReparationsRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
   Char91DotmcpChar93ListToolsRoute: Char91DotmcpChar93ListToolsRoute,
   Char91DotwellKnownChar93OauthProtectedResourceRoute:
     Char91DotwellKnownChar93OauthProtectedResourceRoute,

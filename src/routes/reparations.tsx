@@ -22,7 +22,10 @@ export const Route = createFileRoute("/reparations")({
         property: "og:description",
         content: "Un diagnostic clair, un devis avant travaux et des réparations toutes marques à Forbach.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
+    links: [{ rel: "canonical", href: "https://centreautooccasion57.com/reparations" }],
   }),
   component: ReparationsPage,
 });
