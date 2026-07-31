@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://centreautooccasion57.com/sitemap.xml

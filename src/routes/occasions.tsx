@@ -4,6 +4,25 @@ import logoAsset from "@/assets/cao57-logo-v4.png.asset.json";
 import { annonces, type Annonce } from "@/data/annonces";
 
 export const Route = createFileRoute("/occasions")({
+  head: () => ({
+    meta: [
+      { title: "Occasions auto — CAO57 Forbach · Véhicules d'occasion garantis" },
+      {
+        name: "description",
+        content:
+          "Découvrez nos véhicules d'occasion à Forbach : Volkswagen, Citroën. Photos, prix, kilométrage et entretien complet. Garantie 6 mois incluse.",
+      },
+      { property: "og:title", content: "Occasions auto — CAO57 Forbach" },
+      {
+        property: "og:description",
+        content:
+          "Véhicules d'occasion révisés et garantis à Forbach. VW Polo, Citroën C4 et plus.",
+      },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+    ],
+    links: [{ rel: "canonical", href: "https://centreautooccasion57.com/occasions" }],
+  }),
   component: OccasionsPage,
 });
 
