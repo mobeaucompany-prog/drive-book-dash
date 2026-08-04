@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useState, type FormEvent } from "react";
 import logoAsset from "@/assets/cao57-logo-v4.png.asset.json";
 import heroWorkshop from "@/assets/garage-lifts.jpg.asset.json";
 import garageInterior from "@/assets/garage-interior.jpg.asset.json";
@@ -9,6 +10,7 @@ import repEmbrayage from "@/assets/repair-embrayage.jpg";
 import repPneus from "@/assets/repair-pneus.jpg";
 import repDiagnostic from "@/assets/repair-diagnostic.jpg";
 import { annonces } from "@/data/annonces";
+import { sendContactRequest } from "@/lib/contact-requests";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -490,6 +492,37 @@ function Reviews() {
 
 /* ---------- Contact ---------- */
 function Contact() {
+  const [submitting, setSubmitting] = useState(false);
+  const [sent, setSent] = useState(false);
+  const [error, setError] = useState("");
+
+  async function submitContact(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setSubmitting(true);
+    setSent(false);
+    setError("");
+    const form = event.currentTarget;
+    const values = new FormData(form);
+
+    try {
+      await sendContactRequest({
+        data: {
+          name: String(values.get("name") || ""),
+          phone: String(values.get("phone") || ""),
+          email: String(values.get("email") || ""),
+          message: String(values.get("message") || ""),
+          website: String(values.get("website") || ""),
+        },
+      });
+      form.reset();
+      setSent(true);
+    } catch (submitError) {
+      setError(submitError instanceof Error ? submitError.message : "Le message n’a pas pu être envoyé.");
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
   return (
     <section id="contact" className="border-b border-border bg-carbon text-white">
       <div className="mx-auto grid max-w-7xl gap-10 px-6 py-20 lg:grid-cols-12">
@@ -508,21 +541,24 @@ function Contact() {
           </dl>
         </div>
 
-        <form className="rounded-md bg-white p-6 text-ink lg:col-span-7 lg:p-8">
+        <form onSubmit={submitContact} className="rounded-md bg-white p-6 text-ink lg:col-span-7 lg:p-8">
+          <input name="website" type="text" tabIndex={-1} autoComplete="off" className="hidden" aria-hidden="true" />
           <div className="grid gap-4 sm:grid-cols-2">
-            <Field label="Nom"><input className="input" placeholder="Votre nom" /></Field>
-            <Field label="Téléphone"><input className="input" placeholder="06 XX XX XX XX" /></Field>
+            <Field label="Nom"><input required name="name" autoComplete="name" className="input" placeholder="Votre nom" /></Field>
+            <Field label="Téléphone"><input required name="phone" type="tel" autoComplete="tel" className="input" placeholder="06 XX XX XX XX" /></Field>
           </div>
           <div className="mt-4">
-            <Field label="Email"><input type="email" className="input" placeholder="vous@exemple.com" /></Field>
+            <Field label="Email"><input required name="email" type="email" autoComplete="email" className="input" placeholder="vous@exemple.com" /></Field>
           </div>
           <div className="mt-4">
             <Field label="Message">
-              <textarea rows={5} className="input resize-none" placeholder="Votre demande…" />
+              <textarea required name="message" minLength={5} rows={5} className="input resize-none" placeholder="Votre demande…" />
             </Field>
           </div>
-          <button type="button" className="mt-5 rounded-sm bg-racing px-8 py-3 text-[12px] font-bold uppercase tracking-wider text-white hover:bg-racing/90">
-            Envoyer
+          {sent && <p className="mt-4 rounded-sm border border-green-200 bg-green-50 p-3 text-sm font-medium text-green-700">Votre message a bien été envoyé au garage.</p>}
+          {error && <p className="mt-4 rounded-sm border border-red-200 bg-red-50 p-3 text-sm text-red-700">{error}</p>}
+          <button disabled={submitting} type="submit" className="mt-5 rounded-sm bg-racing px-8 py-3 text-[12px] font-bold uppercase tracking-wider text-white hover:bg-racing/90 disabled:cursor-not-allowed disabled:opacity-50">
+            {submitting ? "Envoi en cours…" : "Envoyer"}
           </button>
         </form>
       </div>
