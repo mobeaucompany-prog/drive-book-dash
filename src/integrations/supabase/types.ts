@@ -14,6 +14,63 @@ export type Database = {
   }
   public: {
     Tables: {
+      quote_requests: {
+        Row: {
+          created_at: string
+          customer_email: string
+          customer_name: string
+          customer_phone: string
+          description: string
+          fuel_type: string | null
+          id: string
+          intervention_type: string
+          mileage: number
+          preferred_dates: string[]
+          registration_plate: string
+          status: string
+          transmission: string | null
+          vehicle_make: string
+          vehicle_model: string
+          vehicle_year: string | null
+        }
+        Insert: {
+          created_at?: string
+          customer_email: string
+          customer_name: string
+          customer_phone: string
+          description: string
+          fuel_type?: string | null
+          id?: string
+          intervention_type: string
+          mileage: number
+          preferred_dates: string[]
+          registration_plate: string
+          status?: string
+          transmission?: string | null
+          vehicle_make: string
+          vehicle_model: string
+          vehicle_year?: string | null
+        }
+        Update: {
+          created_at?: string
+          customer_email?: string
+          customer_name?: string
+          customer_phone?: string
+          description?: string
+          fuel_type?: string | null
+          id?: string
+          intervention_type?: string
+          mileage?: number
+          preferred_dates?: string[]
+          registration_plate?: string
+          status?: string
+          transmission?: string | null
+          vehicle_make?: string
+          vehicle_model?: string
+          vehicle_year?: string | null
+        }
+        Relationships: []
+      }
       workshop_reservation_slots: {
         Row: {
           created_at: string
