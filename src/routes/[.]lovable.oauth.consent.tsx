@@ -86,7 +86,7 @@ function SignIn({ onSignedIn }: { onSignedIn: () => void }) {
 function Consent() {
   const loaded = Route.useLoaderData();
   const { authorization_id } = Route.useSearch();
-  const router = Route.useRouteContext ? undefined : undefined;
+  
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
