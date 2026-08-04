@@ -1,4 +1,4 @@
-import { defineMcp } from "@lovable.dev/mcp-js";
+import { auth, defineMcp } from "@lovable.dev/mcp-js";
 import listVehiclesTool from "./tools/list-vehicles";
 import getVehicleTool from "./tools/get-vehicle";
 import listServicesTool from "./tools/list-services";
