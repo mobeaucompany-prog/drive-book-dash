@@ -214,12 +214,12 @@ function ReparationsPage() {
                 d&apos;origine ou équivalentes.
               </p>
               <div className="mt-8 flex flex-wrap gap-3">
-                <a
-                  href={TEL_LINK}
+                <Link
+                  to="/devis"
                   className="rounded-sm bg-racing px-7 py-3.5 text-[12px] font-bold uppercase tracking-wider text-white hover:bg-racing/90"
                 >
-                  Prendre rendez-vous
-                </a>
+                  Demander un devis
+                </Link>
                 <a
                   href="#prestations"
                   className="rounded-sm border border-white/30 px-7 py-3.5 text-[12px] font-bold uppercase tracking-wider text-white hover:bg-white hover:text-carbon"
@@ -289,12 +289,13 @@ function ReparationsPage() {
                         </li>
                       ))}
                     </ul>
-                    <a
-                      href={TEL_LINK}
+                    <Link
+                      to="/devis"
+                      search={{ service: service.title }}
                       className="mt-6 inline-flex items-center gap-1 text-[12px] font-bold uppercase tracking-wider text-racing hover:gap-2"
                     >
-                      Demander un rendez-vous →
-                    </a>
+                      Demander un devis →
+                    </Link>
                   </div>
                 </article>
               ))}
@@ -342,12 +343,13 @@ function ReparationsPage() {
                       </li>
                     ))}
                   </ul>
-                  <a
-                    href={TEL_LINK}
+                  <Link
+                    to="/devis"
+                    search={{ service: category.title }}
                     className="mt-6 inline-flex text-[11px] font-bold uppercase tracking-wider text-racing hover:underline"
                   >
                     Demander un devis →
-                  </a>
+                  </Link>
                 </article>
               ))}
             </div>
@@ -412,12 +414,12 @@ function SiteHeader() {
             <Link to="/" hash="contact" className="hover:text-racing">Contact</Link>
           </nav>
 
-          <a
-            href={TEL_LINK}
+          <Link
+            to="/devis"
             className="inline-flex items-center gap-2 rounded-sm bg-racing px-5 py-2.5 text-[12px] font-bold uppercase tracking-wider text-white hover:bg-racing/90"
           >
-            Prendre RDV
-          </a>
+            Demander un devis
+          </Link>
         </div>
       </header>
     </>

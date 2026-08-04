@@ -117,12 +117,12 @@ function Nav() {
         </nav>
 
         <div className="flex items-center gap-3">
-          <a
-            href="#reserver"
+          <Link
+            to="/devis"
             className="inline-flex items-center gap-2 rounded-sm bg-racing px-5 py-2.5 text-[12px] font-bold uppercase tracking-wider text-white hover:bg-racing/90"
           >
-            Prendre RDV
-          </a>
+            Demander un devis
+          </Link>
         </div>
       </div>
     </header>
@@ -158,12 +158,12 @@ function Hero() {
             d'atelier pro à l'heure. Devis clair, travail net, prix affichés.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
-            <a
-              href="#reserver"
+            <Link
+              to="/devis"
               className="inline-flex items-center gap-2 rounded-sm bg-racing px-7 py-3.5 text-[12px] font-bold uppercase tracking-wider text-white hover:bg-racing/90"
             >
-              Réserver un créneau →
-            </a>
+              Demander un devis →
+            </Link>
             <a
               href="#vehicules"
               className="inline-flex items-center gap-2 rounded-sm border border-white/30 px-7 py-3.5 text-[12px] font-bold uppercase tracking-wider text-white hover:bg-white hover:text-carbon"
@@ -286,9 +286,9 @@ function Repairs() {
               <div className="p-5">
                 <h3 className="font-display text-lg font-bold">{r.name}</h3>
                 <p className="mt-1.5 text-sm text-steel">{r.desc}</p>
-                <a href="#reserver" className="mt-4 inline-flex items-center gap-1 text-[12px] font-bold uppercase tracking-wider text-racing hover:gap-2">
-                  Réserver →
-                </a>
+                <Link to="/devis" search={{ service: r.name }} className="mt-4 inline-flex items-center gap-1 text-[12px] font-bold uppercase tracking-wider text-racing hover:gap-2">
+                  Demander un devis →
+                </Link>
               </div>
             </article>
           ))}
@@ -370,9 +370,9 @@ function PromoBanner() {
             l'heure, sans t'endetter. À Forbach, dispo 6j/7.
           </p>
           <div className="mt-6 flex flex-wrap gap-3">
-            <a href="#reserver" className="rounded-sm bg-yellow-400 px-6 py-3 text-[12px] font-black uppercase tracking-widest text-carbon hover:bg-yellow-300">
+            <Link to="/atelier" className="rounded-sm bg-yellow-400 px-6 py-3 text-[12px] font-black uppercase tracking-widest text-carbon hover:bg-yellow-300">
               Réserver mon pont →
-            </a>
+            </Link>
             <a href="tel:+33620431191" className="rounded-sm border border-white/30 px-6 py-3 text-[12px] font-bold uppercase tracking-widest text-white hover:bg-white hover:text-carbon">
               ☏ 06 20 43 11 91
             </a>
@@ -429,9 +429,9 @@ function Workshop() {
               <span>✓ Mécanicien sur place</span>
               <span>✓ Café offert</span>
             </div>
-            <a href="#reserver" className="rounded-sm bg-racing px-6 py-3 text-[12px] font-bold uppercase tracking-wider hover:bg-racing/90">
+            <Link to="/atelier" className="rounded-sm bg-racing px-6 py-3 text-[12px] font-bold uppercase tracking-wider hover:bg-racing/90">
               Réserver mon créneau →
-            </a>
+            </Link>
           </div>
         </div>
       </div>
@@ -443,33 +443,13 @@ function Workshop() {
 function BookingStrip() {
   return (
     <section id="reserver" className="border-b border-border bg-smoke">
-      <div className="mx-auto max-w-7xl px-6 py-16">
-        <SectionHead eyebrow="Réservation" title="Prendre un rendez-vous" desc="Choisissez votre prestation et votre créneau. Confirmation sous 24h." />
-        <form className="mt-10 grid gap-4 rounded-md border border-border bg-white p-6 sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_auto] lg:items-end">
-          <Field label="Prestation">
-            <select className="input">
-              <option>Réparation / entretien</option>
-              <option>Pont élévateur (libre-service)</option>
-              <option>Démonte-pneus (libre-service)</option>
-              <option>Fosse mécanique (libre-service)</option>
-              <option>Diagnostic électronique</option>
-            </select>
-          </Field>
-          <Field label="Date">
-            <input type="date" className="input" />
-          </Field>
-          <Field label="Créneau">
-            <select className="input">
-              <option>08:00 — 10:00</option>
-              <option>10:00 — 12:00</option>
-              <option>14:00 — 16:00</option>
-              <option>16:00 — 18:00</option>
-            </select>
-          </Field>
-          <button className="h-[46px] rounded-sm bg-racing px-8 text-[12px] font-bold uppercase tracking-wider text-white hover:bg-racing/90">
-            Vérifier
-          </button>
-        </form>
+      <div className="mx-auto grid max-w-7xl items-center gap-8 px-6 py-16 md:grid-cols-[1fr_auto]">
+        <div>
+          <SectionHead eyebrow="Devis automobile" title="Décrivez votre intervention" desc="Renseignez votre véhicule, les travaux demandés et jusqu’à trois dates. Le garage reçoit directement votre dossier complet." />
+        </div>
+        <Link to="/devis" className="inline-flex justify-center rounded-sm bg-racing px-8 py-4 text-[12px] font-bold uppercase tracking-wider text-white hover:bg-racing/90">
+          Faire une demande de devis →
+        </Link>
       </div>
     </section>
   );
