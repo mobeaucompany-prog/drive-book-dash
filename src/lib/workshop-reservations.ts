@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { getRequestUrl } from "@tanstack/react-start/server";
 import { z } from "zod";
+import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
 const equipmentNames: Record<string, string> = {
   pont: "Pont élévateur 2 colonnes",
@@ -28,6 +29,21 @@ const requestSchema = z.object({
 const decisionSchema = z.object({
   token: z.string().min(32).max(200),
   decision: z.enum(["confirm", "reject"]),
+});
+
+const adminDecisionSchema = z.object({
+  reservationId: z.string().uuid(),
+  decision: z.enum(["confirm", "reject"]),
+});
+
+const adminBlockSchema = z.object({
+  equipmentId: z.enum(["pont", "pneus", "fosse", "presse"]),
+  reason: z.string().trim().min(2).max(250),
+  slots: z.array(z.string().datetime()).min(1).max(48),
+});
+
+const adminDeleteBlockSchema = z.object({
+  blockGroupId: z.string().uuid(),
 });
 
 type ReservationResult = {
@@ -81,33 +97,28 @@ function slotsHtml(slots: string[]) {
 }
 
 async function sendEmail(input: { to: string; subject: string; html: string }) {
-  const apiKey = process.env.RESEND_API_KEY;
-  const from = process.env.RESERVATION_FROM_EMAIL;
+  const user = process.env.GMAIL_USER;
+  const appPassword = process.env.GMAIL_APP_PASSWORD?.replaceAll(" ", "");
 
-  if (!apiKey || !from) {
+  if (!user || !appPassword) {
     return false;
   }
 
-  const response = await fetch("https://api.resend.com/emails", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-      "Content-Type": "application/json",
-      "User-Agent": "CAO57-reservations/1.0",
+  const nodemailer = await import("nodemailer");
+  const transporter = nodemailer.default.createTransport({
+    service: "gmail",
+    auth: {
+      user,
+      pass: appPassword,
     },
-    body: JSON.stringify({
-      from,
-      to: [input.to],
-      subject: input.subject,
-      html: input.html,
-    }),
   });
 
-  if (!response.ok) {
-    const detail = await response.text();
-    console.error("Resend error", response.status, detail);
-    throw new Error("L’e-mail de réservation n’a pas pu être envoyé.");
-  }
+  await transporter.sendMail({
+    from: `CAO57 <${user}>`,
+    to: input.to,
+    subject: input.subject,
+    html: input.html,
+  });
 
   return true;
 }
@@ -172,6 +183,30 @@ export const createWorkshopReservation = createServerFn({ method: "POST" })
     const confirmUrl = `${origin}/reservation/${token}?action=confirm`;
     const rejectUrl = `${origin}/reservation/${token}?action=reject`;
     const safeDescription = escapeHtml(data.description).replaceAll("\n", "<br>");
+
+    try {
+      await sendEmail({
+        to: data.customerEmail,
+        subject: "Votre demande atelier CAO57 a bien été reçue",
+        html: `
+        <div style="font-family:Arial,sans-serif;max-width:640px;margin:auto;color:#111827">
+          <div style="background:#0f1114;color:white;padding:24px;border-radius:8px 8px 0 0">
+            <p style="margin:0;color:#60a5fa;font-weight:700">CAO57 · DEMANDE REÇUE</p>
+            <h1 style="margin:10px 0 0;font-size:26px">Votre demande est en attente</h1>
+          </div>
+          <div style="border:1px solid #e5e7eb;padding:24px;border-radius:0 0 8px 8px">
+            <p>Bonjour ${escapeHtml(data.customerName)},</p>
+            <p>Nous avons bien reçu votre demande. Le garage va vérifier les créneaux puis vous enverra un second e-mail de confirmation ou de refus.</p>
+            <p><strong>Équipement :</strong> ${escapeHtml(equipmentNames[data.equipmentId])}</p>
+            <p><strong>Créneaux demandés :</strong></p>
+            <ul>${slotsHtml(data.slots)}</ul>
+            <p style="margin-top:24px"><strong>CAO57</strong><br>2 Allée des Cyprès, 57600 Forbach<br>06 20 43 11 91</p>
+          </div>
+        </div>`,
+      });
+    } catch (emailError) {
+      console.error("Customer acknowledgement email could not be sent", emailError);
+    }
 
     const adminEmail = process.env.RESERVATION_ADMIN_EMAIL;
     if (adminEmail) {
@@ -266,4 +301,173 @@ export const decideWorkshopReservation = createServerFn({ method: "POST" })
     }
 
     return { status: reservation.status };
+  });
+
+
+type AdminContext = {
+  claims?: Record<string, unknown>;
+  userId?: string;
+};
+
+function assertWorkshopAdmin(context: AdminContext) {
+  const configuredEmail = process.env.RESERVATION_ADMIN_EMAIL?.trim().toLowerCase();
+  const claimEmail =
+    typeof context.claims?.email === "string" ? context.claims.email.trim().toLowerCase() : "";
+
+  if (!configuredEmail) {
+    throw new Error("Accès admin non configuré : ajoutez RESERVATION_ADMIN_EMAIL.");
+  }
+
+  if (!claimEmail || claimEmail !== configuredEmail) {
+    throw new Error("Accès refusé : ce compte n’est pas autorisé à gérer l’atelier.");
+  }
+
+  return {
+    email: claimEmail,
+    userId: context.userId,
+  };
+}
+
+export const getWorkshopAdminDashboard = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    assertWorkshopAdmin(context as AdminContext);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const db = supabaseAdmin as any;
+
+    await db.rpc("cleanup_expired_workshop_reservations");
+
+    const [reservationsResult, blocksResult] = await Promise.all([
+      db
+        .from("workshop_reservations")
+        .select(
+          "id,equipment_id,customer_name,customer_email,customer_phone,vehicle,description,status,created_at,decided_at,workshop_reservation_slots(slot_start,status)",
+        )
+        .order("created_at", { ascending: false })
+        .limit(200),
+      db
+        .from("workshop_reservation_slots")
+        .select("id,equipment_id,slot_start,blocked_reason,block_group_id,created_at")
+        .eq("status", "blocked")
+        .gte("slot_start", new Date().toISOString())
+        .order("slot_start", { ascending: true })
+        .limit(500),
+    ]);
+
+    if (reservationsResult.error || blocksResult.error) {
+      console.error(reservationsResult.error ?? blocksResult.error);
+      throw new Error("Impossible de charger l’administration de l’atelier.");
+    }
+
+    return {
+      reservations: reservationsResult.data ?? [],
+      blocks: blocksResult.data ?? [],
+    };
+  });
+
+export const adminDecideWorkshopReservation = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .validator(adminDecisionSchema)
+  .handler(async ({ data, context }) => {
+    assertWorkshopAdmin(context as AdminContext);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const db = supabaseAdmin as any;
+
+    const { data: result, error } = await db.rpc("admin_decide_workshop_reservation", {
+      p_reservation_id: data.reservationId,
+      p_decision: data.decision,
+    });
+
+    if (error) {
+      console.error(error);
+      throw new Error(
+        error.message.includes("déjà")
+          ? "Cette demande a déjà été traitée."
+          : "La demande n’a pas pu être mise à jour.",
+      );
+    }
+
+    const reservation = result as ReservationResult;
+    const confirmed = reservation.status === "confirmed";
+
+    try {
+      await sendEmail({
+        to: reservation.customer_email,
+        subject: confirmed
+          ? "Votre réservation atelier CAO57 est confirmée"
+          : "Réponse à votre demande atelier CAO57",
+        html: `
+        <div style="font-family:Arial,sans-serif;max-width:640px;margin:auto;color:#111827">
+          <div style="background:#0f1114;color:white;padding:24px;border-radius:8px 8px 0 0">
+            <p style="margin:0;color:#60a5fa;font-weight:700">CAO57 · FORBACH</p>
+            <h1 style="margin:10px 0 0;font-size:26px">${confirmed ? "Réservation confirmée" : "Demande non retenue"}</h1>
+          </div>
+          <div style="border:1px solid #e5e7eb;padding:24px;border-radius:0 0 8px 8px">
+            <p>Bonjour ${escapeHtml(reservation.customer_name)},</p>
+            <p>${
+              confirmed
+                ? "Le garage a confirmé votre réservation. Vos créneaux sont désormais bloqués dans l’agenda."
+                : "Le garage ne peut malheureusement pas confirmer les créneaux demandés. Contactez-nous pour trouver une autre disponibilité."
+            }</p>
+            <p><strong>Équipement :</strong> ${escapeHtml(equipmentNames[reservation.equipment_id])}</p>
+            <ul>${slotsHtml(reservation.slots)}</ul>
+            <p style="margin-top:24px"><strong>CAO57</strong><br>2 Allée des Cyprès, 57600 Forbach<br>06 20 43 11 91</p>
+          </div>
+        </div>`,
+      });
+    } catch (emailError) {
+      console.error("Customer admin decision email could not be sent", emailError);
+    }
+
+    return { status: reservation.status };
+  });
+
+export const createWorkshopBlock = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .validator(adminBlockSchema)
+  .handler(async ({ data, context }) => {
+    const admin = assertWorkshopAdmin(context as AdminContext);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const db = supabaseAdmin as any;
+
+    const { data: blockGroupId, error } = await db.rpc("create_workshop_block", {
+      p_equipment_id: data.equipmentId,
+      p_slots: data.slots,
+      p_reason: data.reason,
+      p_blocked_by: admin.userId ?? null,
+    });
+
+    if (error) {
+      if (error.code === "23505") {
+        throw new Error("Un créneau sélectionné est déjà réservé ou bloqué.");
+      }
+      console.error(error);
+      throw new Error("Les créneaux n’ont pas pu être bloqués.");
+    }
+
+    return { success: true, blockGroupId: blockGroupId as string };
+  });
+
+export const deleteWorkshopBlock = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .validator(adminDeleteBlockSchema)
+  .handler(async ({ data, context }) => {
+    assertWorkshopAdmin(context as AdminContext);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const db = supabaseAdmin as any;
+
+    const { error } = await db.rpc("delete_workshop_block_group", {
+      p_block_group_id: data.blockGroupId,
+    });
+
+    if (error) {
+      console.error(error);
+      throw new Error("Le blocage n’a pas pu être supprimé.");
+    }
+
+    return { success: true };
   });
