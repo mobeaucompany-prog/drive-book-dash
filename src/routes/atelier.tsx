@@ -359,7 +359,8 @@ function AtelierPage() {
       setRequestAccepted(true);
       await refreshAvailability();
     } catch (error) {
-      const message = error instanceof Error ? error.message : "La demande n’a pas pu être envoyée.";
+      const message =
+        error instanceof Error ? error.message : "La demande n’a pas pu être envoyée.";
 
       if (message.includes("créneaux vient d’être demandé")) {
         try {
