@@ -303,7 +303,6 @@ export const decideWorkshopReservation = createServerFn({ method: "POST" })
     return { status: reservation.status };
   });
 
-
 type AdminContext = {
   claims?: Record<string, unknown>;
   userId?: string;
