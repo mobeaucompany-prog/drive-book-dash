@@ -46,6 +46,13 @@ const adminDeleteBlockSchema = z.object({
   blockGroupId: z.string().uuid(),
 });
 
+const adminQuoteSchema = z.object({
+  quoteId: z.string().uuid(),
+  status: z.enum(["new", "contacted", "quoted", "closed"]),
+  response: z.string().trim().max(3000).optional(),
+  amount: z.number().min(0).max(1_000_000).nullable(),
+});
+
 type ReservationResult = {
   id: string;
   equipment_id: string;
@@ -56,6 +63,19 @@ type ReservationResult = {
   description: string;
   status: "confirmed" | "rejected";
   slots: string[];
+};
+
+type QuoteResult = {
+  id: string;
+  customer_name: string;
+  customer_email: string;
+  registration_plate: string;
+  vehicle_make: string;
+  vehicle_model: string;
+  intervention_type: string;
+  status: "new" | "contacted" | "quoted" | "closed";
+  quoted_amount: number | null;
+  admin_response: string | null;
 };
 
 function escapeHtml(value: string) {
@@ -359,7 +379,7 @@ export const getWorkshopAdminDashboard = createServerFn({ method: "GET" })
 
     await db.rpc("cleanup_expired_workshop_reservations");
 
-    const [reservationsResult, blocksResult] = await Promise.all([
+    const [reservationsResult, blocksResult, quotesResult] = await Promise.all([
       db
         .from("workshop_reservations")
         .select(
@@ -374,17 +394,82 @@ export const getWorkshopAdminDashboard = createServerFn({ method: "GET" })
         .gte("slot_start", new Date().toISOString())
         .order("slot_start", { ascending: true })
         .limit(500),
+      db
+        .from("quote_requests")
+        .select(
+          "id,customer_name,customer_email,customer_phone,registration_plate,vehicle_make,vehicle_model,intervention_type,description,preferred_dates,status,quoted_amount,admin_response,responded_at,created_at",
+        )
+        .order("created_at", { ascending: false })
+        .limit(100),
     ]);
 
-    if (reservationsResult.error || blocksResult.error) {
-      console.error(reservationsResult.error ?? blocksResult.error);
+    if (reservationsResult.error || blocksResult.error || quotesResult.error) {
+      console.error(reservationsResult.error ?? blocksResult.error ?? quotesResult.error);
       throw new Error("Impossible de charger l’administration de l’atelier.");
     }
 
     return {
       reservations: reservationsResult.data ?? [],
       blocks: blocksResult.data ?? [],
+      quotes: quotesResult.data ?? [],
     };
+  });
+
+export const adminRespondToQuote = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .validator(adminQuoteSchema)
+  .handler(async ({ data, context }) => {
+    const admin = await assertWorkshopAdmin(context as AdminContext);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const db = supabaseAdmin as any;
+
+    const { data: result, error } = await db.rpc("admin_update_quote_request", {
+      p_quote_id: data.quoteId,
+      p_status: data.status,
+      p_admin_response: data.response || null,
+      p_quoted_amount: data.amount,
+      p_responded_by: admin.userId,
+    });
+
+    if (error) {
+      console.error(error);
+      throw new Error("La réponse au devis n’a pas pu être enregistrée.");
+    }
+
+    const quote = result as QuoteResult;
+    const statusText =
+      quote.status === "quoted"
+        ? "Votre devis est disponible"
+        : quote.status === "closed"
+          ? "Votre demande de devis est clôturée"
+          : "Votre demande de devis a été mise à jour";
+
+    try {
+      await sendEmail({
+        to: quote.customer_email,
+        subject: `${statusText} — CAO57`,
+        html: `
+        <div style="font-family:Arial,sans-serif;max-width:640px;margin:auto;color:#111827">
+          <div style="background:#0f1114;color:white;padding:24px;border-radius:8px 8px 0 0">
+            <p style="margin:0;color:#60a5fa;font-weight:700">CAO57 · DEVIS</p>
+            <h1 style="margin:10px 0 0;font-size:26px">${statusText}</h1>
+          </div>
+          <div style="border:1px solid #e5e7eb;padding:24px;border-radius:0 0 8px 8px">
+            <p>Bonjour ${escapeHtml(quote.customer_name)},</p>
+            <p><strong>Véhicule :</strong> ${escapeHtml(quote.vehicle_make)} ${escapeHtml(quote.vehicle_model)} · ${escapeHtml(quote.registration_plate)}</p>
+            <p><strong>Intervention :</strong> ${escapeHtml(quote.intervention_type)}</p>
+            ${quote.quoted_amount !== null ? `<p><strong>Montant proposé :</strong> ${Number(quote.quoted_amount).toLocaleString("fr-FR", { style: "currency", currency: "EUR" })}</p>` : ""}
+            ${quote.admin_response ? `<p><strong>Réponse du garage :</strong><br>${escapeHtml(quote.admin_response).replaceAll("\n", "<br>")}</p>` : ""}
+            <p style="margin-top:24px">Vous pouvez retrouver ce suivi à tout moment depuis votre espace client CAO57.</p>
+          </div>
+        </div>`,
+      });
+    } catch (emailError) {
+      console.error("Quote response email could not be sent", emailError);
+    }
+
+    return { success: true, quote };
   });
 
 export const adminDecideWorkshopReservation = createServerFn({ method: "POST" })
