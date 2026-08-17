@@ -71,28 +71,61 @@ export type Database = {
         }
         Relationships: []
       }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
       workshop_reservation_slots: {
         Row: {
+          block_group_id: string | null
+          blocked_at: string | null
+          blocked_by: string | null
+          blocked_reason: string | null
           created_at: string
           equipment_id: string
           id: string
-          reservation_id: string
+          reservation_id: string | null
           slot_start: string
           status: string
         }
         Insert: {
+          block_group_id?: string | null
+          blocked_at?: string | null
+          blocked_by?: string | null
+          blocked_reason?: string | null
           created_at?: string
           equipment_id: string
           id?: string
-          reservation_id: string
+          reservation_id?: string | null
           slot_start: string
           status?: string
         }
         Update: {
+          block_group_id?: string | null
+          blocked_at?: string | null
+          blocked_by?: string | null
+          blocked_reason?: string | null
           created_at?: string
           equipment_id?: string
           id?: string
-          reservation_id?: string
+          reservation_id?: string | null
           slot_start?: string
           status?: string
         }
@@ -156,7 +189,20 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      admin_decide_workshop_reservation: {
+        Args: { p_decision: string; p_reservation_id: string }
+        Returns: Json
+      }
       cleanup_expired_workshop_reservations: { Args: never; Returns: undefined }
+      create_workshop_block: {
+        Args: {
+          p_blocked_by?: string
+          p_equipment_id: string
+          p_reason: string
+          p_slots: string[]
+        }
+        Returns: string
+      }
       create_workshop_reservation: {
         Args: {
           p_customer_email: string
@@ -174,9 +220,20 @@ export type Database = {
         Args: { p_decision: string; p_token_hash: string }
         Returns: Json
       }
+      delete_workshop_block_group: {
+        Args: { p_block_group_id: string }
+        Returns: undefined
+      }
+      has_role: {
+        Args: {
+          p_role: Database["public"]["Enums"]["app_role"]
+          p_user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "user"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -303,6 +360,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "user"],
+    },
   },
 } as const
