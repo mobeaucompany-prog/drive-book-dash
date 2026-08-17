@@ -177,9 +177,7 @@ function WorkshopAdminPage() {
   const occupiedSlots = useMemo(() => {
     const occupied = new Set<string>();
     reservations
-      .filter((reservation) =>
-        ["pending", "confirmed"].includes(reservation.status),
-      )
+      .filter((reservation) => ["pending", "confirmed"].includes(reservation.status))
       .filter((reservation) => reservation.equipment_id === equipmentId)
       .forEach((reservation) => {
         reservation.workshop_reservation_slots.forEach((slot) => occupied.add(slot.slot_start));
@@ -202,8 +200,12 @@ function WorkshopAdminPage() {
     );
   }, [blocks]);
 
-  const pendingReservations = reservations.filter((reservation) => reservation.status === "pending");
-  const processedReservations = reservations.filter((reservation) => reservation.status !== "pending");
+  const pendingReservations = reservations.filter(
+    (reservation) => reservation.status === "pending",
+  );
+  const processedReservations = reservations.filter(
+    (reservation) => reservation.status !== "pending",
+  );
 
   const sendLoginLink = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -344,7 +346,10 @@ function WorkshopAdminPage() {
             <h1 className="font-display text-2xl font-black">Agenda atelier</h1>
           </div>
           <div className="flex items-center gap-3">
-            <Link to="/atelier" className="rounded-sm border border-border px-4 py-2 text-xs font-bold">
+            <Link
+              to="/atelier"
+              className="rounded-sm border border-border px-4 py-2 text-xs font-bold"
+            >
               Voir l’agenda client
             </Link>
             <button
@@ -371,7 +376,8 @@ function WorkshopAdminPage() {
                 À traiter
               </p>
               <h2 className="mt-2 font-display text-3xl font-black">
-                {pendingReservations.length} demande{pendingReservations.length !== 1 ? "s" : ""} en attente
+                {pendingReservations.length} demande{pendingReservations.length !== 1 ? "s" : ""} en
+                attente
               </h2>
             </div>
             <button
@@ -385,10 +391,15 @@ function WorkshopAdminPage() {
 
           <div className="mt-6 grid gap-4">
             {pendingReservations.length === 0 && (
-              <p className="rounded-md bg-smoke p-5 text-sm text-steel">Aucune demande en attente.</p>
+              <p className="rounded-md bg-smoke p-5 text-sm text-steel">
+                Aucune demande en attente.
+              </p>
             )}
             {pendingReservations.map((reservation) => (
-              <article key={reservation.id} className="rounded-md border border-amber-200 bg-amber-50/40 p-5">
+              <article
+                key={reservation.id}
+                className="rounded-md border border-amber-200 bg-amber-50/40 p-5"
+              >
                 <div className="flex flex-wrap justify-between gap-4">
                   <div>
                     <p className="text-xs font-bold uppercase tracking-wider text-amber-700">
@@ -398,11 +409,17 @@ function WorkshopAdminPage() {
                       {reservation.customer_name} — {reservation.vehicle}
                     </h3>
                     <p className="mt-2 text-sm text-steel">
-                      <a href={`tel:${reservation.customer_phone}`} className="font-semibold text-ink">
+                      <a
+                        href={`tel:${reservation.customer_phone}`}
+                        className="font-semibold text-ink"
+                      >
                         {reservation.customer_phone}
                       </a>
                       {" · "}
-                      <a href={`mailto:${reservation.customer_email}`} className="font-semibold text-ink">
+                      <a
+                        href={`mailto:${reservation.customer_email}`}
+                        className="font-semibold text-ink"
+                      >
                         {reservation.customer_email}
                       </a>
                     </p>
@@ -427,7 +444,10 @@ function WorkshopAdminPage() {
                 <p className="mt-4 text-sm">{reservation.description}</p>
                 <div className="mt-4 flex flex-wrap gap-2">
                   {reservation.workshop_reservation_slots.map((slot) => (
-                    <span key={slot.slot_start} className="rounded-full bg-white px-3 py-1 text-xs font-semibold">
+                    <span
+                      key={slot.slot_start}
+                      className="rounded-full bg-white px-3 py-1 text-xs font-semibold"
+                    >
                       {formatSlot(slot.slot_start)}
                     </span>
                   ))}
@@ -481,10 +501,19 @@ function WorkshopAdminPage() {
             <table className="w-full min-w-[720px] border-collapse text-sm">
               <thead>
                 <tr>
-                  <th className="border-b border-r border-border bg-smoke p-3 text-left">Horaire</th>
+                  <th className="border-b border-r border-border bg-smoke p-3 text-left">
+                    Horaire
+                  </th>
                   {days.map((day) => (
-                    <th key={day.toISOString()} className="border-b border-r border-border bg-smoke p-3">
-                      {day.toLocaleDateString("fr-FR", { weekday: "short", day: "2-digit", month: "2-digit" })}
+                    <th
+                      key={day.toISOString()}
+                      className="border-b border-r border-border bg-smoke p-3"
+                    >
+                      {day.toLocaleDateString("fr-FR", {
+                        weekday: "short",
+                        day: "2-digit",
+                        month: "2-digit",
+                      })}
                     </th>
                   ))}
                 </tr>
@@ -539,7 +568,9 @@ function WorkshopAdminPage() {
           <div className="rounded-md border border-border bg-white p-6">
             <h2 className="font-display text-2xl font-black">Blocages à venir</h2>
             <div className="mt-5 space-y-3">
-              {groupedBlocks.length === 0 && <p className="text-sm text-steel">Aucun blocage manuel.</p>}
+              {groupedBlocks.length === 0 && (
+                <p className="text-sm text-steel">Aucun blocage manuel.</p>
+              )}
               {groupedBlocks.map(([groupId, group]) => (
                 <article key={groupId} className="rounded-md border border-border p-4">
                   <div className="flex items-start justify-between gap-3">
@@ -576,10 +607,16 @@ function WorkshopAdminPage() {
                 <article key={reservation.id} className="rounded-md border border-border p-4">
                   <div className="flex justify-between gap-3">
                     <div>
-                      <p className="font-semibold">{reservation.customer_name} · {reservation.vehicle}</p>
-                      <p className="mt-1 text-xs text-steel">{equipmentNames[reservation.equipment_id]}</p>
+                      <p className="font-semibold">
+                        {reservation.customer_name} · {reservation.vehicle}
+                      </p>
+                      <p className="mt-1 text-xs text-steel">
+                        {equipmentNames[reservation.equipment_id]}
+                      </p>
                     </div>
-                    <span className={`text-xs font-bold ${reservation.status === "confirmed" ? "text-green-700" : "text-steel"}`}>
+                    <span
+                      className={`text-xs font-bold ${reservation.status === "confirmed" ? "text-green-700" : "text-steel"}`}
+                    >
                       {statusLabel(reservation.status)}
                     </span>
                   </div>
