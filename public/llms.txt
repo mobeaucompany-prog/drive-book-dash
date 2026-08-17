@@ -1,0 +1,11 @@
+# CAO57 — Centre Auto Occasion 57
+
+> Garage automobile à Forbach (57) : réparation et entretien toutes marques, vente de véhicules d'occasion, et location d'atelier en self-garage (pont élévateur, démonte-pneus, fosse).
+
+## Pages
+
+- [Accueil](/): Présentation du garage, services de réparation, véhicules en vente et location d'atelier à Forbach.
+- [Réparations](/reparations): Prestations d'entretien et de réparation (vidange, freinage, distribution, embrayage, pneus, diagnostic) avec tarifs indicatifs.
+- [Occasions](/occasions): Catalogue des véhicules d'occasion disponibles à la vente avec photos et fiches techniques.
+- [Atelier libre](/atelier): Tarifs et disponibilités pour louer un pont élévateur (20 €/h, 60 € la demi-journée, 120 € la journée), le démonte-pneus (15 €/h) ou la fosse (15 €/h).
+- [Devis](/devis): Formulaire de demande de devis pour une intervention sur votre véhicule.
