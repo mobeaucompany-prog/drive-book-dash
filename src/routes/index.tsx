@@ -32,6 +32,63 @@ export const Route = createFileRoute("/")({
       { name: "twitter:card", content: "summary_large_image" },
     ],
     links: [{ rel: "canonical", href: "https://centreautooccasion57.com" }],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "AutoRepair",
+          name: "CAO57 — Centre Auto Occasion 57",
+          url: "https://centreautooccasion57.com",
+          telephone: "+33620431191",
+          priceRange: "€€",
+          address: {
+            "@type": "PostalAddress",
+            streetAddress: "2 Allée des Cyprès",
+            postalCode: "57600",
+            addressLocality: "Forbach",
+            addressCountry: "FR",
+          },
+          openingHoursSpecification: [
+            {
+              "@type": "OpeningHoursSpecification",
+              dayOfWeek: [
+                "Monday",
+                "Tuesday",
+                "Wednesday",
+                "Thursday",
+                "Friday",
+                "Saturday",
+              ],
+              opens: "08:00",
+              closes: "19:00",
+            },
+          ],
+          makesOffer: [
+            {
+              "@type": "Offer",
+              itemOffered: { "@type": "Service", name: "Réparation et entretien automobile" },
+            },
+            {
+              "@type": "Offer",
+              itemOffered: { "@type": "Service", name: "Location de pont élévateur (self-garage)" },
+              price: "20",
+              priceCurrency: "EUR",
+            },
+            {
+              "@type": "Offer",
+              itemOffered: { "@type": "Service", name: "Montage et démontage de pneus" },
+              price: "15",
+              priceCurrency: "EUR",
+            },
+            {
+              "@type": "Offer",
+              itemOffered: { "@type": "Service", name: "Vente de véhicules d'occasion" },
+            },
+          ],
+        }),
+      },
+    ],
   }),
   component: Home,
 });
@@ -280,7 +337,7 @@ function Repairs() {
           {reparations.map((r) => (
             <article key={r.name} className="group overflow-hidden rounded-md border border-border bg-white transition hover:-translate-y-1 hover:shadow-xl">
               <div className="relative aspect-[4/3] overflow-hidden">
-                <img src={r.img} alt={r.name} className="h-full w-full object-cover transition duration-500 group-hover:scale-105" />
+                <img src={r.img} alt={`Service de ${r.name.toLowerCase()} au garage CAO57 à Forbach`} className="h-full w-full object-cover transition duration-500 group-hover:scale-105" />
                 <span className="absolute right-3 top-3 rounded-sm bg-white/95 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-ink">
                   {r.price}
                 </span>
@@ -583,7 +640,7 @@ function Footer() {
         <div>
           <div className="flex items-center gap-3">
             <div className="grid size-10 place-items-center rounded-sm bg-white/5">
-              <img src={logoAsset.url} alt="CAO57" className="h-7 w-7 object-contain" />
+              <img src={logoAsset.url} alt="Logo CAO57 — Centre Auto Occasion 57 à Forbach" className="h-7 w-7 object-contain" />
             </div>
             <div className="font-display text-lg font-black text-white">CAO<span className="text-racing">57</span></div>
           </div>
