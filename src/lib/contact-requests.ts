@@ -25,22 +25,10 @@ export const sendContactRequest = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     if (data.website) return { success: true };
 
-    const user = process.env.GMAIL_USER;
-    const appPassword = process.env.GMAIL_APP_PASSWORD?.replaceAll(" ", "");
     const to = process.env.CONTACT_ADMIN_EMAIL || GARAGE_EMAIL;
+    const { sendGmailMessage } = await import("@/lib/gmail.server");
 
-    if (!user || !appPassword) {
-      throw new Error("Le service e-mail du garage n’est pas encore configuré.");
-    }
-
-    const nodemailer = await import("nodemailer");
-    const transporter = nodemailer.default.createTransport({
-      service: "gmail",
-      auth: { user, pass: appPassword },
-    });
-
-    await transporter.sendMail({
-      from: `CAO57 <${user}>`,
+    const sent = await sendGmailMessage({
       to,
       replyTo: data.email,
       subject: `Nouveau message du site — ${data.name}`,
@@ -60,6 +48,10 @@ export const sendContactRequest = createServerFn({ method: "POST" })
           </div>
         </div>`,
     });
+
+    if (!sent) {
+      throw new Error("Le service e-mail du garage n’est pas encore configuré.");
+    }
 
     return { success: true };
   });
