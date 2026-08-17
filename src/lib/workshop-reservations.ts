@@ -136,7 +136,7 @@ export const getWorkshopAvailability = createServerFn({ method: "GET" })
       .from("workshop_reservation_slots")
       .select("slot_start,status")
       .eq("equipment_id", data.equipmentId)
-      .in("status", ["pending", "confirmed"])
+      .in("status", ["pending", "confirmed", "blocked"])
       .gte("slot_start", data.from)
       .lt("slot_start", data.to);
 
@@ -144,7 +144,7 @@ export const getWorkshopAvailability = createServerFn({ method: "GET" })
 
     return (rows ?? []).map((row: { slot_start: string; status: string }) => ({
       startsAt: row.slot_start,
-      status: row.status as "pending" | "confirmed",
+      status: row.status as "pending" | "confirmed" | "blocked",
     }));
   });
 
