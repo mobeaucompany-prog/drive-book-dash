@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { FormEvent } from "react";
 import logoAsset from "@/assets/cao57-logo-v4.png.asset.json";
 import { createWorkshopReservation, getWorkshopAvailability } from "@/lib/workshop-reservations";
@@ -116,6 +116,8 @@ type PickedSlot = {
   label: string;
 };
 
+type AvailabilityStatus = AvailabilityStatus | "blocked";
+
 function calculateSelectionPrice(equipmentId: string, selectedSlots: PickedSlot[]) {
   if (selectedSlots.length === 0) return 0;
 
@@ -177,9 +179,11 @@ function AtelierPage() {
   const [selectedEquip, setSelectedEquip] = useState<string>(equipments[0].id);
   const [weekOffset, setWeekOffset] = useState(0);
   const [picks, setPicks] = useState<PickedSlot[]>([]);
-  const [availability, setAvailability] = useState<Map<number, "pending" | "confirmed">>(new Map());
+  const [availability, setAvailability] = useState<Map<number, AvailabilityStatus>>(new Map());
   const [calendarLoading, setCalendarLoading] = useState(true);
   const [calendarError, setCalendarError] = useState("");
+  const [lastCalendarUpdate, setLastCalendarUpdate] = useState<Date | null>(null);
+  const refreshInFlight = useRef(false);
   const [submitting, setSubmitting] = useState(false);
   const [formError, setFormError] = useState("");
   const [requestAccepted, setRequestAccepted] = useState(false);
@@ -205,39 +209,74 @@ function AtelierPage() {
     [selectedEquip, picks],
   );
 
-  useEffect(() => {
-    let active = true;
-    const from = new Date(weekStart);
-    const to = new Date(weekStart);
-    to.setDate(to.getDate() + 7);
+  const refreshAvailability = useCallback(
+    async (showLoading = false) => {
+      if (refreshInFlight.current) return;
+      refreshInFlight.current = true;
 
-    setCalendarLoading(true);
-    setCalendarError("");
-    getWorkshopAvailability({
-      data: {
-        equipmentId: selectedEquip as "pont" | "pneus" | "fosse" | "presse",
-        from: from.toISOString(),
-        to: to.toISOString(),
-      },
-    })
-      .then((slots: { startsAt: string; status: "pending" | "confirmed" }[]) => {
-        if (!active) return;
-        setAvailability(
-          new Map(slots.map((slot) => [new Date(slot.startsAt).getTime(), slot.status])),
+      const from = new Date(weekStart);
+      const to = new Date(weekStart);
+      to.setDate(to.getDate() + 7);
+
+      if (showLoading) setCalendarLoading(true);
+
+      try {
+        const slots = (await getWorkshopAvailability({
+          data: {
+            equipmentId: selectedEquip as "pont" | "pneus" | "fosse" | "presse",
+            from: from.toISOString(),
+            to: to.toISOString(),
+          },
+        })) as { startsAt: string; status: AvailabilityStatus }[];
+
+        const refreshedAvailability = new Map(
+          slots.map((slot) => [new Date(slot.startsAt).getTime(), slot.status] as const),
         );
-      })
-      .catch(() => {
-        if (!active) return;
+
+        setAvailability(refreshedAvailability);
+        setCalendarError("");
+        setLastCalendarUpdate(new Date());
+        setPicks((currentPicks) => {
+          const availablePicks = currentPicks.filter(
+            (slot) => !refreshedAvailability.has(slot.timestamp),
+          );
+          if (availablePicks.length !== currentPicks.length) {
+            setFormError(
+              "L’agenda vient d’être actualisé : les créneaux devenus indisponibles ont été retirés.",
+            );
+          }
+          return availablePicks;
+        });
+      } catch {
         setCalendarError("Impossible de charger les réservations. Réessayez dans un instant.");
-      })
-      .finally(() => {
-        if (active) setCalendarLoading(false);
-      });
+      } finally {
+        refreshInFlight.current = false;
+        if (showLoading) setCalendarLoading(false);
+      }
+    },
+    [selectedEquip, weekStart],
+  );
+
+  useEffect(() => {
+    void refreshAvailability(true);
+
+    const intervalId = window.setInterval(() => {
+      void refreshAvailability();
+    }, 15_000);
+
+    const refreshWhenVisible = () => {
+      if (document.visibilityState === "visible") void refreshAvailability();
+    };
+
+    window.addEventListener("focus", refreshWhenVisible);
+    document.addEventListener("visibilitychange", refreshWhenVisible);
 
     return () => {
-      active = false;
+      window.clearInterval(intervalId);
+      window.removeEventListener("focus", refreshWhenVisible);
+      document.removeEventListener("visibilitychange", refreshWhenVisible);
     };
-  }, [selectedEquip, weekStart]);
+  }, [refreshAvailability]);
 
   const selectEquipment = (equipmentId: string) => {
     setSelectedEquip(equipmentId);
@@ -318,25 +357,7 @@ function AtelierPage() {
       formElement.reset();
       setPicks([]);
       setRequestAccepted(true);
-
-      const from = new Date(weekStart);
-      const to = new Date(weekStart);
-      to.setDate(to.getDate() + 7);
-      const slots = await getWorkshopAvailability({
-        data: {
-          equipmentId: selectedEquip as "pont" | "pneus" | "fosse" | "presse",
-          from: from.toISOString(),
-          to: to.toISOString(),
-        },
-      });
-      setAvailability(
-        new Map(
-          (slots as { startsAt: string; status: "pending" | "confirmed" }[]).map((slot) => [
-            new Date(slot.startsAt).getTime(),
-            slot.status,
-          ]),
-        ),
-      );
+      await refreshAvailability();
     } catch (error) {
       const message = error instanceof Error ? error.message : "La demande n’a pas pu être envoyée.";
 
@@ -351,7 +372,7 @@ function AtelierPage() {
               from: from.toISOString(),
               to: to.toISOString(),
             },
-          })) as { startsAt: string; status: "pending" | "confirmed" }[];
+          })) as { startsAt: string; status: AvailabilityStatus }[];
 
           const refreshedAvailability = new Map(
             refreshedSlots.map((slot) => [new Date(slot.startsAt).getTime(), slot.status] as const),
@@ -788,6 +809,21 @@ function AtelierPage() {
             </span>
           </div>
 
+          <div className="mt-3 flex items-center gap-2 text-[11px] text-steel" aria-live="polite">
+            <span className="inline-block size-2 rounded-full bg-emerald-500" />
+            Agenda actualisé automatiquement
+            {lastCalendarUpdate && (
+              <span>
+                · dernière mise à jour à{" "}
+                {lastCalendarUpdate.toLocaleTimeString("fr-FR", {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                  second: "2-digit",
+                })}
+              </span>
+            )}
+          </div>
+
           {calendarError && (
             <div className="mt-6 rounded-md border border-red-200 bg-red-50 p-4 text-sm text-red-700">
               {calendarError}
@@ -835,7 +871,7 @@ function AtelierPage() {
                             className={`h-10 w-full rounded-sm text-[11px] font-semibold uppercase tracking-wider transition ${
                               slotStatus === "pending"
                                 ? "cursor-not-allowed bg-amber-400 text-amber-950"
-                                : slotStatus === "confirmed" || inPast
+                                : slotStatus === "confirmed" || slotStatus === "blocked" || inPast
                                   ? "cursor-not-allowed bg-steel/25 text-white/70"
                                   : selected
                                     ? "bg-racing text-white shadow"
@@ -846,7 +882,7 @@ function AtelierPage() {
                               ? "…"
                               : slotStatus === "pending"
                                 ? "En attente"
-                                : slotStatus === "confirmed" || inPast
+                                : slotStatus === "confirmed" || slotStatus === "blocked" || inPast
                                   ? "Occupé"
                                   : selected
                                     ? "Choisi"
