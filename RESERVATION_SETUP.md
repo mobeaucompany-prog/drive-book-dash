@@ -11,18 +11,23 @@ Appliquer dans l’ordre au projet Supabase :
 
 La seconde migration ajoute la gestion admin, les blocages manuels et la protection des créneaux bloqués.
 
-## 2. Gmail
+## 2. Gmail gratuit via Google Apps Script
 
-Utiliser de préférence une adresse Gmail dédiée au garage.
+Le site étant hébergé sur Cloudflare, les e-mails passent par un petit Web App Google Apps Script en HTTPS plutôt que par SMTP.
 
-1. Activer la validation en deux étapes sur le compte Google.
-2. Créer un **mot de passe d’application** Google (nom conseillé : `CAO57 site`).
-3. Ajouter les secrets serveur suivants dans l’hébergement Lovable :
-   - `GMAIL_USER` : adresse Gmail complète
-   - `GMAIL_APP_PASSWORD` : mot de passe d’application à 16 caractères
-   - `RESERVATION_ADMIN_EMAIL` : adresse autorisée à accéder à `/admin/atelier` et destinataire des nouvelles demandes
+1. Ouvrir [script.google.com](https://script.google.com) avec l’adresse Gmail dédiée au garage.
+2. Créer un projet et copier le contenu de `GMAIL_APPS_SCRIPT.gs` dans `Code.gs`.
+3. Dans **Paramètres du projet > Propriétés du script**, ajouter `API_SECRET` avec une longue valeur aléatoire.
+4. Cliquer sur **Déployer > Nouveau déploiement > Application Web** :
+   - Exécuter en tant que : **Moi** ;
+   - Qui a accès : **Tout le monde**.
+5. Copier l’URL `/exec` du déploiement.
+6. Ajouter les secrets serveur suivants dans l’hébergement Lovable :
+   - `GMAIL_WEBHOOK_URL` : URL `/exec` du déploiement ;
+   - `GMAIL_WEBHOOK_SECRET` : même valeur que `API_SECRET` ;
+   - `RESERVATION_ADMIN_EMAIL` : adresse autorisée à accéder à `/admin/atelier` et destinataire des nouvelles demandes.
 
-Ne jamais utiliser le mot de passe normal du compte Gmail et ne jamais placer ces valeurs dans GitHub ou dans une variable `VITE_*`.
+Ne jamais placer le secret dans GitHub ou dans une variable `VITE_*`.
 
 Sans les deux variables Gmail, les réservations sont enregistrées normalement mais aucun e-mail n’est envoyé.
 
