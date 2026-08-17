@@ -86,10 +86,10 @@ function ClientAccountPage() {
   const [authMessage, setAuthMessage] = useState("");
   const [passwordRecovery, setPasswordRecovery] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [accountReady, setAccountReady] = useState(false);
   const [error, setError] = useState("");
   const [reservations, setReservations] = useState<ClientReservation[]>([]);
   const [quotes, setQuotes] = useState<ClientQuote[]>([]);
-  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     let active = true;
@@ -100,6 +100,7 @@ function ClientAccountPage() {
     });
     const { data: listener } = supabase.auth.onAuthStateChange((event, nextSession) => {
       if (event === "PASSWORD_RECOVERY") setPasswordRecovery(true);
+      if (event === "SIGNED_IN" || event === "SIGNED_OUT") setAccountReady(false);
       setSession(nextSession);
       setAuthLoading(false);
     });
@@ -117,21 +118,26 @@ function ClientAccountPage() {
         quotes: ClientQuote[];
         isAdmin: boolean;
       };
+      if (data.isAdmin) {
+        window.location.replace("/admin/atelier");
+        return;
+      }
       setReservations(data.reservations);
       setQuotes(data.quotes);
-      setIsAdmin(data.isAdmin);
+      setAccountReady(true);
       setError("");
     } catch (loadError) {
       setError(
         loadError instanceof Error ? loadError.message : "Impossible de charger votre compte.",
       );
+      setAccountReady(true);
     } finally {
       if (!silent) setLoading(false);
     }
   }, []);
 
   useEffect(() => {
-    if (!session) return;
+    if (!session || passwordRecovery) return;
     void loadDashboard();
     const intervalId = window.setInterval(() => void loadDashboard(true), 15_000);
     const onFocus = () => void loadDashboard(true);
@@ -140,7 +146,7 @@ function ClientAccountPage() {
       window.clearInterval(intervalId);
       window.removeEventListener("focus", onFocus);
     };
-  }, [loadDashboard, session]);
+  }, [loadDashboard, passwordRecovery, session]);
 
   const authenticate = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -315,6 +321,12 @@ function ClientAccountPage() {
     );
   }
 
+  if (!accountReady) {
+    return (
+      <div className="grid min-h-screen place-items-center bg-smoke">Vérification du compte…</div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-smoke text-ink">
       <header className="border-b border-border bg-white">
@@ -323,14 +335,6 @@ function ClientAccountPage() {
             <img src={logoAsset.url} alt="CAO57" className="h-16 w-auto" />
           </Link>
           <div className="flex flex-wrap items-center gap-3">
-            {isAdmin && (
-              <Link
-                to="/admin/atelier"
-                className="rounded-sm bg-racing px-4 py-2 text-xs font-bold uppercase text-white"
-              >
-                Administration garage
-              </Link>
-            )}
             <button
               onClick={() => void supabase.auth.signOut()}
               className="rounded-sm bg-carbon px-4 py-2 text-xs font-bold uppercase text-white"
