@@ -101,6 +101,37 @@ async function sendEmail(input: { to: string; subject: string; html: string }) {
   return sendGmailMessage(input);
 }
 
+async function getWorkshopAdminEmails() {
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  // Database types are generated after the role migration is applied.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const db = supabaseAdmin as any;
+  const fallbackEmail = process.env.RESERVATION_ADMIN_EMAIL?.trim().toLowerCase();
+  const emails = new Set<string>(fallbackEmail ? [fallbackEmail] : []);
+
+  const { data: roles, error } = await db.from("user_roles").select("user_id").eq("role", "admin");
+  if (error) {
+    console.error("Could not load workshop administrator recipients", error);
+    return [...emails];
+  }
+
+  const users = await Promise.all(
+    (roles ?? []).map((role: { user_id: string }) =>
+      supabaseAdmin.auth.admin.getUserById(role.user_id),
+    ),
+  );
+
+  users.forEach(({ data, error: userError }) => {
+    if (userError) {
+      console.error("Could not load an administrator e-mail", userError);
+      return;
+    }
+    if (data.user?.email) emails.add(data.user.email.trim().toLowerCase());
+  });
+
+  return [...emails];
+}
+
 export const getWorkshopAvailability = createServerFn({ method: "GET" })
   .validator(availabilitySchema)
   .handler(async ({ data }) => {
@@ -186,13 +217,15 @@ export const createWorkshopReservation = createServerFn({ method: "POST" })
       console.error("Customer acknowledgement email could not be sent", emailError);
     }
 
-    const adminEmail = process.env.RESERVATION_ADMIN_EMAIL;
-    if (adminEmail) {
+    const adminEmails = await getWorkshopAdminEmails();
+    if (adminEmails.length > 0) {
       try {
-        await sendEmail({
-          to: adminEmail,
-          subject: `Nouvelle demande atelier — ${equipmentNames[data.equipmentId]}`,
-          html: `
+        await Promise.all(
+          adminEmails.map((adminEmail) =>
+            sendEmail({
+              to: adminEmail,
+              subject: `Nouvelle demande atelier — ${equipmentNames[data.equipmentId]}`,
+              html: `
           <div style="font-family:Arial,sans-serif;max-width:680px;margin:auto;color:#111827">
             <div style="background:#0f1114;color:white;padding:24px;border-radius:8px 8px 0 0">
               <p style="margin:0;color:#60a5fa;font-weight:700">CAO57 · DEMANDE EN ATTENTE</p>
@@ -214,7 +247,9 @@ export const createWorkshopReservation = createServerFn({ method: "POST" })
               <p style="margin-top:24px;font-size:12px;color:#6b7280">Ces liens expirent automatiquement après 24 heures.</p>
             </div>
           </div>`,
-        });
+            }),
+          ),
+        );
       } catch (emailError) {
         console.error("Admin reservation email could not be sent", emailError);
       }
@@ -286,21 +321,30 @@ type AdminContext = {
   userId?: string;
 };
 
-function assertWorkshopAdmin(context: AdminContext) {
-  const configuredEmail = process.env.RESERVATION_ADMIN_EMAIL?.trim().toLowerCase();
-  const claimEmail =
-    typeof context.claims?.email === "string" ? context.claims.email.trim().toLowerCase() : "";
-
-  if (!configuredEmail) {
-    throw new Error("Accès admin non configuré : ajoutez RESERVATION_ADMIN_EMAIL.");
+async function assertWorkshopAdmin(context: AdminContext) {
+  if (!context.userId) {
+    throw new Error("Accès refusé : ce compte n’est pas autorisé à gérer l’atelier.");
   }
 
-  if (!claimEmail || claimEmail !== configuredEmail) {
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  // Database types are generated after the role migration is applied.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const db = supabaseAdmin as any;
+  const { data: allowed, error } = await db.rpc("has_role", {
+    p_user_id: context.userId,
+    p_role: "admin",
+  });
+
+  if (error) {
+    console.error("Administrator role check failed", error);
+    throw new Error("Impossible de vérifier les droits administrateur.");
+  }
+
+  if (!allowed) {
     throw new Error("Accès refusé : ce compte n’est pas autorisé à gérer l’atelier.");
   }
 
   return {
-    email: claimEmail,
     userId: context.userId,
   };
 }
@@ -308,7 +352,7 @@ function assertWorkshopAdmin(context: AdminContext) {
 export const getWorkshopAdminDashboard = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    assertWorkshopAdmin(context as AdminContext);
+    await assertWorkshopAdmin(context as AdminContext);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const db = supabaseAdmin as any;
@@ -347,7 +391,7 @@ export const adminDecideWorkshopReservation = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .validator(adminDecisionSchema)
   .handler(async ({ data, context }) => {
-    assertWorkshopAdmin(context as AdminContext);
+    await assertWorkshopAdmin(context as AdminContext);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const db = supabaseAdmin as any;
@@ -405,7 +449,7 @@ export const createWorkshopBlock = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .validator(adminBlockSchema)
   .handler(async ({ data, context }) => {
-    const admin = assertWorkshopAdmin(context as AdminContext);
+    const admin = await assertWorkshopAdmin(context as AdminContext);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const db = supabaseAdmin as any;
@@ -432,7 +476,7 @@ export const deleteWorkshopBlock = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .validator(adminDeleteBlockSchema)
   .handler(async ({ data, context }) => {
-    assertWorkshopAdmin(context as AdminContext);
+    await assertWorkshopAdmin(context as AdminContext);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const db = supabaseAdmin as any;
