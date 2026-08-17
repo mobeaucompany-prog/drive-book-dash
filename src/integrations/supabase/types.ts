@@ -16,6 +16,7 @@ export type Database = {
     Tables: {
       quote_requests: {
         Row: {
+          admin_response: string | null
           created_at: string
           customer_email: string
           customer_name: string
@@ -26,7 +27,10 @@ export type Database = {
           intervention_type: string
           mileage: number
           preferred_dates: string[]
+          quoted_amount: number | null
           registration_plate: string
+          responded_at: string | null
+          responded_by: string | null
           status: string
           transmission: string | null
           vehicle_make: string
@@ -34,6 +38,7 @@ export type Database = {
           vehicle_year: string | null
         }
         Insert: {
+          admin_response?: string | null
           created_at?: string
           customer_email: string
           customer_name: string
@@ -44,7 +49,10 @@ export type Database = {
           intervention_type: string
           mileage: number
           preferred_dates: string[]
+          quoted_amount?: number | null
           registration_plate: string
+          responded_at?: string | null
+          responded_by?: string | null
           status?: string
           transmission?: string | null
           vehicle_make: string
@@ -52,6 +60,7 @@ export type Database = {
           vehicle_year?: string | null
         }
         Update: {
+          admin_response?: string | null
           created_at?: string
           customer_email?: string
           customer_name?: string
@@ -62,7 +71,10 @@ export type Database = {
           intervention_type?: string
           mileage?: number
           preferred_dates?: string[]
+          quoted_amount?: number | null
           registration_plate?: string
+          responded_at?: string | null
+          responded_by?: string | null
           status?: string
           transmission?: string | null
           vehicle_make?: string
@@ -191,6 +203,16 @@ export type Database = {
     Functions: {
       admin_decide_workshop_reservation: {
         Args: { p_decision: string; p_reservation_id: string }
+        Returns: Json
+      }
+      admin_update_quote_request: {
+        Args: {
+          p_admin_response?: string
+          p_quote_id: string
+          p_quoted_amount?: number
+          p_responded_by?: string
+          p_status: string
+        }
         Returns: Json
       }
       cleanup_expired_workshop_reservations: { Args: never; Returns: undefined }
