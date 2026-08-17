@@ -116,7 +116,7 @@ type PickedSlot = {
   label: string;
 };
 
-type AvailabilityStatus = AvailabilityStatus | "blocked";
+type AvailabilityStatus = "free" | "booked" | "blocked";
 
 function calculateSelectionPrice(equipmentId: string, selectedSlots: PickedSlot[]) {
   if (selectedSlots.length === 0) return 0;
