@@ -5,6 +5,7 @@ import type { Session } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 import {
   adminDecideWorkshopReservation,
+  adminRespondToQuote,
   createWorkshopBlock,
   deleteWorkshopBlock,
   getWorkshopAdminDashboard,
@@ -43,6 +44,24 @@ type AdminBlock = {
   slot_start: string;
   blocked_reason: string;
   block_group_id: string;
+  created_at: string;
+};
+
+type AdminQuote = {
+  id: string;
+  customer_name: string;
+  customer_email: string;
+  customer_phone: string;
+  registration_plate: string;
+  vehicle_make: string;
+  vehicle_model: string;
+  intervention_type: string;
+  description: string;
+  preferred_dates: string[];
+  status: "new" | "contacted" | "quoted" | "closed";
+  quoted_amount: number | null;
+  admin_response: string | null;
+  responded_at: string | null;
   created_at: string;
 };
 
@@ -99,6 +118,7 @@ function WorkshopAdminPage() {
   const [accessDenied, setAccessDenied] = useState(false);
   const [reservations, setReservations] = useState<AdminReservation[]>([]);
   const [blocks, setBlocks] = useState<AdminBlock[]>([]);
+  const [quotes, setQuotes] = useState<AdminQuote[]>([]);
   const [dashboardLoading, setDashboardLoading] = useState(false);
   const [dashboardError, setDashboardError] = useState("");
   const [busyId, setBusyId] = useState("");
@@ -134,9 +154,11 @@ function WorkshopAdminPage() {
       const data = (await getWorkshopAdminDashboard()) as {
         reservations: AdminReservation[];
         blocks: AdminBlock[];
+        quotes: AdminQuote[];
       };
       setReservations(data.reservations);
       setBlocks(data.blocks);
+      setQuotes(data.quotes);
       setAccessDenied(false);
       setDashboardError("");
     } catch (error) {
@@ -349,6 +371,31 @@ function WorkshopAdminPage() {
       await loadDashboard(true);
     } catch (error) {
       setDashboardError(error instanceof Error ? error.message : "Le déblocage a échoué.");
+    } finally {
+      setBusyId("");
+    }
+  };
+
+  const respondToQuote = async (event: FormEvent<HTMLFormElement>, quoteId: string) => {
+    event.preventDefault();
+    setBusyId(quoteId);
+    setDashboardError("");
+    const values = new FormData(event.currentTarget);
+    const amountValue = String(values.get("amount") ?? "").trim();
+    try {
+      await adminRespondToQuote({
+        data: {
+          quoteId,
+          status: String(values.get("status") ?? "contacted") as AdminQuote["status"],
+          response: String(values.get("response") ?? "") || undefined,
+          amount: amountValue ? Number(amountValue) : null,
+        },
+      });
+      await loadDashboard(true);
+    } catch (error) {
+      setDashboardError(
+        error instanceof Error ? error.message : "La réponse au devis n’a pas pu être enregistrée.",
+      );
     } finally {
       setBusyId("");
     }
@@ -618,6 +665,92 @@ function WorkshopAdminPage() {
                     </span>
                   ))}
                 </div>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        <section className="rounded-md border border-border bg-white p-6">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-racing">
+            Demandes clients
+          </p>
+          <h2 className="mt-2 font-display text-3xl font-black">Devis à traiter</h2>
+          <p className="mt-2 text-sm text-steel">
+            La réponse enregistrée apparaît immédiatement dans l’espace client et lui est envoyée
+            par e-mail.
+          </p>
+          <div className="mt-6 grid gap-5">
+            {quotes.length === 0 && (
+              <p className="rounded-md bg-smoke p-5 text-sm text-steel">Aucune demande de devis.</p>
+            )}
+            {quotes.map((quote) => (
+              <article key={quote.id} className="rounded-md border border-border p-5">
+                <div className="flex flex-wrap justify-between gap-4">
+                  <div>
+                    <p className="text-xs font-bold uppercase tracking-wider text-racing">
+                      {quote.registration_plate} · {quote.intervention_type}
+                    </p>
+                    <h3 className="mt-2 font-display text-xl font-black">
+                      {quote.customer_name} — {quote.vehicle_make} {quote.vehicle_model}
+                    </h3>
+                    <p className="mt-2 text-sm text-steel">
+                      <a href={`tel:${quote.customer_phone}`} className="font-semibold text-ink">
+                        {quote.customer_phone}
+                      </a>
+                      {" · "}
+                      <a href={`mailto:${quote.customer_email}`} className="font-semibold text-ink">
+                        {quote.customer_email}
+                      </a>
+                    </p>
+                  </div>
+                  <span className="h-fit rounded-full bg-smoke px-3 py-1 text-xs font-bold uppercase">
+                    {quote.status === "new"
+                      ? "Nouvelle"
+                      : quote.status === "contacted"
+                        ? "Contactée"
+                        : quote.status === "quoted"
+                          ? "Devis envoyé"
+                          : "Clôturée"}
+                  </span>
+                </div>
+                <p className="mt-4 text-sm">{quote.description}</p>
+                <form
+                  onSubmit={(event) => void respondToQuote(event, quote.id)}
+                  className="mt-5 grid gap-3 lg:grid-cols-[180px_180px_1fr_auto]"
+                >
+                  <select
+                    name="status"
+                    defaultValue={quote.status}
+                    className="rounded-sm border border-border px-3 py-3 text-sm"
+                  >
+                    <option value="new">Nouvelle</option>
+                    <option value="contacted">Client contacté</option>
+                    <option value="quoted">Devis envoyé</option>
+                    <option value="closed">Clôturée</option>
+                  </select>
+                  <input
+                    name="amount"
+                    type="number"
+                    min="0"
+                    step="0.01"
+                    defaultValue={quote.quoted_amount ?? ""}
+                    placeholder="Montant €"
+                    className="rounded-sm border border-border px-3 py-3 text-sm"
+                  />
+                  <textarea
+                    name="response"
+                    rows={2}
+                    defaultValue={quote.admin_response ?? ""}
+                    placeholder="Réponse détaillée au client…"
+                    className="rounded-sm border border-border px-3 py-3 text-sm"
+                  />
+                  <button
+                    disabled={busyId === quote.id}
+                    className="rounded-sm bg-racing px-5 py-3 text-xs font-bold uppercase text-white disabled:opacity-50"
+                  >
+                    Enregistrer
+                  </button>
+                </form>
               </article>
             ))}
           </div>

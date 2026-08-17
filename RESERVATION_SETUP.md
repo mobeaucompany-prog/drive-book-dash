@@ -9,8 +9,9 @@ Appliquer dans l’ordre au projet Supabase :
 1. `supabase/migrations/20260728010000_create_workshop_reservations.sql`
 2. `supabase/migrations/20260817010000_add_workshop_admin.sql`
 3. `supabase/migrations/20260817020000_add_admin_roles.sql`
+4. `supabase/migrations/20260817030000_add_client_request_tracking.sql`
 
-La seconde migration ajoute les blocages manuels. La troisième ajoute les comptes et rôles administrateur sécurisés.
+La seconde migration ajoute les blocages manuels. La troisième ajoute les comptes et rôles administrateur sécurisés. La quatrième ajoute les réponses aux devis et les index nécessaires au suivi client.
 
 ## 2. Gmail gratuit via Google Apps Script
 
@@ -63,7 +64,7 @@ Le rôle ne peut pas être ajouté ou modifié depuis le navigateur. Une fois ac
 - supprimer un blocage ;
 - suivre automatiquement les changements de l’agenda.
 
-L’URL de redirection `https://votre-domaine/admin/atelier` doit être autorisée dans la configuration Auth de Supabase.
+Les URL de redirection `https://votre-domaine/compte` et `https://votre-domaine/admin/atelier` doivent être autorisées dans la configuration Auth de Supabase.
 
 Pour retirer les droits d’un compte :
 
@@ -75,11 +76,23 @@ where user_id = (
 and role = 'admin';
 ```
 
+## 4. Espace client
+
+Le bouton **Connexion** du site ouvre `/compte`. Chaque client peut créer son compte avec l’adresse e-mail utilisée lors de ses demandes. Après confirmation de son adresse, il retrouve automatiquement :
+
+- ses demandes de réservation et leur état (en attente, confirmée, refusée ou expirée) ;
+- les créneaux qu’il a proposés ;
+- ses demandes de devis, le montant et la réponse du garage ;
+- les changements, actualisés automatiquement toutes les 15 secondes.
+
+Les demandes déjà envoyées avant la création du compte apparaissent également si elles utilisent exactement la même adresse e-mail. Un compte possédant le rôle `admin` voit en plus le bouton **Administration garage**.
+
 ## Demandes de devis
 
 1. Appliquer également la migration `supabase/migrations/20260804010000_create_quote_requests.sql`.
 2. Les devis utilisent les mêmes variables Gmail.
 3. L’e-mail du garage peut être remplacé avec `QUOTE_ADMIN_EMAIL`.
+4. L’administrateur peut répondre depuis `/admin/atelier`. La réponse est enregistrée dans l’espace client et envoyée par e-mail.
 
 Tant que le numéro `06 20 43 11 91` utilise WhatsApp classique, le client obtient un bouton avec le message prérempli. Pour activer l’envoi serveur automatique après le passage à l’API WhatsApp Business, ajouter :
 

@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AtelierRouteImport } from './routes/atelier'
+import { Route as CompteRouteImport } from './routes/compte'
 import { Route as DevisRouteImport } from './routes/devis'
 import { Route as McpRouteImport } from './routes/mcp'
 import { Route as OccasionsRouteImport } from './routes/occasions'
@@ -31,6 +32,11 @@ const IndexRoute = IndexRouteImport.update({
 const AtelierRoute = AtelierRouteImport.update({
   id: '/atelier',
   path: '/atelier',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CompteRoute = CompteRouteImport.update({
+  id: '/compte',
+  path: '/compte',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DevisRoute = DevisRouteImport.update({
@@ -95,6 +101,7 @@ const Char91DotmcpChar93InvokeToolToolRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/atelier': typeof AtelierRoute
+  '/compte': typeof CompteRoute
   '/devis': typeof DevisRoute
   '/mcp': typeof McpRoute
   '/occasions': typeof OccasionsRoute
@@ -110,6 +117,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/atelier': typeof AtelierRoute
+  '/compte': typeof CompteRoute
   '/devis': typeof DevisRoute
   '/mcp': typeof McpRoute
   '/occasions': typeof OccasionsRoute
@@ -126,6 +134,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/atelier': typeof AtelierRoute
+  '/compte': typeof CompteRoute
   '/devis': typeof DevisRoute
   '/mcp': typeof McpRoute
   '/occasions': typeof OccasionsRoute
@@ -143,6 +152,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/atelier'
+    | '/compte'
     | '/devis'
     | '/mcp'
     | '/occasions'
@@ -158,6 +168,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/atelier'
+    | '/compte'
     | '/devis'
     | '/mcp'
     | '/occasions'
@@ -173,6 +184,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/atelier'
+    | '/compte'
     | '/devis'
     | '/mcp'
     | '/occasions'
@@ -189,6 +201,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AtelierRoute: typeof AtelierRoute
+  CompteRoute: typeof CompteRoute
   DevisRoute: typeof DevisRoute
   McpRoute: typeof McpRoute
   OccasionsRoute: typeof OccasionsRoute
@@ -216,6 +229,13 @@ declare module '@tanstack/react-router' {
       path: '/atelier'
       fullPath: '/atelier'
       preLoaderRoute: typeof AtelierRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/compte': {
+      id: '/compte'
+      path: '/compte'
+      fullPath: '/compte'
+      preLoaderRoute: typeof CompteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/devis': {
@@ -301,6 +321,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AtelierRoute: AtelierRoute,
+  CompteRoute: CompteRoute,
   DevisRoute: DevisRoute,
   McpRoute: McpRoute,
   OccasionsRoute: OccasionsRoute,

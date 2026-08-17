@@ -92,9 +92,17 @@ function QuotePage() {
           <Link to="/" className="flex items-center">
             <img src={logoAsset.url} alt="CAO57" className="w-auto" style={{ height: "4.5rem" }} />
           </Link>
-          <Link to="/reparations" className="text-sm font-semibold text-steel hover:text-racing">
-            ← Retour aux réparations
-          </Link>
+          <div className="flex items-center gap-4">
+            <Link
+              to="/compte"
+              className="rounded-sm bg-carbon px-4 py-2.5 text-xs font-bold uppercase tracking-wider text-white"
+            >
+              Connexion
+            </Link>
+            <Link to="/reparations" className="text-sm font-semibold text-steel hover:text-racing">
+              ← Retour
+            </Link>
+          </div>
         </div>
       </header>
 

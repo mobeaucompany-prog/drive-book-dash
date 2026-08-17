@@ -445,7 +445,7 @@ function AtelierPage() {
 
           <div className="flex items-center gap-3">
             <Link
-              to="/admin/atelier"
+              to="/compte"
               className="inline-flex items-center rounded-sm border border-carbon bg-carbon px-4 py-2.5 text-[12px] font-bold uppercase tracking-wider text-white transition-colors hover:bg-carbon/85"
             >
               Connexion
