@@ -15,8 +15,7 @@ export const Route = createFileRoute("/occasions")({
       { property: "og:title", content: "Occasions auto — CAO57 Forbach" },
       {
         property: "og:description",
-        content:
-          "Véhicules d'occasion révisés et garantis à Forbach. VW Polo, Citroën C4 et plus.",
+        content: "Véhicules d'occasion révisés et garantis à Forbach. VW Polo, Citroën C4 et plus.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -81,8 +80,8 @@ function OccasionsPage() {
             Nos véhicules d'occasion
           </h1>
           <p className="mt-3 max-w-2xl text-white/70">
-            Chaque véhicule passe une révision complète dans notre atelier avant
-            sa mise en vente. Factures disponibles, aucun frais à prévoir.
+            Chaque véhicule passe une révision complète dans notre atelier avant sa mise en vente.
+            Factures disponibles, aucun frais à prévoir.
           </p>
         </div>
       </section>
@@ -91,9 +90,7 @@ function OccasionsPage() {
         <aside className="mb-8 lg:mb-0">
           <div className="rounded-md border border-border bg-white p-5 lg:sticky lg:top-24">
             <div className="flex items-center justify-between">
-              <h2 className="font-display text-sm font-bold uppercase tracking-wide">
-                Filtres
-              </h2>
+              <h2 className="font-display text-sm font-bold uppercase tracking-wide">Filtres</h2>
               <button
                 onClick={reset}
                 className="text-[11px] font-semibold uppercase tracking-wider text-racing hover:underline"
@@ -113,7 +110,11 @@ function OccasionsPage() {
               </FilterField>
 
               <FilterField label="Énergie">
-                <select className="input" value={energie} onChange={(e) => setEnergie(e.target.value)}>
+                <select
+                  className="input"
+                  value={energie}
+                  onChange={(e) => setEnergie(e.target.value)}
+                >
                   {["Toutes", "Essence", "Diesel", "Hybride", "Électrique"].map((o) => (
                     <option key={o}>{o}</option>
                   ))}
@@ -188,9 +189,7 @@ function OccasionsPage() {
 
       <SiteFooter />
 
-      {selection && (
-        <FicheModal a={selection} onClose={() => setSelection(null)} />
-      )}
+      {selection && <FicheModal a={selection} onClose={() => setSelection(null)} />}
     </div>
   );
 }
@@ -277,7 +276,9 @@ function AnnonceCard({ a, onOpen }: { a: Annonce; onOpen: () => void }) {
           <li>· {a.boite}</li>
         </ul>
         <div className="mt-3 flex items-center justify-between border-t border-border pt-3 text-[11px] text-steel">
-          <span>📍 {a.ville} ({a.cp})</span>
+          <span>
+            📍 {a.ville} ({a.cp})
+          </span>
           <span>{a.publieLe}</span>
         </div>
       </div>
@@ -316,7 +317,11 @@ function FicheModal({ a, onClose }: { a: Annonce; onClose: () => void }) {
 
         <div className="overflow-hidden rounded-t-md">
           <div className="relative aspect-[16/10] bg-smoke">
-            <CarImage src={a.images[imgIndex]} alt={a.titre} className="h-full w-full object-cover" />
+            <CarImage
+              src={a.images[imgIndex]}
+              alt={a.titre}
+              className="h-full w-full object-cover"
+            />
             {hasGallery && (
               <>
                 <button
@@ -349,7 +354,9 @@ function FicheModal({ a, onClose }: { a: Annonce; onClose: () => void }) {
                   onClick={() => setImgIndex(i)}
                   className={
                     "h-16 w-24 shrink-0 overflow-hidden rounded-sm border-2 " +
-                    (i === imgIndex ? "border-racing" : "border-transparent opacity-70 hover:opacity-100")
+                    (i === imgIndex
+                      ? "border-racing"
+                      : "border-transparent opacity-70 hover:opacity-100")
                   }
                 >
                   <CarImage src={src} alt="" className="h-full w-full object-cover" />
@@ -387,7 +394,9 @@ function FicheModal({ a, onClose }: { a: Annonce; onClose: () => void }) {
           <div className="mt-6 grid gap-6 sm:grid-cols-2">
             {a.equipements.length > 0 && (
               <div>
-                <h3 className="font-display text-sm font-bold uppercase tracking-wide">Équipements</h3>
+                <h3 className="font-display text-sm font-bold uppercase tracking-wide">
+                  Équipements
+                </h3>
                 <ul className="mt-3 space-y-1.5 text-sm text-steel">
                   {a.equipements.map((e) => (
                     <li key={e}>✅ {e}</li>
@@ -397,7 +406,9 @@ function FicheModal({ a, onClose }: { a: Annonce; onClose: () => void }) {
             )}
             {a.entretien.length > 0 && (
               <div>
-                <h3 className="font-display text-sm font-bold uppercase tracking-wide">Entretien effectué</h3>
+                <h3 className="font-display text-sm font-bold uppercase tracking-wide">
+                  Entretien effectué
+                </h3>
                 <ul className="mt-3 space-y-1.5 text-sm text-steel">
                   {a.entretien.map((e) => (
                     <li key={e}>✔️ {e}</li>
@@ -441,7 +452,12 @@ function CarImage({ src, alt, className }: { src?: string; alt: string; classNam
   const [err, setErr] = useState(false);
   if (!src || err) {
     return (
-      <div className={(className || "") + " flex items-center justify-center bg-smoke text-[11px] font-semibold uppercase tracking-wider text-steel"}>
+      <div
+        className={
+          (className || "") +
+          " flex items-center justify-center bg-smoke text-[11px] font-semibold uppercase tracking-wider text-steel"
+        }
+      >
         Photo à venir
       </div>
     );
@@ -452,7 +468,9 @@ function CarImage({ src, alt, className }: { src?: string; alt: string; classNam
 function FilterField({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <label className="block">
-      <span className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wider text-steel">{label}</span>
+      <span className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wider text-steel">
+        {label}
+      </span>
       {children}
     </label>
   );
@@ -468,7 +486,9 @@ function SiteHeader() {
             <span className="hidden md:inline">Ouvert lun. — sam. · 08h → 19h</span>
           </div>
           <div className="flex items-center gap-5">
-            <a href={TEL_LINK} className="hover:text-white">☏ {TEL}</a>
+            <a href={TEL_LINK} className="hover:text-white">
+              ☏ {TEL}
+            </a>
           </div>
         </div>
       </div>
@@ -480,18 +500,34 @@ function SiteHeader() {
           </Link>
 
           <nav className="hidden items-center gap-8 text-[13px] font-semibold text-ink md:flex">
-            <Link to="/reparations" className="hover:text-racing">Réparations</Link>
-            <Link to="/occasions" className="text-racing">Occasions</Link>
-            <Link to="/atelier" className="hover:text-racing">Atelier libre</Link>
-            <a href="/#contact" className="hover:text-racing">Contact</a>
+            <Link to="/reparations" className="hover:text-racing">
+              Réparations
+            </Link>
+            <Link to="/occasions" className="text-racing">
+              Occasions
+            </Link>
+            <Link to="/atelier" className="hover:text-racing">
+              Atelier libre
+            </Link>
+            <a href="/#contact" className="hover:text-racing">
+              Contact
+            </a>
           </nav>
 
-          <a
-            href={TEL_LINK}
-            className="inline-flex items-center gap-2 rounded-sm bg-racing px-5 py-2.5 text-[12px] font-bold uppercase tracking-wider text-white hover:bg-racing/90"
-          >
-            Prendre RDV
-          </a>
+          <div className="flex items-center gap-3">
+            <Link
+              to="/admin/atelier"
+              className="inline-flex items-center rounded-sm border border-carbon bg-carbon px-4 py-2.5 text-[12px] font-bold uppercase tracking-wider text-white transition-colors hover:bg-carbon/85"
+            >
+              Connexion
+            </Link>
+            <a
+              href={TEL_LINK}
+              className="hidden items-center gap-2 rounded-sm bg-racing px-5 py-2.5 text-[12px] font-bold uppercase tracking-wider text-white hover:bg-racing/90 sm:inline-flex"
+            >
+              Prendre RDV
+            </a>
+          </div>
         </div>
       </header>
     </>
@@ -504,8 +540,12 @@ function SiteFooter() {
       <div className="mx-auto flex max-w-7xl flex-col justify-between gap-3 px-6 py-8 text-[11px] uppercase tracking-wider md:flex-row">
         <span>© {new Date().getFullYear()} CAO57 — Centre Auto Occasion 57 · Forbach</span>
         <div className="flex gap-5">
-          <a href={TEL_LINK} className="hover:text-white">{TEL}</a>
-          <Link to="/" className="hover:text-white">Accueil</Link>
+          <a href={TEL_LINK} className="hover:text-white">
+            {TEL}
+          </a>
+          <Link to="/" className="hover:text-white">
+            Accueil
+          </Link>
         </div>
       </div>
     </footer>
