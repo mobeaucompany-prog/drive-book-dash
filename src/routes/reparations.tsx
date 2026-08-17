@@ -20,7 +20,8 @@ export const Route = createFileRoute("/reparations")({
       { property: "og:title", content: "Réparations automobiles — CAO57 Forbach" },
       {
         property: "og:description",
-        content: "Un diagnostic clair, un devis avant travaux et des réparations toutes marques à Forbach.",
+        content:
+          "Un diagnostic clair, un devis avant travaux et des réparations toutes marques à Forbach.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -39,7 +40,11 @@ const services = [
     title: "Vidange & entretien",
     description:
       "Vidange moteur, remplacement des filtres et contrôle des principaux organes de sécurité.",
-    details: ["Huile adaptée constructeur", "Filtres huile, air et habitacle", "Remise à zéro entretien"],
+    details: [
+      "Huile adaptée constructeur",
+      "Filtres huile, air et habitacle",
+      "Remise à zéro entretien",
+    ],
     price: "Dès 49 €",
   },
   {
@@ -61,16 +66,14 @@ const services = [
   {
     image: repEmbrayage,
     title: "Embrayage",
-    description:
-      "Diagnostic des symptômes et remplacement des éléments usés de la transmission.",
+    description: "Diagnostic des symptômes et remplacement des éléments usés de la transmission.",
     details: ["Kit embrayage complet", "Butée hydraulique", "Volant moteur selon contrôle"],
     price: "Sur devis",
   },
   {
     image: repPneus,
     title: "Pneumatiques",
-    description:
-      "Montage et entretien de vos pneumatiques pour une tenue de route optimale.",
+    description: "Montage et entretien de vos pneumatiques pour une tenue de route optimale.",
     details: ["Montage et équilibrage", "Réparation crevaison", "Contrôle usure et pression"],
     price: "Dès 15 €",
   },
@@ -201,17 +204,14 @@ function ReparationsPage() {
           <div className="absolute inset-0 bg-gradient-to-r from-carbon via-carbon/85 to-carbon/25" />
           <div className="relative mx-auto max-w-7xl px-6 py-20 lg:py-28">
             <div className="max-w-3xl">
-              <div className="eyebrow mb-4 !text-white/70">
-                Garage automobile · Forbach
-              </div>
+              <div className="eyebrow mb-4 !text-white/70">Garage automobile · Forbach</div>
               <h1 className="font-display text-5xl font-black leading-[0.95] tracking-tight sm:text-6xl lg:text-7xl">
                 Réparations &<br />
                 <span className="text-racing">entretien.</span>
               </h1>
               <p className="mt-6 max-w-2xl text-base leading-relaxed text-white/75">
-                Nous entretenons et réparons les véhicules de toutes marques.
-                Diagnostic expliqué, devis validé avant intervention et pièces
-                d&apos;origine ou équivalentes.
+                Nous entretenons et réparons les véhicules de toutes marques. Diagnostic expliqué,
+                devis validé avant intervention et pièces d&apos;origine ou équivalentes.
               </p>
               <div className="mt-8 flex flex-wrap gap-3">
                 <Link
@@ -240,7 +240,9 @@ function ReparationsPage() {
               ["Réponse rapide", "Sous 24 heures"],
             ].map(([title, text]) => (
               <div key={title} className="px-5 py-6">
-                <div className="font-display text-sm font-bold uppercase tracking-wide">{title}</div>
+                <div className="font-display text-sm font-bold uppercase tracking-wide">
+                  {title}
+                </div>
                 <div className="mt-1 text-xs text-steel">{text}</div>
               </div>
             ))}
@@ -255,8 +257,8 @@ function ReparationsPage() {
                 Le bon entretien, au bon moment.
               </h2>
               <p className="mt-4 leading-relaxed text-steel">
-                Une prise en charge complète, de l&apos;entretien courant aux
-                réparations mécaniques plus importantes.
+                Une prise en charge complète, de l&apos;entretien courant aux réparations mécaniques
+                plus importantes.
               </p>
             </div>
 
@@ -278,9 +280,7 @@ function ReparationsPage() {
                   </div>
                   <div className="flex flex-1 flex-col p-6">
                     <h3 className="font-display text-xl font-bold">{service.title}</h3>
-                    <p className="mt-2 text-sm leading-relaxed text-steel">
-                      {service.description}
-                    </p>
+                    <p className="mt-2 text-sm leading-relaxed text-steel">{service.description}</p>
                     <ul className="mt-5 space-y-2 border-t border-border pt-4 text-[13px]">
                       {service.details.map((detail) => (
                         <li key={detail} className="flex gap-2">
@@ -311,10 +311,9 @@ function ReparationsPage() {
                 Toutes les interventions disponibles
               </h2>
               <p className="mt-4 leading-relaxed text-steel">
-                Retrouvez les principales opérations réalisées dans notre
-                atelier. Pour une intervention absente de cette liste,
-                contactez-nous : nous vous confirmerons rapidement sa prise en
-                charge.
+                Retrouvez les principales opérations réalisées dans notre atelier. Pour une
+                intervention absente de cette liste, contactez-nous : nous vous confirmerons
+                rapidement sa prise en charge.
               </p>
             </div>
 
@@ -364,8 +363,8 @@ function ReparationsPage() {
                 Un bruit, un voyant ou une panne ?
               </h2>
               <p className="mt-3 max-w-2xl text-white/70">
-                Appelez-nous pour décrire votre problème. Nous vous proposerons
-                le créneau et la prise en charge adaptés.
+                Appelez-nous pour décrire votre problème. Nous vous proposerons le créneau et la
+                prise en charge adaptés.
               </p>
             </div>
             <a
@@ -392,7 +391,9 @@ function SiteHeader() {
             <span className="hidden sm:inline">📍 2 Allée des Cyprès · 57600 Forbach</span>
             <span className="hidden md:inline">Ouvert lun. — sam. · 08h → 19h</span>
           </div>
-          <a href={TEL_LINK} className="hover:text-white">☏ {TEL}</a>
+          <a href={TEL_LINK} className="hover:text-white">
+            ☏ {TEL}
+          </a>
         </div>
       </div>
 
@@ -408,18 +409,34 @@ function SiteHeader() {
           </Link>
 
           <nav className="hidden items-center gap-8 text-[13px] font-semibold text-ink md:flex">
-            <Link to="/reparations" className="text-racing">Réparations</Link>
-            <Link to="/occasions" className="hover:text-racing">Occasions</Link>
-            <Link to="/atelier" className="hover:text-racing">Atelier libre</Link>
-            <Link to="/" hash="contact" className="hover:text-racing">Contact</Link>
+            <Link to="/reparations" className="text-racing">
+              Réparations
+            </Link>
+            <Link to="/occasions" className="hover:text-racing">
+              Occasions
+            </Link>
+            <Link to="/atelier" className="hover:text-racing">
+              Atelier libre
+            </Link>
+            <Link to="/" hash="contact" className="hover:text-racing">
+              Contact
+            </Link>
           </nav>
 
-          <Link
-            to="/devis"
-            className="inline-flex items-center gap-2 rounded-sm bg-racing px-5 py-2.5 text-[12px] font-bold uppercase tracking-wider text-white hover:bg-racing/90"
-          >
-            Demander un devis
-          </Link>
+          <div className="flex items-center gap-3">
+            <Link
+              to="/admin/atelier"
+              className="inline-flex items-center rounded-sm border border-carbon bg-carbon px-4 py-2.5 text-[12px] font-bold uppercase tracking-wider text-white transition-colors hover:bg-carbon/85"
+            >
+              Connexion
+            </Link>
+            <Link
+              to="/devis"
+              className="hidden items-center gap-2 rounded-sm bg-racing px-5 py-2.5 text-[12px] font-bold uppercase tracking-wider text-white hover:bg-racing/90 sm:inline-flex"
+            >
+              Demander un devis
+            </Link>
+          </div>
         </div>
       </header>
     </>
@@ -432,8 +449,12 @@ function SiteFooter() {
       <div className="mx-auto flex max-w-7xl flex-col justify-between gap-3 px-6 py-8 text-[11px] uppercase tracking-wider md:flex-row">
         <span>© {new Date().getFullYear()} CAO57 — Centre Auto Occasion 57 · Forbach</span>
         <div className="flex gap-5">
-          <a href={TEL_LINK} className="hover:text-white">{TEL}</a>
-          <Link to="/" className="hover:text-white">Accueil</Link>
+          <a href={TEL_LINK} className="hover:text-white">
+            {TEL}
+          </a>
+          <Link to="/" className="hover:text-white">
+            Accueil
+          </Link>
         </div>
       </div>
     </footer>
