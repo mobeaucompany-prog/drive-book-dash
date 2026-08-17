@@ -412,9 +412,6 @@ function AtelierPage() {
             <a href="tel:+33620431191" className="hover:text-white">
               ☏ 06 20 43 11 91
             </a>
-            <a href="/#compte" className="hidden sm:inline hover:text-white">
-              Mon compte
-            </a>
           </div>
         </div>
       </div>
@@ -447,9 +444,15 @@ function AtelierPage() {
           </nav>
 
           <div className="flex items-center gap-3">
+            <Link
+              to="/admin/atelier"
+              className="inline-flex items-center rounded-sm border border-carbon bg-carbon px-4 py-2.5 text-[12px] font-bold uppercase tracking-wider text-white transition-colors hover:bg-carbon/85"
+            >
+              Connexion
+            </Link>
             <a
               href="#reserver"
-              className="inline-flex items-center gap-2 rounded-sm bg-racing px-5 py-2.5 text-[12px] font-bold uppercase tracking-wider text-white hover:bg-racing/90"
+              className="hidden items-center gap-2 rounded-sm bg-racing px-5 py-2.5 text-[12px] font-bold uppercase tracking-wider text-white hover:bg-racing/90 sm:inline-flex"
             >
               Prendre RDV
             </a>
