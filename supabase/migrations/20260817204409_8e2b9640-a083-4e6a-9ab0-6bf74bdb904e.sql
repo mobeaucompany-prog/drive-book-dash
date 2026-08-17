@@ -1,0 +1,1 @@
+insert into public.user_roles (user_id, role) values ('103f48d5-1d1a-464f-8cb4-bf67bf4804c8','admin'::public.app_role) on conflict (user_id, role) do nothing;
