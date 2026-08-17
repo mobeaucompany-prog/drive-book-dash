@@ -21,6 +21,7 @@ export const Route = createFileRoute("/admin/atelier")({
 });
 
 type EquipmentId = "pont" | "pneus" | "fosse" | "presse";
+type AuthMode = "login" | "register" | "forgot";
 
 type AdminReservation = {
   id: string;
@@ -90,8 +91,12 @@ function statusLabel(status: AdminReservation["status"]) {
 function WorkshopAdminPage() {
   const [session, setSession] = useState<Session | null>(null);
   const [authLoading, setAuthLoading] = useState(true);
-  const [loginSent, setLoginSent] = useState(false);
+  const [authMode, setAuthMode] = useState<AuthMode>("login");
+  const [authBusy, setAuthBusy] = useState(false);
+  const [authMessage, setAuthMessage] = useState("");
   const [loginError, setLoginError] = useState("");
+  const [passwordRecovery, setPasswordRecovery] = useState(false);
+  const [accessDenied, setAccessDenied] = useState(false);
   const [reservations, setReservations] = useState<AdminReservation[]>([]);
   const [blocks, setBlocks] = useState<AdminBlock[]>([]);
   const [dashboardLoading, setDashboardLoading] = useState(false);
@@ -111,7 +116,8 @@ function WorkshopAdminPage() {
       setAuthLoading(false);
     });
 
-    const { data: listener } = supabase.auth.onAuthStateChange((_event, nextSession) => {
+    const { data: listener } = supabase.auth.onAuthStateChange((event, nextSession) => {
+      if (event === "PASSWORD_RECOVERY") setPasswordRecovery(true);
       setSession(nextSession);
       setAuthLoading(false);
     });
@@ -131,11 +137,13 @@ function WorkshopAdminPage() {
       };
       setReservations(data.reservations);
       setBlocks(data.blocks);
+      setAccessDenied(false);
       setDashboardError("");
     } catch (error) {
-      setDashboardError(
-        error instanceof Error ? error.message : "Impossible de charger l’administration.",
-      );
+      const message =
+        error instanceof Error ? error.message : "Impossible de charger l’administration.";
+      setAccessDenied(message.includes("pas autorisé") || message.includes("Accès refusé"));
+      setDashboardError(message);
     } finally {
       if (!silent) setDashboardLoading(false);
     }
@@ -207,25 +215,80 @@ function WorkshopAdminPage() {
     (reservation) => reservation.status !== "pending",
   );
 
-  const sendLoginLink = async (event: FormEvent<HTMLFormElement>) => {
+  const authenticate = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setLoginError("");
+    setAuthMessage("");
+    setAuthBusy(true);
     const form = new FormData(event.currentTarget);
     const email = String(form.get("email") ?? "").trim();
+    const password = String(form.get("password") ?? "");
 
-    const { error } = await supabase.auth.signInWithOtp({
-      email,
-      options: {
-        emailRedirectTo: `${window.location.origin}/admin/atelier`,
-        shouldCreateUser: true,
-      },
-    });
-
-    if (error) {
-      setLoginError("Le lien de connexion n’a pas pu être envoyé.");
+    if (authMode === "forgot") {
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/admin/atelier`,
+      });
+      setAuthBusy(false);
+      if (error) {
+        setLoginError("Le lien de réinitialisation n’a pas pu être envoyé.");
+        return;
+      }
+      setAuthMessage(
+        "Lien envoyé. Consultez votre boîte e-mail pour choisir un nouveau mot de passe.",
+      );
       return;
     }
-    setLoginSent(true);
+
+    if (password.length < 8) {
+      setAuthBusy(false);
+      setLoginError("Le mot de passe doit contenir au moins 8 caractères.");
+      return;
+    }
+
+    const result =
+      authMode === "register"
+        ? await supabase.auth.signUp({
+            email,
+            password,
+            options: { emailRedirectTo: `${window.location.origin}/admin/atelier` },
+          })
+        : await supabase.auth.signInWithPassword({ email, password });
+
+    setAuthBusy(false);
+
+    if (result.error) {
+      setLoginError(
+        authMode === "register"
+          ? "Le compte n’a pas pu être créé. Cette adresse est peut-être déjà utilisée."
+          : "Adresse e-mail ou mot de passe incorrect.",
+      );
+      return;
+    }
+
+    if (authMode === "register" && !result.data.session) {
+      setAuthMessage(
+        "Compte créé. Confirmez votre adresse depuis l’e-mail reçu, puis connectez-vous.",
+      );
+    }
+  };
+
+  const saveNewPassword = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setLoginError("");
+    const password = String(new FormData(event.currentTarget).get("password") ?? "");
+    if (password.length < 8) {
+      setLoginError("Le mot de passe doit contenir au moins 8 caractères.");
+      return;
+    }
+    setAuthBusy(true);
+    const { error } = await supabase.auth.updateUser({ password });
+    setAuthBusy(false);
+    if (error) {
+      setLoginError("Le mot de passe n’a pas pu être modifié.");
+      return;
+    }
+    setPasswordRecovery(false);
+    setAuthMessage("Votre mot de passe a bien été modifié.");
   };
 
   const decide = async (reservationId: string, decision: "confirm" | "reject") => {
@@ -304,32 +367,135 @@ function WorkshopAdminPage() {
           </p>
           <h1 className="mt-3 font-display text-3xl font-black">Gestion de l’atelier</h1>
           <p className="mt-3 text-sm leading-relaxed text-steel">
-            Saisissez l’adresse e-mail administrateur. Un lien sécurisé à usage unique sera envoyé
-            par Supabase.
+            {authMode === "register"
+              ? "Créez votre compte. L’accès à l’administration sera activé après validation par Mobeau."
+              : authMode === "forgot"
+                ? "Indiquez votre adresse pour recevoir un lien de réinitialisation."
+                : "Connectez-vous avec le compte administrateur du garage."}
           </p>
-          {loginSent ? (
+          {authMessage ? (
             <div className="mt-6 rounded-md border border-green-200 bg-green-50 p-4 text-sm text-green-800">
-              Lien envoyé. Consultez votre boîte e-mail puis revenez sur cette page.
+              {authMessage}
             </div>
-          ) : (
-            <form onSubmit={sendLoginLink} className="mt-6 space-y-4">
+          ) : null}
+          <form onSubmit={authenticate} className="mt-6 space-y-4">
+            <input
+              required
+              name="email"
+              type="email"
+              autoComplete="email"
+              placeholder="adresse@garage.fr"
+              className="w-full rounded-sm border border-border px-4 py-3"
+            />
+            {authMode !== "forgot" && (
               <input
                 required
-                name="email"
-                type="email"
-                autoComplete="email"
-                placeholder="adresse@garage.fr"
+                minLength={8}
+                name="password"
+                type="password"
+                autoComplete={authMode === "register" ? "new-password" : "current-password"}
+                placeholder="Mot de passe (8 caractères minimum)"
                 className="w-full rounded-sm border border-border px-4 py-3"
               />
-              {loginError && <p className="text-sm text-red-600">{loginError}</p>}
-              <button className="w-full rounded-sm bg-racing px-5 py-3 text-sm font-bold uppercase tracking-wider text-white">
-                Recevoir mon lien de connexion
+            )}
+            {loginError && <p className="text-sm text-red-600">{loginError}</p>}
+            <button
+              disabled={authBusy}
+              className="w-full rounded-sm bg-racing px-5 py-3 text-sm font-bold uppercase tracking-wider text-white disabled:opacity-50"
+            >
+              {authBusy
+                ? "Veuillez patienter…"
+                : authMode === "register"
+                  ? "Créer mon compte"
+                  : authMode === "forgot"
+                    ? "Envoyer le lien"
+                    : "Se connecter"}
+            </button>
+          </form>
+          <div className="mt-5 flex flex-wrap gap-x-4 gap-y-2 text-sm">
+            {authMode !== "login" && (
+              <button onClick={() => setAuthMode("login")} className="font-semibold text-racing">
+                Se connecter
               </button>
-            </form>
-          )}
+            )}
+            {authMode !== "register" && (
+              <button onClick={() => setAuthMode("register")} className="font-semibold text-racing">
+                Créer un compte
+              </button>
+            )}
+            {authMode !== "forgot" && (
+              <button onClick={() => setAuthMode("forgot")} className="text-steel">
+                Mot de passe oublié
+              </button>
+            )}
+          </div>
           <Link to="/atelier" className="mt-6 inline-block text-sm font-semibold text-racing">
             ← Retour à l’agenda client
           </Link>
+        </section>
+      </main>
+    );
+  }
+
+  if (passwordRecovery) {
+    return (
+      <main className="grid min-h-screen place-items-center bg-smoke px-6">
+        <section className="w-full max-w-md rounded-md border border-border bg-white p-8 shadow-sm">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-racing">
+            CAO57 · Administration
+          </p>
+          <h1 className="mt-3 font-display text-3xl font-black">Nouveau mot de passe</h1>
+          <form onSubmit={saveNewPassword} className="mt-6 space-y-4">
+            <input
+              required
+              minLength={8}
+              name="password"
+              type="password"
+              autoComplete="new-password"
+              placeholder="Nouveau mot de passe"
+              className="w-full rounded-sm border border-border px-4 py-3"
+            />
+            {loginError && <p className="text-sm text-red-600">{loginError}</p>}
+            <button
+              disabled={authBusy}
+              className="w-full rounded-sm bg-racing px-5 py-3 text-sm font-bold uppercase tracking-wider text-white disabled:opacity-50"
+            >
+              Enregistrer le mot de passe
+            </button>
+          </form>
+        </section>
+      </main>
+    );
+  }
+
+  if (accessDenied) {
+    return (
+      <main className="grid min-h-screen place-items-center bg-smoke px-6">
+        <section className="w-full max-w-lg rounded-md border border-border bg-white p-8 shadow-sm">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-racing">
+            CAO57 · Compte créé
+          </p>
+          <h1 className="mt-3 font-display text-3xl font-black">Accès en attente de validation</h1>
+          <p className="mt-4 text-sm leading-relaxed text-steel">
+            Le compte <strong className="text-ink">{session.user.email}</strong> est connecté, mais
+            il n’a pas encore le rôle administrateur. Transmettez cette adresse à Mobeau pour
+            activer l’accès.
+          </p>
+          <div className="mt-6 flex flex-wrap gap-3">
+            <button
+              disabled={dashboardLoading}
+              onClick={() => void loadDashboard()}
+              className="rounded-sm bg-racing px-5 py-3 text-xs font-bold uppercase text-white disabled:opacity-50"
+            >
+              {dashboardLoading ? "Vérification…" : "Vérifier mon accès"}
+            </button>
+            <button
+              onClick={() => void supabase.auth.signOut()}
+              className="rounded-sm bg-carbon px-5 py-3 text-xs font-bold uppercase text-white"
+            >
+              Déconnexion
+            </button>
+          </div>
         </section>
       </main>
     );

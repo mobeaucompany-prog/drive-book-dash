@@ -8,8 +8,9 @@ Appliquer dans l’ordre au projet Supabase :
 
 1. `supabase/migrations/20260728010000_create_workshop_reservations.sql`
 2. `supabase/migrations/20260817010000_add_workshop_admin.sql`
+3. `supabase/migrations/20260817020000_add_admin_roles.sql`
 
-La seconde migration ajoute la gestion admin, les blocages manuels et la protection des créneaux bloqués.
+La seconde migration ajoute les blocages manuels. La troisième ajoute les comptes et rôles administrateur sécurisés.
 
 ## 2. Gmail gratuit via Google Apps Script
 
@@ -25,7 +26,7 @@ Le site étant hébergé sur Cloudflare, les e-mails passent par un petit Web Ap
 6. Ajouter les secrets serveur suivants dans l’hébergement Lovable :
    - `GMAIL_WEBHOOK_URL` : URL `/exec` du déploiement ;
    - `GMAIL_WEBHOOK_SECRET` : même valeur que `API_SECRET` ;
-   - `RESERVATION_ADMIN_EMAIL` : adresse autorisée à accéder à `/admin/atelier` et destinataire des nouvelles demandes.
+   - `RESERVATION_ADMIN_EMAIL` : destinataire de secours des nouvelles demandes (facultatif une fois un administrateur activé).
 
 Ne jamais placer le secret dans GitHub ou dans une variable `VITE_*`.
 
@@ -33,9 +34,28 @@ Sans les deux variables Gmail, les réservations sont enregistrées normalement 
 
 ## 3. Administration
 
-La page sécurisée est `/admin/atelier`.
+La page sécurisée est `/admin/atelier`. Le compte du site et la boîte Gmail utilisée pour envoyer les notifications sont indépendants : le garage ne communique jamais le mot de passe de sa messagerie.
 
-L’administrateur saisit l’adresse définie dans `RESERVATION_ADMIN_EMAIL`, reçoit un lien de connexion Supabase, puis peut :
+1. Le garage ouvre `/admin/atelier`, clique sur **Créer un compte** et choisit son propre mot de passe.
+2. Après confirmation de l’adresse e-mail, récupérer son identifiant dans Supabase avec :
+
+```sql
+select id, email, created_at
+from auth.users
+order by created_at desc;
+```
+
+3. Attribuer le rôle administrateur en remplaçant l’adresse dans la requête suivante :
+
+```sql
+insert into public.user_roles (user_id, role)
+select id, 'admin'::public.app_role
+from auth.users
+where lower(email) = lower('adresse-du-garage@exemple.fr')
+on conflict (user_id, role) do nothing;
+```
+
+Le rôle ne peut pas être ajouté ou modifié depuis le navigateur. Une fois activé, l’administrateur peut :
 
 - confirmer ou refuser une demande ;
 - consulter les demandes récentes ;
@@ -44,6 +64,16 @@ L’administrateur saisit l’adresse définie dans `RESERVATION_ADMIN_EMAIL`, r
 - suivre automatiquement les changements de l’agenda.
 
 L’URL de redirection `https://votre-domaine/admin/atelier` doit être autorisée dans la configuration Auth de Supabase.
+
+Pour retirer les droits d’un compte :
+
+```sql
+delete from public.user_roles
+where user_id = (
+  select id from auth.users where lower(email) = lower('adresse-du-garage@exemple.fr')
+)
+and role = 'admin';
+```
 
 ## Demandes de devis
 
