@@ -65,56 +65,49 @@ function buildGarageMessage(data: z.infer<typeof quoteRequestSchema>) {
 }
 
 async function sendGarageEmail(data: z.infer<typeof quoteRequestSchema>) {
-  const apiKey = process.env.RESEND_API_KEY;
-  const from = process.env.RESERVATION_FROM_EMAIL;
+  const user = process.env.GMAIL_USER;
+  const appPassword = process.env.GMAIL_APP_PASSWORD?.replaceAll(" ", "");
   const to = process.env.QUOTE_ADMIN_EMAIL || GARAGE_EMAIL;
 
-  if (!apiKey || !from) return false;
+  if (!user || !appPassword) return false;
 
-  const response = await fetch("https://api.resend.com/emails", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-      "Content-Type": "application/json",
-      "User-Agent": "CAO57-quotes/1.0",
-    },
-    body: JSON.stringify({
-      from,
-      to: [to],
-      reply_to: data.customerEmail,
-      subject: `Demande de devis — ${data.registrationPlate.toUpperCase()} — ${data.interventionType}`,
-      html: `
-        <div style="font-family:Arial,sans-serif;max-width:680px;margin:auto;color:#111827">
-          <div style="background:#0f1114;color:white;padding:24px;border-radius:8px 8px 0 0">
-            <p style="margin:0;color:#60a5fa;font-weight:700">CAO57 · NOUVELLE DEMANDE</p>
-            <h1 style="margin:10px 0 0;font-size:26px">Demande de devis automobile</h1>
-          </div>
-          <div style="border:1px solid #e5e7eb;padding:24px;border-radius:0 0 8px 8px">
-            <h2 style="font-size:18px">Client</h2>
-            <p><strong>Nom :</strong> ${escapeHtml(data.customerName)}</p>
-            <p><strong>Téléphone :</strong> <a href="tel:${escapeHtml(data.customerPhone)}">${escapeHtml(data.customerPhone)}</a></p>
-            <p><strong>E-mail :</strong> <a href="mailto:${escapeHtml(data.customerEmail)}">${escapeHtml(data.customerEmail)}</a></p>
-            <h2 style="margin-top:24px;font-size:18px">Véhicule</h2>
-            <p><strong>Plaque :</strong> ${escapeHtml(data.registrationPlate.toUpperCase())}</p>
-            <p><strong>Marque / modèle :</strong> ${escapeHtml(data.vehicleMake)} ${escapeHtml(data.vehicleModel)}</p>
-            <p><strong>Année :</strong> ${optionalValue(data.vehicleYear)}</p>
-            <p><strong>Kilométrage :</strong> ${data.mileage.toLocaleString("fr-FR")} km</p>
-            <p><strong>Carburant :</strong> ${optionalValue(data.fuelType)}</p>
-            <p><strong>Boîte :</strong> ${optionalValue(data.transmission)}</p>
-            <h2 style="margin-top:24px;font-size:18px">Intervention</h2>
-            <p><strong>Type :</strong> ${escapeHtml(data.interventionType)}</p>
-            <p><strong>Dates souhaitées :</strong></p>
-            <ul>${data.preferredDates.map((date) => `<li>${escapeHtml(formatDate(date))}</li>`).join("")}</ul>
-            <p><strong>Description :</strong><br>${escapeHtml(data.description).replaceAll("\n", "<br>")}</p>
-          </div>
-        </div>`,
-    }),
+  const nodemailer = await import("nodemailer");
+  const transporter = nodemailer.default.createTransport({
+    service: "gmail",
+    auth: { user, pass: appPassword },
   });
 
-  if (!response.ok) {
-    console.error("Resend quote error", response.status, await response.text());
-    throw new Error("L’e-mail n’a pas pu être envoyé au garage.");
-  }
+  await transporter.sendMail({
+    from: `CAO57 <${user}>`,
+    to,
+    replyTo: data.customerEmail,
+    subject: `Demande de devis — ${data.registrationPlate.toUpperCase()} — ${data.interventionType}`,
+    html: `
+      <div style="font-family:Arial,sans-serif;max-width:680px;margin:auto;color:#111827">
+        <div style="background:#0f1114;color:white;padding:24px;border-radius:8px 8px 0 0">
+          <p style="margin:0;color:#60a5fa;font-weight:700">CAO57 · NOUVELLE DEMANDE</p>
+          <h1 style="margin:10px 0 0;font-size:26px">Demande de devis automobile</h1>
+        </div>
+        <div style="border:1px solid #e5e7eb;padding:24px;border-radius:0 0 8px 8px">
+          <h2 style="font-size:18px">Client</h2>
+          <p><strong>Nom :</strong> ${escapeHtml(data.customerName)}</p>
+          <p><strong>Téléphone :</strong> <a href="tel:${escapeHtml(data.customerPhone)}">${escapeHtml(data.customerPhone)}</a></p>
+          <p><strong>E-mail :</strong> <a href="mailto:${escapeHtml(data.customerEmail)}">${escapeHtml(data.customerEmail)}</a></p>
+          <h2 style="margin-top:24px;font-size:18px">Véhicule</h2>
+          <p><strong>Plaque :</strong> ${escapeHtml(data.registrationPlate.toUpperCase())}</p>
+          <p><strong>Marque / modèle :</strong> ${escapeHtml(data.vehicleMake)} ${escapeHtml(data.vehicleModel)}</p>
+          <p><strong>Année :</strong> ${optionalValue(data.vehicleYear)}</p>
+          <p><strong>Kilométrage :</strong> ${data.mileage.toLocaleString("fr-FR")} km</p>
+          <p><strong>Carburant :</strong> ${optionalValue(data.fuelType)}</p>
+          <p><strong>Boîte :</strong> ${optionalValue(data.transmission)}</p>
+          <h2 style="margin-top:24px;font-size:18px">Intervention</h2>
+          <p><strong>Type :</strong> ${escapeHtml(data.interventionType)}</p>
+          <p><strong>Dates souhaitées :</strong></p>
+          <ul>${data.preferredDates.map((date) => `<li>${escapeHtml(formatDate(date))}</li>`).join("")}</ul>
+          <p><strong>Description :</strong><br>${escapeHtml(data.description).replaceAll("\n", "<br>")}</p>
+        </div>
+      </div>`,
+  });
 
   return true;
 }
