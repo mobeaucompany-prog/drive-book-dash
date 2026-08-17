@@ -97,30 +97,8 @@ function slotsHtml(slots: string[]) {
 }
 
 async function sendEmail(input: { to: string; subject: string; html: string }) {
-  const user = process.env.GMAIL_USER;
-  const appPassword = process.env.GMAIL_APP_PASSWORD?.replaceAll(" ", "");
-
-  if (!user || !appPassword) {
-    return false;
-  }
-
-  const nodemailer = await import("nodemailer");
-  const transporter = nodemailer.default.createTransport({
-    service: "gmail",
-    auth: {
-      user,
-      pass: appPassword,
-    },
-  });
-
-  await transporter.sendMail({
-    from: `CAO57 <${user}>`,
-    to: input.to,
-    subject: input.subject,
-    html: input.html,
-  });
-
-  return true;
+  const { sendGmailMessage } = await import("@/lib/gmail.server");
+  return sendGmailMessage(input);
 }
 
 export const getWorkshopAvailability = createServerFn({ method: "GET" })
