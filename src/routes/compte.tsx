@@ -219,7 +219,7 @@ function ClientAccountPage() {
       <main className="grid min-h-screen place-items-center bg-smoke px-6 py-10">
         <section className="w-full max-w-md rounded-md border border-border bg-white p-8 shadow-sm">
           <Link to="/" className="inline-flex">
-            <span className="account-brand"><Brand /></span>
+            <span className="account-brand"><Brand variant="on-light" /></span>
           </Link>
           <p className="mt-6 text-[11px] font-semibold uppercase tracking-[0.2em] text-racing">
             Espace client
@@ -332,7 +332,7 @@ function ClientAccountPage() {
       <header className="border-b border-border bg-white">
         <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4 px-6 py-4">
           <Link to="/">
-            <span className="account-brand"><Brand /></span>
+            <span className="account-brand"><Brand variant="on-light" /></span>
           </Link>
           <div className="flex flex-wrap items-center gap-3">
             <button
