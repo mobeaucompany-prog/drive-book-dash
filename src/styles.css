@@ -214,31 +214,11 @@ html {
 .bruch-brand {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
-  font-family: Archivo, sans-serif;
-  color: #f7f9fb;
-  font-weight: 900;
-  font-style: italic;
-  font-size: 21px;
-  line-height: 1.1;
-  white-space: nowrap;
 }
-.bruch-brand > svg {
-  color: #00b8ef;
-  width: 39px;
-  height: 39px;
-  stroke-width: 2;
-}
-.bruch-brand strong {
-  color: #00b8ef;
-}
-.bruch-brand small {
+.bruch-brand > img {
+  height: 58px;
+  width: auto;
   display: block;
-  font-size: 7px;
-  letter-spacing: 1.75px;
-  margin-top: 7px;
-  font-style: normal;
-  font-weight: 500;
 }
 .desktop-nav {
   display: flex;
@@ -1013,15 +993,8 @@ html {
   gap: 20px;
   padding-block: 32px;
 }
-.bruch-footer .bruch-brand {
-  font-size: 15px;
-}
-.bruch-footer .bruch-brand small {
-  font-size: 5px;
-}
-.bruch-footer .bruch-brand > svg {
-  width: 29px;
-  height: 29px;
+.bruch-footer .bruch-brand > img {
+  height: 38px;
 }
 .bruch-footer > span {
   color: #8798a7;
@@ -1099,16 +1072,8 @@ html {
     height: 76px;
     gap: 16px;
   }
-  .bruch-brand {
-    font-size: 18px;
-  }
-  .bruch-brand small {
-    font-size: 6px;
-    letter-spacing: 1.3px;
-  }
-  .bruch-brand > svg {
-    width: 32px;
-    height: 32px;
+  .bruch-brand > img {
+    height: 44px;
   }
   .desktop-nav {
     display: none;
@@ -1330,6 +1295,6 @@ html {
     transition: none !important;
   }
 }
-.account-brand .bruch-brand {
-  color: #0b1722;
+.account-brand .bruch-brand > img {
+  height: 40px;
 }
