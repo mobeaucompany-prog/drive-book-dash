@@ -2,14 +2,14 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useCallback, useEffect, useState } from "react";
 import type { FormEvent } from "react";
 import type { Session } from "@supabase/supabase-js";
-import logoAsset from "@/assets/cao57-logo-v4.png.asset.json";
+import { Brand } from "@/components/Brand";
 import { supabase } from "@/integrations/supabase/client";
 import { getClientDashboard } from "@/lib/client-account";
 
 export const Route = createFileRoute("/compte")({
   head: () => ({
     meta: [
-      { title: "Mon compte — Suivi de mes demandes CAO57" },
+      { title: "Mon compte — Suivi de mes demandes Pneus du Bruch" },
       { name: "robots", content: "noindex,nofollow" },
     ],
   }),
@@ -219,7 +219,7 @@ function ClientAccountPage() {
       <main className="grid min-h-screen place-items-center bg-smoke px-6 py-10">
         <section className="w-full max-w-md rounded-md border border-border bg-white p-8 shadow-sm">
           <Link to="/" className="inline-flex">
-            <img src={logoAsset.url} alt="CAO57" className="h-16 w-auto" />
+            <span className="account-brand"><Brand /></span>
           </Link>
           <p className="mt-6 text-[11px] font-semibold uppercase tracking-[0.2em] text-racing">
             Espace client
@@ -332,7 +332,7 @@ function ClientAccountPage() {
       <header className="border-b border-border bg-white">
         <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4 px-6 py-4">
           <Link to="/">
-            <img src={logoAsset.url} alt="CAO57" className="h-16 w-auto" />
+            <span className="account-brand"><Brand /></span>
           </Link>
           <div className="flex flex-wrap items-center gap-3">
             <button
@@ -364,9 +364,9 @@ function ClientAccountPage() {
 
         <section className="rounded-md border border-border bg-white p-6">
           <div className="flex flex-wrap items-center justify-between gap-3">
-            <h2 className="font-display text-3xl font-black">Mes réservations atelier</h2>
-            <Link to="/atelier" className="text-sm font-bold text-racing">
-              Nouvelle réservation →
+            <h2 className="font-display text-3xl font-black">Historique de mes réservations atelier</h2>
+            <Link to="/devis" className="text-sm font-bold text-racing">
+              Demander un devis →
             </Link>
           </div>
           <div className="mt-6 grid gap-4">

@@ -1,35 +1,38 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState, type FormEvent } from "react";
-import logoAsset from "@/assets/cao57-logo-v4.png.asset.json";
-import heroWorkshop from "@/assets/garage-lifts.jpg.asset.json";
-import garageInterior from "@/assets/garage-interior.jpg.asset.json";
-import repVidange from "@/assets/repair-vidange.jpg";
-import repFreinage from "@/assets/repair-freinage.jpg";
-import repDistribution from "@/assets/repair-distribution.jpg";
-import repEmbrayage from "@/assets/repair-embrayage.jpg";
-import repPneus from "@/assets/repair-pneus.jpg";
-import repDiagnostic from "@/assets/repair-diagnostic.jpg";
-import { annonces } from "@/data/annonces";
-import { sendContactRequest } from "@/lib/contact-requests";
+import { useState } from "react";
+import {
+  ArrowUpRight,
+  ArrowRight,
+  Phone,
+  MapPin,
+  Clock3,
+  Menu,
+  X,
+  Check,
+  CircleDot,
+  Wrench,
+  Snowflake,
+  Coffee,
+  Wifi,
+  ShieldCheck,
+  CarFront,
+} from "lucide-react";
+import tyreImage from "@/assets/repair-pneus.jpg";
+import { Brand } from "@/components/Brand";
 
+const phone = "tel:+33620431191";
+const directions =
+  "https://www.google.com/maps/dir/?api=1&destination=2+All%C3%A9e+des+Cypr%C3%A8s+57600+Forbach";
+const prices = [50, 60, 70, 80, 100, 120, 130, 150];
+const description =
+  "Pneus neufs et d’occasion, montage, équilibrage et mécanique à Forbach. Dès 50 € la paire montée et équilibrée. Ouvert 7j/7 de 8h à 20h.";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "CAO57 — Centre Auto Occasion 57 · Forbach" },
-      {
-        name: "description",
-        content:
-          "Self-garage, montage de pneus, location et vente de véhicules à Forbach (57). Réservez votre pont élévateur en ligne.",
-      },
-      { property: "og:title", content: "CAO57 — Centre Auto Occasion 57 · Forbach" },
-      {
-        property: "og:description",
-        content:
-          "Self-garage, montage de pneus, location et vente de véhicules à Forbach (57). Réservez votre pont élévateur en ligne.",
-      },
-      { property: "og:url", content: "https://centreautooccasion57.com" },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
+      { title: "Pneus du Bruch — Pneus & mécanique à Forbach" },
+      { name: "description", content: description },
+      { property: "og:title", content: "Pneus du Bruch · Forbach" },
+      { property: "og:description", content: description },
     ],
     links: [{ rel: "canonical", href: "https://centreautooccasion57.com" }],
     scripts: [
@@ -38,10 +41,10 @@ export const Route = createFileRoute("/")({
         children: JSON.stringify({
           "@context": "https://schema.org",
           "@type": "AutoRepair",
-          name: "CAO57 — Centre Auto Occasion 57",
-          url: "https://centreautooccasion57.com",
+          name: "Pneus du Bruch",
           telephone: "+33620431191",
-          priceRange: "€€",
+          url: "https://centreautooccasion57.com",
+          image: "https://centreautooccasion57.com/images/atelier-forbach.jpg",
           address: {
             "@type": "PostalAddress",
             streetAddress: "2 Allée des Cyprès",
@@ -52,33 +55,20 @@ export const Route = createFileRoute("/")({
           openingHoursSpecification: [
             {
               "@type": "OpeningHoursSpecification",
-              dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+              dayOfWeek: [
+                "Monday",
+                "Tuesday",
+                "Wednesday",
+                "Thursday",
+                "Friday",
+                "Saturday",
+                "Sunday",
+              ],
               opens: "08:00",
-              closes: "19:00",
+              closes: "20:00",
             },
           ],
-          makesOffer: [
-            {
-              "@type": "Offer",
-              itemOffered: { "@type": "Service", name: "Réparation et entretien automobile" },
-            },
-            {
-              "@type": "Offer",
-              itemOffered: { "@type": "Service", name: "Location de pont élévateur (self-garage)" },
-              price: "20",
-              priceCurrency: "EUR",
-            },
-            {
-              "@type": "Offer",
-              itemOffered: { "@type": "Service", name: "Montage et démontage de pneus" },
-              price: "15",
-              priceCurrency: "EUR",
-            },
-            {
-              "@type": "Offer",
-              itemOffered: { "@type": "Service", name: "Vente de véhicules d'occasion" },
-            },
-          ],
+          availableLanguage: ["French", "German"],
         }),
       },
     ],
@@ -86,845 +76,486 @@ export const Route = createFileRoute("/")({
   component: Home,
 });
 
-const reparations = [
-  {
-    img: repVidange,
-    name: "Vidange & entretien",
-    desc: "Huile, filtres, contrôle multipoints.",
-    price: "Dès 49 €",
-  },
-  {
-    img: repFreinage,
-    name: "Freinage",
-    desc: "Plaquettes, disques, purge liquide de frein.",
-    price: "Dès 89 €",
-  },
-  {
-    img: repDistribution,
-    name: "Distribution",
-    desc: "Courroie, galets, pompe à eau.",
-    price: "Sur devis",
-  },
-  {
-    img: repEmbrayage,
-    name: "Embrayage",
-    desc: "Diagnostic et remplacement complet.",
-    price: "Sur devis",
-  },
-  {
-    img: repPneus,
-    name: "Pneumatiques",
-    desc: "Montage, équilibrage, géométrie 4 roues.",
-    price: "Dès 15 €",
-  },
-  {
-    img: repDiagnostic,
-    name: "Diagnostic électronique",
-    desc: "Lecture valise multimarques toutes ECU.",
-    price: "39 €",
-  },
-];
-
-const frNum = (n: number) => n.toLocaleString("fr-FR");
-const vehicules = annonces.slice(0, 3).map((a) => ({
-  id: a.id,
-  img: a.images[0],
-  name: a.titre,
-  year: String(a.annee),
-  km: frNum(a.km),
-  energie: a.energie,
-  bv: a.boite === "Manuelle" ? "Manuelle" : "Auto",
-  price: frNum(a.prix),
-  badge: a.badge as string | undefined,
-}));
-
-const locations = [
-  {
-    name: "Pont élévateur 2 colonnes",
-    cap: "3,6 T · 20€/h · forfait 1/2 journée 60€ · journée 120€",
-    price: "20 €",
-    unit: "/ heure",
-  },
-  {
-    name: "Démonte-pneus & équilibreuse",
-    cap: "Jusqu'à 22\" · matériel professionnel",
-    price: "15 €",
-    unit: "/ heure",
-  },
-  {
-    name: "Fosse mécanique",
-    cap: "Éclairage intégré · outillage à disposition",
-    price: "15 €",
-    unit: "/ heure",
-  },
-  {
-    name: "Presse hydraulique 45 T",
-    cap: "Roulements, silent-blocs, rotules.",
-    price: "10 €",
-    unit: "/ utilisation",
-  },
-];
-
 function Home() {
-  return (
-    <div className="min-h-screen bg-background text-foreground">
-      <TopBar />
-      <Nav />
-      <Hero />
-      <QuickBar />
-      <Repairs />
-      <Vehicles />
-      <PromoBanner />
-      <Workshop />
-      <BookingStrip />
-      <Reviews />
-      <Contact />
-      <Footer />
-    </div>
-  );
-}
-
-/* ---------- Top utility bar ---------- */
-function TopBar() {
-  return (
-    <div className="bg-carbon text-white/80">
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-2 text-[11px]">
-        <div className="flex items-center gap-6">
-          <span className="hidden sm:inline">📍 2 Allée des Cyprès · 57600 Forbach</span>
-          <span className="hidden md:inline">Ouvert lun. — sam. · 08h → 19h</span>
-        </div>
-        <div className="flex items-center gap-5">
-          <a href="tel:+33620431191" className="hover:text-white">
-            ☏ 06 20 43 11 91
-          </a>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-/* ---------- Sticky main nav ---------- */
-function Nav() {
-  return (
-    <header className="sticky top-0 z-40 border-b border-border bg-background/95 backdrop-blur">
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-        <Link to="/" className="flex items-center">
-          <img
-            src={logoAsset.url}
-            alt="CAO57 — Centre Auto Occasion 57"
-            className="h-18 w-auto"
-            style={{ height: "4.5rem" }}
-          />
-        </Link>
-
-        <nav className="hidden items-center gap-8 text-[13px] font-semibold text-ink md:flex">
-          <Link to="/reparations" className="hover:text-racing">
-            Réparations
-          </Link>
-          <Link to="/occasions" className="hover:text-racing">
-            Occasions
-          </Link>
-          <Link to="/atelier" className="hover:text-racing">
-            Atelier libre
-          </Link>
-          <a href="#contact" className="hover:text-racing">
-            Contact
-          </a>
-        </nav>
-
-        <div className="flex items-center gap-3">
-          <Link
-            to="/compte"
-            className="inline-flex items-center rounded-sm border border-carbon bg-carbon px-4 py-2.5 text-[12px] font-bold uppercase tracking-wider text-white transition-colors hover:bg-carbon/85"
-          >
-            Connexion
-          </Link>
-          <Link
-            to="/devis"
-            className="hidden items-center gap-2 rounded-sm bg-racing px-5 py-2.5 text-[12px] font-bold uppercase tracking-wider text-white hover:bg-racing/90 sm:inline-flex"
-          >
-            Demander un devis
-          </Link>
-        </div>
-      </div>
-    </header>
-  );
-}
-
-/* ---------- Cinematic hero ---------- */
-function Hero() {
-  return (
-    <section className="relative overflow-hidden bg-carbon text-white">
-      <img
-        src={heroWorkshop.url}
-        alt="Atelier CAO57 avec ponts élévateurs"
-        className="absolute inset-0 h-full w-full object-cover opacity-55"
-      />
-      <div className="absolute inset-0 bg-gradient-to-r from-carbon via-carbon/70 to-transparent" />
-      <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-carbon to-transparent" />
-
-      <div className="relative mx-auto grid max-w-7xl gap-10 px-6 py-24 lg:grid-cols-12 lg:py-36">
-        <div className="lg:col-span-7">
-          <div className="eyebrow mb-5 !text-white/70">
-            <span className="mr-3 inline-block h-[2px] w-8 translate-y-[-4px] bg-racing align-middle" />
-            Garage · Vente · Atelier libre
-          </div>
-          <h1 className="font-display text-5xl font-black leading-[0.95] tracking-tight sm:text-6xl lg:text-7xl">
-            L'auto, <span className="text-racing">sans détour.</span>
-            <br />
-            <span className="text-white/85">Un vrai garage à Forbach.</span>
-          </h1>
-          <p className="mt-6 max-w-xl text-base leading-relaxed text-white/70">
-            Réparations toutes marques, occasions contrôlées et location d'atelier pro à l'heure.
-            Devis clair, travail net, prix affichés.
-          </p>
-          <div className="mt-8 flex flex-wrap gap-3">
-            <Link
-              to="/devis"
-              className="inline-flex items-center gap-2 rounded-sm bg-racing px-7 py-3.5 text-[12px] font-bold uppercase tracking-wider text-white hover:bg-racing/90"
-            >
-              Demander un devis →
-            </Link>
-            <a
-              href="#vehicules"
-              className="inline-flex items-center gap-2 rounded-sm border border-white/30 px-7 py-3.5 text-[12px] font-bold uppercase tracking-wider text-white hover:bg-white hover:text-carbon"
-            >
-              Voir les occasions
-            </a>
-          </div>
-
-          <div className="mt-14 grid max-w-lg grid-cols-2 gap-6 border-t border-white/15 pt-6">
-            <Stat n="4,9/5" l="Avis Google" />
-            <Stat n="-70%" l="vs garage classique" />
-          </div>
-        </div>
-
-        {/* Rental highlight card */}
-        <div className="lg:col-span-5 lg:pl-6">
-          <Link
-            to="/atelier"
-            className="group relative block overflow-hidden rounded-sm border border-white/10 bg-gradient-to-br from-racing/95 to-racing/70 p-7 shadow-2xl transition hover:from-racing hover:to-racing/80"
-          >
-            <div
-              className="pointer-events-none absolute inset-0 opacity-15"
-              style={{
-                backgroundImage:
-                  "repeating-linear-gradient(45deg, #000 0 14px, transparent 14px 28px)",
-              }}
-            />
-            <div className="relative">
-              <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-black/30 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-white">
-                <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-yellow-300" />
-                Nouveau · Atelier libre
-              </div>
-              <h2 className="font-display text-4xl font-black leading-[0.95] text-white sm:text-5xl">
-                Loue ton garage
-                <br />
-                <span className="text-yellow-300">à petit prix !</span>
-              </h2>
-              <p className="mt-3 max-w-sm text-sm text-white/85">
-                Pont élévateur, démonte-pneus et fosse pro à l'heure. Répare toi-même, on t'ouvre
-                l'atelier.
-              </p>
-
-              <div className="mt-5 grid grid-cols-3 gap-2 text-center">
-                <PriceChip label="Pont" price="20€/h" />
-                <PriceChip label="Pneus" price="15€/h" />
-                <PriceChip label="Fosse" price="15€/h" />
-              </div>
-
-              <div className="mt-6 inline-flex items-center gap-2 text-[12px] font-bold uppercase tracking-wider text-white">
-                Réserver l'atelier
-                <span className="transition group-hover:translate-x-1">→</span>
-              </div>
-            </div>
-          </Link>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function PriceChip({ label, price }: { label: string; price: string }) {
-  return (
-    <div className="rounded-sm border border-white/25 bg-black/25 px-2 py-2">
-      <div className="font-display text-lg font-black text-yellow-300">{price}</div>
-      <div className="text-[9px] font-semibold uppercase tracking-[0.15em] text-white/80">
-        {label}
-      </div>
-    </div>
-  );
-}
-
-function Stat({ n, l }: { n: string; l: string }) {
-  return (
-    <div>
-      <div className="font-display text-2xl font-black text-white">{n}</div>
-      <div className="mt-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-white/60">
-        {l}
-      </div>
-    </div>
-  );
-}
-
-/* ---------- Quick service bar ---------- */
-function QuickBar() {
-  const items = [
-    { i: "🔧", t: "Réparation", s: "Devis 24h" },
-    { i: "🚗", t: "Occasions", s: "Parc vérifié" },
-    { i: "🛠️", t: "Atelier libre", s: "Dès 15€/h" },
-    { i: "🛞", t: "Pneus", s: "Montage 15€" },
+  const [menu, setMenu] = useState(false);
+  const [diameter, setDiameter] = useState(16);
+  const links = [
+    ["#pneus", "Nos pneus"],
+    ["#tarifs", "Les tarifs"],
+    ["#mecanique", "Mécanique"],
+    ["#contact", "Nous trouver"],
   ];
   return (
-    <div className="border-b border-border bg-smoke">
-      <div className="mx-auto grid max-w-7xl grid-cols-2 divide-x divide-border md:grid-cols-4">
-        {items.map((x) => (
-          <div key={x.t} className="flex items-center gap-4 px-6 py-5">
-            <span className="text-2xl">{x.i}</span>
-            <div>
-              <div className="font-display text-sm font-bold uppercase tracking-wide">{x.t}</div>
-              <div className="text-xs text-steel">{x.s}</div>
+    <div className="bruch-site">
+      <a className="skip-link" href="#contenu">
+        Aller au contenu
+      </a>
+      <div className="utility">
+        <div className="wrap utility-inner">
+          <span>
+            <MapPin size={13} /> Forbach · 2 Allée des Cyprès
+          </span>
+          <span>
+            <span className="status-dot" /> 7j/7 · 8h–20h{" "}
+            <b className="utility-language" lang="de">
+              Wir sprechen Deutsch
+            </b>
+          </span>
+        </div>
+      </div>
+      <header className="bruch-header">
+        <div className="wrap nav-inner">
+          <Link to="/" aria-label="Pneus du Bruch, accueil">
+            <Brand />
+          </Link>
+          <nav className="desktop-nav" aria-label="Navigation principale">
+            {links.map(([href, label]) => (
+              <a href={href} key={href}>
+                {label}
+              </a>
+            ))}
+          </nav>
+          <a className="nav-phone" aria-label="Appeler le 06 20 43 11 91" href={phone}>
+            <Phone size={16} /> <span>06 20 43 11 91</span>
+          </a>
+          <button
+            className="menu-toggle"
+            aria-label={menu ? "Fermer le menu" : "Ouvrir le menu"}
+            aria-expanded={menu}
+            aria-controls="mobile-nav"
+            onClick={() => setMenu(!menu)}
+          >
+            {menu ? <X /> : <Menu />}
+          </button>
+        </div>
+        {menu && (
+          <nav id="mobile-nav" className="mobile-nav" aria-label="Navigation mobile">
+            {links.map(([href, label]) => (
+              <a key={href} href={href} onClick={() => setMenu(false)}>
+                {label}
+                <ArrowUpRight size={16} />
+              </a>
+            ))}
+            <Link to="/devis" onClick={() => setMenu(false)}>
+              Demander un devis
+            </Link>
+          </nav>
+        )}
+      </header>
+      <main id="contenu">
+        <section className="bruch-hero">
+          <div className="hero-photo">
+            <img
+              src="/images/atelier-forbach.jpg"
+              alt="L’atelier à Forbach et ses stocks de pneus"
+              fetchPriority="high"
+            />
+            <div className="photo-caption">
+              <span className="status-dot" /> VOTRE ATELIER À FORBACH <span>57 / MOSELLE</span>
             </div>
           </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-/* ---------- I. Réparations ---------- */
-function Repairs() {
-  return (
-    <section id="reparations" className="border-b border-border">
-      <div className="mx-auto max-w-7xl px-6 py-20">
-        <SectionHead
-          eyebrow="Notre métier"
-          title="Réparations & entretien"
-          desc="Mécanique toutes marques. Devis clair sous 24h, pièces d'origine ou équivalentes."
-        />
-        <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {reparations.map((r) => (
-            <article
-              key={r.name}
-              className="group overflow-hidden rounded-md border border-border bg-white transition hover:-translate-y-1 hover:shadow-xl"
-            >
-              <div className="relative aspect-[4/3] overflow-hidden">
-                <img
-                  src={r.img}
-                  alt={`Service de ${r.name.toLowerCase()} au garage CAO57 à Forbach`}
-                  className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
-                />
-                <span className="absolute right-3 top-3 rounded-sm bg-white/95 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-ink">
-                  {r.price}
+          <div className="wrap hero-inner">
+            <div className="hero-copy">
+              <p className="kicker">
+                <span /> PNEUS · MONTAGE · MÉCANIQUE
+              </p>
+              <h1>
+                La bonne route.
+                <br />
+                Au <em>bon prix.</em>
+              </h1>
+              <p className="hero-description">
+                Neufs ou d’occasion, trouvez les pneus qu’il vous faut. Le montage, l’équilibrage et
+                le conseil en plus. À Forbach, tout simplement.
+              </p>
+              <div className="hero-actions">
+                <a href="#tarifs" className="bruch-button blue">
+                  Découvrir nos tarifs <ArrowUpRight size={18} />
+                </a>
+                <Link to="/devis" search={{ service: "Pneus d’occasion" }} className="text-link">
+                  Demander un devis <ArrowRight size={17} />
+                </Link>
+              </div>
+              <div className="hero-proof">
+                <span>
+                  <Check /> Montage & équilibrage compris*
+                </span>
+                <span>
+                  <Check /> Avec ou sans rendez-vous
                 </span>
               </div>
-              <div className="p-5">
-                <h3 className="font-display text-lg font-bold">{r.name}</h3>
-                <p className="mt-1.5 text-sm text-steel">{r.desc}</p>
-                <Link
-                  to="/devis"
-                  search={{ service: r.name }}
-                  className="mt-4 inline-flex items-center gap-1 text-[12px] font-bold uppercase tracking-wider text-racing hover:gap-2"
-                >
-                  Demander un devis →
+            </div>
+          </div>
+          <a className="hero-price" href="#tarifs">
+            <span>PNEUS D’OCCASION</span>
+            <div>
+              <small>dès</small> 50<sup>€</sup>
+            </div>
+            <p>
+              la paire montée & équilibrée <ArrowUpRight size={20} />
+            </p>
+          </a>
+        </section>
+        <div className="service-strip">
+          <div className="wrap strip-inner">
+            <span>
+              <CircleDot /> Neufs & occasion
+            </span>
+            <span>
+              <CarFront /> Toutes marques
+            </span>
+            <span>
+              <Clock3 /> Ouvert 7 jours sur 7
+            </span>
+            <span lang="de">
+              DE <b>Wir sprechen Deutsch</b>
+            </span>
+          </div>
+        </div>
+        <section id="pneus" className="section wrap">
+          <div className="section-heading">
+            <div>
+              <p className="kicker">01 / VOTRE ROUTE, VOTRE CHOIX</p>
+              <h2>
+                De bons pneus.
+                <br />
+                <span>Pour chaque budget.</span>
+              </h2>
+            </div>
+            <p>
+              Voitures, SUV, 4×4 ou utilitaires : une solution adaptée à votre véhicule, à votre
+              usage et à votre budget.
+            </p>
+          </div>
+          <div className="tyre-grid">
+            <article className="used-card">
+              <span className="pill">LE CHOIX MALIN</span>
+              <h3>
+                L’occasion.
+                <br />
+                La qualité d’abord.
+              </h3>
+              <p>
+                Des pneus testés et contrôlés, disponibles à l’unité ou par paire, selon les stocks.
+              </p>
+              <ul>
+                {[
+                  "Toutes tailles, toutes marques",
+                  "Été, hiver et 4 saisons",
+                  "Plusieurs états et profils disponibles",
+                  "Montage & équilibrage compris",
+                ].map((t) => (
+                  <li key={t}>
+                    <Check />
+                    {t}
+                  </li>
+                ))}
+              </ul>
+              <a href="#tarifs" className="text-link">
+                Voir les prix par dimension <ArrowUpRight size={18} />
+              </a>
+              <CircleDot className="tyre-watermark" aria-hidden="true" />
+            </article>
+            <article className="new-card">
+              <img src={tyreImage} alt="Montage de pneumatiques en atelier" loading="lazy" />
+              <div>
+                <span className="pill">UN GRAND CHOIX</span>
+                <h3>
+                  Le neuf.
+                  <br />À votre mesure.
+                </h3>
+                <p>Été, hiver, 4 saisons, runflat ou renforcés. Toutes marques, montage compris.</p>
+                <Link to="/devis" search={{ service: "Pneus neufs" }} className="text-link">
+                  Trouver mes pneus <ArrowUpRight size={18} />
                 </Link>
               </div>
             </article>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* ---------- II. Véhicules ---------- */
-function Vehicles() {
-  return (
-    <section id="vehicules" className="border-b border-border bg-smoke">
-      <div className="mx-auto max-w-7xl px-6 py-20">
-        <div className="flex items-end justify-between gap-6">
-          <SectionHead
-            eyebrow="Vente"
-            title="Occasions sélectionnées"
-            desc="Chaque véhicule passe une révision complète avant sa mise en vente."
-          />
-          <Link
-            to="/occasions"
-            className="hidden shrink-0 rounded-sm border-2 border-ink px-5 py-2.5 text-[12px] font-bold uppercase tracking-wider hover:bg-ink hover:text-white md:inline-flex"
-          >
-            Tout le parc →
-          </Link>
-        </div>
-
-        <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {vehicules.map((v) => (
-            <article
-              key={v.id}
-              className="group flex flex-col overflow-hidden rounded-md border border-border bg-white transition hover:shadow-xl"
-            >
-              <div className="relative aspect-[4/3] overflow-hidden bg-smoke">
-                <img
-                  src={v.img}
-                  alt={v.name}
-                  className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
-                />
-                {v.badge && (
-                  <span className="absolute left-3 top-3 rounded-sm bg-racing px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-white">
-                    {v.badge}
-                  </span>
-                )}
+          </div>
+          <div className="brands">
+            <span>LES MARQUES QUE VOUS CONNAISSEZ</span>
+            <div>
+              <b>MICHELIN</b>
+              <b>Continental</b>
+              <b>GOODYEAR</b>
+              <b>BRIDGESTONE</b>
+              <b>PIRELLI</b>
+              <b>Hankook</b>
+            </div>
+            <p>Et aussi Vredestein, Uniroyal et bien d’autres.</p>
+          </div>
+        </section>
+        <section id="tarifs" className="pricing-section">
+          <div className="wrap section">
+            <div className="section-heading">
+              <div>
+                <p className="kicker">02 / LES PRIX, EN CLAIR</p>
+                <h2>
+                  Petit budget.
+                  <br />
+                  <span>Grande tranquillité.</span>
+                </h2>
               </div>
-              <div className="flex flex-1 flex-col p-5">
-                <h3 className="font-display text-lg font-bold leading-tight">{v.name}</h3>
-                <ul className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-[12px] text-steel">
-                  <li>{v.year}</li>
-                  <li>· {v.km} km</li>
-                  <li>· {v.energie}</li>
-                  <li>· {v.bv}</li>
-                </ul>
-                <div className="mt-5 flex items-end justify-between border-t border-border pt-4">
+              <p>
+                Pneus d’occasion montés et équilibrés : choisissez votre diamètre pour retrouver le
+                tarif affiché sur notre offre.
+              </p>
+            </div>
+            <div className="pricing-grid">
+              <div className="price-selector">
+                <div className="selector-title">
+                  <h3>Quelle est votre dimension ?</h3>
+                  <span>DIAMÈTRE EN POUCES</span>
+                </div>
+                <div className="diameters" role="group" aria-label="Diamètre de vos pneus">
+                  {prices.map((_, i) => (
+                    <button
+                      key={i}
+                      aria-pressed={diameter === i + 13}
+                      onClick={() => setDiameter(i + 13)}
+                    >
+                      {i + 13}″
+                    </button>
+                  ))}
+                </div>
+                <div className="selected-price" aria-live="polite">
                   <div>
-                    <div className="text-[10px] font-semibold uppercase tracking-wider text-steel">
-                      Prix TTC
-                    </div>
-                    <div className="font-display text-2xl font-black">{v.price} €</div>
+                    <span>PNEUS D’OCCASION · {diameter} POUCES</span>
+                    <p>
+                      {prices[diameter - 13]}
+                      <small>
+                        {" "}
+                        € <span>/ la paire</span>
+                      </small>
+                    </p>
                   </div>
-                  <Link
-                    to="/occasions"
-                    className="rounded-sm bg-ink px-4 py-2 text-[11px] font-bold uppercase tracking-wider text-white hover:bg-racing"
-                  >
-                    Fiche
-                  </Link>
+                  <ShieldCheck size={48} />
+                </div>
+                <p className="price-includes">
+                  <Check size={16} /> Montage & équilibrage compris
+                </p>
+                <p className="price-note">
+                  *Prix selon l’état et la marque. Disponibilité à confirmer auprès du garage. Tarif
+                  dès 50 € pour la paire en 13″.
+                </p>
+                <a href={phone} className="bruch-button blue">
+                  Vérifier la disponibilité <Phone size={17} />
+                </a>
+                <details className="all-prices">
+                  <summary>Voir tous les tarifs</summary>
+                  <table>
+                    <caption>Pneus d’occasion — la paire montée et équilibrée</caption>
+                    <thead>
+                      <tr>
+                        <th>Diamètre</th>
+                        <th>Prix</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {prices.map((p, i) => (
+                        <tr key={i}>
+                          <td>{i + 13} pouces</td>
+                          <td>{p} €</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </details>
+              </div>
+              <aside className="fitting">
+                <p className="kicker">VOUS AVEZ DÉJÀ VOS PNEUS ?</p>
+                <h3>
+                  On s’occupe
+                  <br />
+                  du montage.
+                </h3>
+                <p>Montage & équilibrage seuls</p>
+                <div className="fitting-row">
+                  <span>Jante tôle</span>
+                  <b>
+                    15 € <small>/ roue</small>
+                  </b>
+                </div>
+                <div className="fitting-row">
+                  <span>Jante alu</span>
+                  <b>
+                    15 € <small>/ roue</small>
+                  </b>
+                </div>
+                <div className="fitting-row">
+                  <span>
+                    Pneu renforcé
+                    <br />
+                    <small>Type camionnette</small>
+                  </span>
+                  <b>
+                    30 € <small>/ roue</small>
+                  </b>
+                </div>
+                <p className="recycling">Recyclage des pneus : 5 € / roue</p>
+                <Link
+                  to="/devis"
+                  search={{ service: "Montage & équilibrage" }}
+                  className="text-link"
+                >
+                  Demander un montage <ArrowUpRight size={18} />
+                </Link>
+              </aside>
+            </div>
+          </div>
+        </section>
+        <section className="winter wrap">
+          <div className="winter-symbol">
+            <Snowflake size={65} strokeWidth={1} />
+          </div>
+          <div>
+            <p className="kicker">PRÊTS POUR LES JOURS FROIDS ?</p>
+            <h2>
+              L’hiver se prépare.
+              <br />
+              Vos pneus aussi.
+            </h2>
+            <p>
+              Pluie, froid, neige : faites contrôler l’état de vos pneus et découvrez nos pneus
+              hiver et 4 saisons.
+            </p>
+          </div>
+          <a
+            className="bruch-button outline"
+            href="/images/offre-pneus.png"
+            target="_blank"
+            rel="noreferrer"
+          >
+            Voir notre offre hiver <ArrowUpRight size={18} />
+          </a>
+        </section>
+        <section id="mecanique" className="section wrap mechanics">
+          <div className="section-heading">
+            <div>
+              <p className="kicker">03 / AU-DELÀ DES PNEUS</p>
+              <h2>
+                Votre auto.
+                <br />
+                <span>Entre de bonnes mains.</span>
+              </h2>
+            </div>
+            <Link to="/devis" search={{ service: "Entretien / vidange" }} className="text-link">
+              Demander un devis mécanique <ArrowUpRight size={18} />
+            </Link>
+          </div>
+          <div className="mechanic-grid">
+            {[
+              ["Vidange & entretien", "Huile, filtres et entretien général."],
+              ["Freinage", "Plaquettes et disques de frein."],
+              [
+                "Suspension & échappement",
+                "Pour le confort et le bon fonctionnement de votre véhicule.",
+              ],
+              ["Batterie & diagnostic", "Contrôle et recherche de panne."],
+              ["Climatisation", "Pour votre confort à bord."],
+            ].map(([title, text], i) => (
+              <Link to="/devis" search={{ service: title }} key={title} className="mechanic-item">
+                <span className="service-number">0{i + 1}</span>
+                <div>
+                  <h3>{title}</h3>
+                  <p>{text}</p>
+                </div>
+                <ArrowUpRight size={19} />
+              </Link>
+            ))}
+            <div className="mechanic-note">
+              <Wrench size={28} />
+              <p>
+                Toutes marques.
+                <br />
+                Prestations sur devis.
+              </p>
+            </div>
+          </div>
+        </section>
+        <section id="contact" className="contact-section">
+          <div className="wrap contact-grid">
+            <div>
+              <p className="kicker">04 / ON VOUS ATTEND À FORBACH</p>
+              <h2>
+                Un garage proche.
+                <br />
+                <span>Et disponible.</span>
+              </h2>
+              <p>
+                Avec ou sans rendez-vous, 7 jours sur 7.
+                <br />À proximité de Großrosseln et de Saarbrücken.
+              </p>
+              <a className="big-phone" href={phone}>
+                06 20 43 11 91 <ArrowUpRight />
+              </a>
+              <div className="contact-details">
+                <div>
+                  <MapPin />
+                  <p>
+                    2 Allée des Cyprès
+                    <br />
+                    <b>57600 Forbach</b>
+                  </p>
+                </div>
+                <div>
+                  <Clock3 />
+                  <p>
+                    Du lundi au dimanche
+                    <br />
+                    <b>8h00 — 20h00</b>
+                  </p>
                 </div>
               </div>
-            </article>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* ---------- Promo banner (affiche punchy) ---------- */
-function PromoBanner() {
-  const stripe = "repeating-linear-gradient(135deg,#facc15 0 22px,#0b0c0e 22px 44px)";
-  return (
-    <section className="relative overflow-hidden bg-carbon text-white">
-      <div className="h-4 w-full" style={{ background: stripe }} />
-      <div className="relative mx-auto grid max-w-7xl items-center gap-8 px-6 py-14 md:grid-cols-[1.4fr_1fr] md:py-20">
-        <div>
-          <div className="inline-flex items-center gap-2 rounded-sm bg-yellow-400 px-3 py-1 text-[11px] font-black uppercase tracking-widest text-carbon">
-            ★ Offre atelier
-          </div>
-          <h2 className="mt-4 font-display text-5xl font-black uppercase leading-[0.9] tracking-tight sm:text-6xl lg:text-7xl">
-            Loue ton garage
-            <br />
-            <span className="text-yellow-400">à petit prix</span>
-            <span className="text-racing"> !</span>
-          </h2>
-          <p className="mt-5 max-w-xl text-white/70">
-            Pont élévateur, démonte-pneus, fosse mécanique… Le matos pro à l'heure, sans t'endetter.
-            À Forbach, dispo 6j/7.
-          </p>
-          <div className="mt-6 flex flex-wrap gap-3">
-            <Link
-              to="/atelier"
-              className="rounded-sm bg-yellow-400 px-6 py-3 text-[12px] font-black uppercase tracking-widest text-carbon hover:bg-yellow-300"
-            >
-              Réserver mon pont →
-            </Link>
-            <a
-              href="tel:+33620431191"
-              className="rounded-sm border border-white/30 px-6 py-3 text-[12px] font-bold uppercase tracking-widest text-white hover:bg-white hover:text-carbon"
-            >
-              ☏ 06 20 43 11 91
-            </a>
-          </div>
-        </div>
-
-        <ul className="grid grid-cols-3 gap-0 border border-white/15 md:border-white/20">
-          {[
-            { p: "20€", u: "/h", n: "Pont élévateur", sub: "60€ 1/2 j · 120€/j" },
-            { p: "15€", u: "/h", n: "Démonte-pneus", sub: "" },
-            { p: "15€", u: "/h", n: "Fosse méca", sub: "" },
-          ].map((x, i) => (
-            <li
-              key={x.n}
-              className={"p-5 text-center " + (i < 2 ? "border-r border-white/15" : "")}
-            >
-              <div className="font-display text-3xl font-black text-yellow-400">{x.p}</div>
-              <div className="text-[10px] font-semibold uppercase tracking-wider text-white/50">
-                {x.u}
+              <div className="contact-actions">
+                <a className="bruch-button blue" href={directions} target="_blank" rel="noreferrer">
+                  Calculer mon itinéraire <ArrowUpRight size={18} />
+                </a>
+                <Link className="text-link" to="/devis">
+                  Demander un devis <ArrowRight size={16} />
+                </Link>
               </div>
-              <div className="mt-3 text-[11px] font-bold uppercase tracking-wider">{x.n}</div>
-              {x.sub && (
-                <div className="mt-1 text-[10px] font-semibold text-yellow-400/90">{x.sub}</div>
-              )}
-            </li>
-          ))}
-        </ul>
-      </div>
-      <div className="h-4 w-full" style={{ background: stripe }} />
-    </section>
-  );
-}
-
-/* ---------- III. Atelier libre ---------- */
-function Workshop() {
-  return (
-    <section id="atelier" className="border-b border-border">
-      <div className="mx-auto max-w-7xl px-6 py-20">
-        <SectionHead
-          eyebrow="Self-garage"
-          title="Louez notre atelier à l'heure"
-          desc="Vous savez faire ? Pont, fosse, démonte-pneus et outillage pro à disposition. Économisez jusqu'à 70 % vs un garage classique."
-        />
-
-        <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {locations.map((l) => (
-            <div
-              key={l.name}
-              className="group relative overflow-hidden rounded-md border border-border bg-white p-6 transition hover:border-ink hover:shadow-lg"
-            >
-              <div className="flex items-baseline justify-between">
-                <span className="font-display text-3xl font-black text-racing">{l.price}</span>
-                <span className="text-[10px] font-semibold uppercase tracking-wider text-steel">
-                  {l.unit}
-                </span>
+            </div>
+            <aside className="welcome-card">
+              <span className="welcome-label">INSTALLEZ-VOUS, ON S’OCCUPE DU RESTE.</span>
+              <Coffee size={48} strokeWidth={1} />
+              <h3>Le temps d’un café.</h3>
+              <p>Une salle d’attente confortable pour patienter pendant l’intervention.</p>
+              <ul>
+                <li>
+                  <Coffee /> Café & boissons fraîches offerts
+                </li>
+                <li>
+                  <Wifi /> Wi-Fi gratuit & TV
+                </li>
+                <li>
+                  <CarFront /> Voitures, SUV, 4×4 & utilitaires
+                </li>
+              </ul>
+              <div className="german" lang="de">
+                <span>DE</span>
+                <p>
+                  Wir sprechen Deutsch.<small>Nous parlons allemand.</small>
+                </p>
               </div>
-              <h3 className="mt-4 font-display text-base font-bold leading-tight">{l.name}</h3>
-              <p className="mt-2 text-[13px] leading-relaxed text-steel">{l.cap}</p>
-            </div>
-          ))}
-        </div>
-
-        <div className="mt-8 rounded-md bg-carbon p-6 text-white sm:p-8">
-          <div className="flex flex-wrap items-center justify-between gap-4">
-            <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm">
-              <span>✓ Air comprimé & électricité inclus</span>
-              <span>✓ Outillage pro à disposition</span>
-              <span>✓ Mécanicien sur place</span>
-              <span>✓ Café offert</span>
-            </div>
-            <Link
-              to="/atelier"
-              className="rounded-sm bg-racing px-6 py-3 text-[12px] font-bold uppercase tracking-wider hover:bg-racing/90"
-            >
-              Réserver mon créneau →
-            </Link>
+            </aside>
           </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* ---------- Booking strip ---------- */
-function BookingStrip() {
-  return (
-    <section id="reserver" className="border-b border-border bg-smoke">
-      <div className="mx-auto grid max-w-7xl items-center gap-8 px-6 py-16 md:grid-cols-[1fr_auto]">
-        <div>
-          <SectionHead
-            eyebrow="Devis automobile"
-            title="Décrivez votre intervention"
-            desc="Renseignez votre véhicule, les travaux demandés et jusqu’à trois dates. Le garage reçoit directement votre dossier complet."
-          />
-        </div>
-        <Link
-          to="/devis"
-          className="inline-flex justify-center rounded-sm bg-racing px-8 py-4 text-[12px] font-bold uppercase tracking-wider text-white hover:bg-racing/90"
-        >
-          Faire une demande de devis →
+        </section>
+      </main>
+      <footer className="bruch-footer wrap">
+        <Brand />
+        <span>© {new Date().getFullYear()} Pneus du Bruch · Forbach</span>
+        <Link to="/compte">
+          Espace client <ArrowUpRight size={14} />
         </Link>
+      </footer>
+      <div className="mobile-contact">
+        <a href={phone}>
+          <Phone size={18} /> Appeler le garage
+        </a>
+        <a href={directions} target="_blank" rel="noreferrer">
+          <MapPin size={18} /> Itinéraire
+        </a>
       </div>
-    </section>
-  );
-}
-
-/* ---------- Reviews ---------- */
-function Reviews() {
-  const items = [
-    {
-      q: "Matériel nickel, ambiance pro. Plaquettes changées en une heure chrono.",
-      a: "Karim",
-      city: "Forbach",
-    },
-    {
-      q: "Meilleur rapport qualité-prix du secteur. Honnêtes, francs, efficaces.",
-      a: "Julie",
-      city: "Sarreguemines",
-    },
-    {
-      q: "Voiture d'occasion impeccable, prix juste, aucune mauvaise surprise.",
-      a: "Sophie",
-      city: "Metz",
-    },
-  ];
-  return (
-    <section className="border-b border-border">
-      <div className="mx-auto max-w-7xl px-6 py-20">
-        <div className="flex items-end justify-between gap-6">
-          <SectionHead eyebrow="Avis clients" title="Ils nous font confiance" />
-          <div className="hidden text-right md:block">
-            <div className="font-display text-3xl font-black">
-              4,9<span className="text-racing">/5</span>
-            </div>
-            <div className="micro mt-1">Sur Google · 210+ avis</div>
-          </div>
-        </div>
-        <div className="mt-10 grid gap-5 md:grid-cols-3">
-          {items.map((t) => (
-            <figure key={t.a} className="rounded-md border border-border bg-white p-6">
-              <div className="text-racing">★★★★★</div>
-              <blockquote className="mt-3 text-[15px] leading-relaxed">« {t.q} »</blockquote>
-              <figcaption className="mt-5 border-t border-border pt-3 text-[12px] font-semibold uppercase tracking-wider text-steel">
-                {t.a} — {t.city}
-              </figcaption>
-            </figure>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* ---------- Contact ---------- */
-function Contact() {
-  const [submitting, setSubmitting] = useState(false);
-  const [sent, setSent] = useState(false);
-  const [error, setError] = useState("");
-
-  async function submitContact(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    setSubmitting(true);
-    setSent(false);
-    setError("");
-    const form = event.currentTarget;
-    const values = new FormData(form);
-
-    try {
-      await sendContactRequest({
-        data: {
-          name: String(values.get("name") || ""),
-          phone: String(values.get("phone") || ""),
-          email: String(values.get("email") || ""),
-          message: String(values.get("message") || ""),
-          website: String(values.get("website") || ""),
-        },
-      });
-      form.reset();
-      setSent(true);
-    } catch (submitError) {
-      setError(
-        submitError instanceof Error ? submitError.message : "Le message n’a pas pu être envoyé.",
-      );
-    } finally {
-      setSubmitting(false);
-    }
-  }
-
-  return (
-    <section id="contact" className="border-b border-border bg-carbon text-white">
-      <div className="mx-auto grid max-w-7xl gap-10 px-6 py-20 lg:grid-cols-12">
-        <div className="lg:col-span-5">
-          <div className="eyebrow mb-3">Nous trouver</div>
-          <h2 className="font-display text-4xl font-black leading-tight lg:text-5xl">
-            Forbach, <span className="text-racing">57600.</span>
-          </h2>
-          <p className="mt-4 text-white/70">
-            Passez à l'atelier ou appelez-nous. Réponse rapide, accueil sans blabla.
-          </p>
-
-          <dl className="mt-8 divide-y divide-white/10 border-y border-white/10">
-            <Row label="Téléphone" value="06 20 43 11 91" />
-            <Row label="Adresse" value="2 Allée des Cyprès, 57600 Forbach" />
-            <Row label="Horaires" value="Lun — Sam · 08h → 19h" />
-            <Row label="Diagnostic" value="Sur RDV · 39 €" />
-          </dl>
-        </div>
-
-        <form
-          onSubmit={submitContact}
-          className="rounded-md bg-white p-6 text-ink lg:col-span-7 lg:p-8"
-        >
-          <input
-            name="website"
-            type="text"
-            tabIndex={-1}
-            autoComplete="off"
-            className="hidden"
-            aria-hidden="true"
-          />
-          <div className="grid gap-4 sm:grid-cols-2">
-            <Field label="Nom">
-              <input
-                required
-                name="name"
-                autoComplete="name"
-                className="input"
-                placeholder="Votre nom"
-              />
-            </Field>
-            <Field label="Téléphone">
-              <input
-                required
-                name="phone"
-                type="tel"
-                autoComplete="tel"
-                className="input"
-                placeholder="06 XX XX XX XX"
-              />
-            </Field>
-          </div>
-          <div className="mt-4">
-            <Field label="Email">
-              <input
-                required
-                name="email"
-                type="email"
-                autoComplete="email"
-                className="input"
-                placeholder="vous@exemple.com"
-              />
-            </Field>
-          </div>
-          <div className="mt-4">
-            <Field label="Message">
-              <textarea
-                required
-                name="message"
-                minLength={5}
-                rows={5}
-                className="input resize-none"
-                placeholder="Votre demande…"
-              />
-            </Field>
-          </div>
-          {sent && (
-            <p className="mt-4 rounded-sm border border-green-200 bg-green-50 p-3 text-sm font-medium text-green-700">
-              Votre message a bien été envoyé au garage.
-            </p>
-          )}
-          {error && (
-            <p className="mt-4 rounded-sm border border-red-200 bg-red-50 p-3 text-sm text-red-700">
-              {error}
-            </p>
-          )}
-          <button
-            disabled={submitting}
-            type="submit"
-            className="mt-5 rounded-sm bg-racing px-8 py-3 text-[12px] font-bold uppercase tracking-wider text-white hover:bg-racing/90 disabled:cursor-not-allowed disabled:opacity-50"
-          >
-            {submitting ? "Envoi en cours…" : "Envoyer"}
-          </button>
-        </form>
-      </div>
-    </section>
-  );
-}
-
-function Row({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="flex items-baseline justify-between py-3">
-      <dt className="text-[11px] font-semibold uppercase tracking-wider text-white/50">{label}</dt>
-      <dd className="font-display text-base font-semibold">{value}</dd>
     </div>
-  );
-}
-
-/* ---------- Footer ---------- */
-function Footer() {
-  return (
-    <footer className="bg-ink text-white/70">
-      <div className="mx-auto grid max-w-7xl gap-8 px-6 py-10 md:grid-cols-4">
-        <div>
-          <div className="flex items-center gap-3">
-            <div className="grid size-10 place-items-center rounded-sm bg-white/5">
-              <img
-                src={logoAsset.url}
-                alt="Logo CAO57 — Centre Auto Occasion 57 à Forbach"
-                className="h-7 w-7 object-contain"
-              />
-            </div>
-            <div className="font-display text-lg font-black text-white">
-              CAO<span className="text-racing">57</span>
-            </div>
-          </div>
-          <p className="mt-4 text-xs">
-            Centre Auto Occasion 57 · Forbach. Réparation, vente, atelier libre.
-          </p>
-        </div>
-        <FooterCol
-          title="Services"
-          items={["Réparations", "Diagnostic", "Pneumatiques", "Atelier libre"]}
-        />
-        <FooterCol
-          title="Ventes"
-          items={["Occasions", "Neuf-livraison", "Reprise", "Financement"]}
-        />
-        <FooterCol
-          title="Contact"
-          items={["06 20 43 11 91", "2 Allée des Cyprès, 57600 Forbach", "Lun–Sam 08h→19h"]}
-        />
-      </div>
-      <div className="border-t border-white/10">
-        <div className="mx-auto flex max-w-7xl flex-col justify-between gap-3 px-6 py-5 text-[11px] uppercase tracking-wider md:flex-row">
-          <span>© {new Date().getFullYear()} CAO57 — Tous droits réservés</span>
-          <div className="flex gap-5">
-            <a href="#" className="hover:text-white">
-              Mentions légales
-            </a>
-            <a href="#" className="hover:text-white">
-              CGV
-            </a>
-            <a href="#" className="hover:text-white">
-              Instagram
-            </a>
-          </div>
-        </div>
-      </div>
-    </footer>
-  );
-}
-
-function FooterCol({ title, items }: { title: string; items: string[] }) {
-  return (
-    <div>
-      <div className="text-[11px] font-bold uppercase tracking-wider text-white">{title}</div>
-      <ul className="mt-4 space-y-2 text-sm">
-        {items.map((i) => (
-          <li key={i}>
-            <a href="#" className="hover:text-white">
-              {i}
-            </a>
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-}
-
-/* ---------- Small building blocks ---------- */
-function SectionHead({ eyebrow, title, desc }: { eyebrow: string; title: string; desc?: string }) {
-  return (
-    <div className="max-w-2xl">
-      <div className="eyebrow mb-3">{eyebrow}</div>
-      <h2 className="font-display text-4xl font-black leading-[1.05] tracking-tight lg:text-5xl">
-        {title}
-      </h2>
-      {desc && <p className="mt-4 text-base leading-relaxed text-steel">{desc}</p>}
-    </div>
-  );
-}
-
-function Field({ label, children }: { label: string; children: React.ReactNode }) {
-  return (
-    <label className="block">
-      <span className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wider text-steel">
-        {label}
-      </span>
-      {children}
-    </label>
   );
 }

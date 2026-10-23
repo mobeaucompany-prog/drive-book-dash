@@ -14,7 +14,7 @@ import {
 export const Route = createFileRoute("/admin/atelier")({
   head: () => ({
     meta: [
-      { title: "Administration atelier — CAO57" },
+      { title: "Administration atelier — Pneus du Bruch" },
       { name: "robots", content: "noindex,nofollow" },
     ],
   }),
@@ -410,7 +410,7 @@ function WorkshopAdminPage() {
       <main className="grid min-h-screen place-items-center bg-smoke px-6">
         <section className="w-full max-w-md rounded-md border border-border bg-white p-8 shadow-sm">
           <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-racing">
-            CAO57 · Administration
+            Pneus du Bruch · Administration
           </p>
           <h1 className="mt-3 font-display text-3xl font-black">Gestion de l’atelier</h1>
           <p className="mt-3 text-sm leading-relaxed text-steel">
@@ -489,7 +489,7 @@ function WorkshopAdminPage() {
       <main className="grid min-h-screen place-items-center bg-smoke px-6">
         <section className="w-full max-w-md rounded-md border border-border bg-white p-8 shadow-sm">
           <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-racing">
-            CAO57 · Administration
+            Pneus du Bruch · Administration
           </p>
           <h1 className="mt-3 font-display text-3xl font-black">Nouveau mot de passe</h1>
           <form onSubmit={saveNewPassword} className="mt-6 space-y-4">
@@ -520,7 +520,7 @@ function WorkshopAdminPage() {
       <main className="grid min-h-screen place-items-center bg-smoke px-6">
         <section className="w-full max-w-lg rounded-md border border-border bg-white p-8 shadow-sm">
           <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-racing">
-            CAO57 · Compte créé
+            Pneus du Bruch · Compte créé
           </p>
           <h1 className="mt-3 font-display text-3xl font-black">Accès en attente de validation</h1>
           <p className="mt-4 text-sm leading-relaxed text-steel">
@@ -554,7 +554,7 @@ function WorkshopAdminPage() {
         <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4 px-6 py-4">
           <div>
             <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-racing">
-              CAO57 · Administration
+              Pneus du Bruch · Administration
             </p>
             <h1 className="font-display text-2xl font-black">Agenda atelier</h1>
           </div>

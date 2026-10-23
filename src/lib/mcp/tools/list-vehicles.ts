@@ -6,7 +6,7 @@ export default defineTool({
   name: "list_vehicles",
   title: "Lister les véhicules d'occasion",
   description:
-    "Retourne la liste des véhicules d'occasion publiés au catalogue CAO57 (Forbach). Filtres optionnels par marque, énergie, prix max et kilométrage max.",
+    "Retourne la liste des véhicules d'occasion publiés au catalogue Pneus du Bruch (Forbach). Filtres optionnels par marque, énergie, prix max et kilométrage max.",
   inputSchema: {
     marque: z.string().optional().describe("Filtrer par marque (ex : Volkswagen, Citroën)."),
     energie: z

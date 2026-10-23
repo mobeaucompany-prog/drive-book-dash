@@ -6,7 +6,7 @@ export default defineTool({
   name: "get_vehicle",
   title: "Détails d'un véhicule",
   description:
-    "Retourne la fiche complète d'un véhicule d'occasion CAO57 (description, équipements, entretien, photos) à partir de son identifiant.",
+    "Retourne la fiche complète d'un véhicule d'occasion Pneus du Bruch (description, équipements, entretien, photos) à partir de son identifiant.",
   inputSchema: {
     id: z.string().min(1).describe("Identifiant de l'annonce, ex : 'vw-polo-12-united-2008'."),
   },

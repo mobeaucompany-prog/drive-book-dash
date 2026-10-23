@@ -35,7 +35,7 @@ export const sendContactRequest = createServerFn({ method: "POST" })
       html: `
         <div style="font-family:Arial,sans-serif;max-width:640px;margin:auto;color:#111827">
           <div style="background:#0f1114;color:white;padding:24px;border-radius:8px 8px 0 0">
-            <p style="margin:0;color:#60a5fa;font-weight:700">CAO57 · CONTACT DU SITE</p>
+            <p style="margin:0;color:#60a5fa;font-weight:700">Pneus du Bruch · CONTACT DU SITE</p>
             <h1 style="margin:10px 0 0;font-size:26px">Nouveau message</h1>
           </div>
           <div style="border:1px solid #e5e7eb;padding:24px;border-radius:0 0 8px 8px">

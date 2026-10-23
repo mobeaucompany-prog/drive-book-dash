@@ -56,7 +56,7 @@ function SignIn({ onSignedIn }: { onSignedIn: () => void }) {
     <form onSubmit={submit} className="space-y-4">
       <h1 className="text-xl font-bold">Connexion requise</h1>
       <p className="text-sm text-muted-foreground">
-        Connectez-vous à votre compte CAO57 pour autoriser cette application.
+        Connectez-vous à votre compte Pneus du Bruch pour autoriser cette application.
       </p>
       <input
         className="w-full rounded border px-3 py-2"
@@ -125,7 +125,7 @@ function Consent() {
         Connecter {details?.client?.name ?? "une application"} à votre compte
       </h1>
       <p className="text-sm text-muted-foreground">
-        Cette application pourra utiliser les outils CAO57 en votre nom.
+        Cette application pourra utiliser les outils Pneus du Bruch en votre nom.
       </p>
       {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
       <div className="flex gap-3">
