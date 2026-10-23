@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState, type FormEvent } from "react";
 import { z } from "zod";
-import logoAsset from "@/assets/cao57-logo-v4.png.asset.json";
+import { Brand } from "@/components/Brand";
 import { createQuoteRequest } from "@/lib/quote-requests";
 
 const searchSchema = z.object({
@@ -12,11 +12,11 @@ export const Route = createFileRoute("/devis")({
   validateSearch: searchSchema,
   head: () => ({
     meta: [
-      { title: "Demande de devis automobile — CAO57 Forbach" },
+      { title: "Demande de devis automobile — Pneus du Bruch Forbach" },
       {
         name: "description",
         content:
-          "Demandez un devis automobile à CAO57 Forbach en renseignant votre véhicule, l’intervention et vos dates souhaitées.",
+          "Demandez un devis automobile à Pneus du Bruch Forbach en renseignant votre véhicule, l’intervention et vos dates souhaitées.",
       },
     ],
     links: [{ rel: "canonical", href: "https://centreautooccasion57.com/devis" }],
@@ -27,9 +27,11 @@ export const Route = createFileRoute("/devis")({
 const interventions = [
   "Entretien / vidange",
   "Freinage",
-  "Distribution",
-  "Embrayage / transmission",
-  "Pneumatiques",
+  "Pneus d’occasion",
+  "Pneus neufs",
+  "Montage & équilibrage",
+  "Suspension",
+  "Batterie",
   "Diagnostic électronique",
   "Climatisation / refroidissement",
   "Électricité",
@@ -42,6 +44,7 @@ function QuotePage() {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
+  const [emailSent, setEmailSent] = useState(false);
   const [whatsappUrl, setWhatsappUrl] = useState<string | null>(null);
 
   async function submit(event: FormEvent<HTMLFormElement>) {
@@ -74,6 +77,7 @@ function QuotePage() {
         },
       });
       setWhatsappUrl(result.whatsappUrl);
+      setEmailSent(result.emailSent);
       setSuccess(true);
       form.reset();
     } catch (submitError) {
@@ -87,10 +91,10 @@ function QuotePage() {
 
   return (
     <div className="min-h-screen bg-smoke text-ink">
-      <header className="border-b border-border bg-white">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
+      <header className="border-b border-border bg-carbon">
+        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4 px-6 py-4">
           <Link to="/" className="flex items-center">
-            <img src={logoAsset.url} alt="CAO57" className="w-auto" style={{ height: "4.5rem" }} />
+            <Brand />
           </Link>
           <div className="flex items-center gap-4">
             <Link
@@ -99,7 +103,7 @@ function QuotePage() {
             >
               Connexion
             </Link>
-            <Link to="/reparations" className="text-sm font-semibold text-steel hover:text-racing">
+            <Link to="/" className="text-sm font-semibold text-white/70 hover:text-racing">
               ← Retour
             </Link>
           </div>
@@ -110,7 +114,7 @@ function QuotePage() {
         <section className="bg-carbon text-white">
           <div className="mx-auto max-w-4xl px-6 py-14 sm:py-20">
             <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-racing">
-              CAO57 · Forbach
+              Pneus du Bruch · Forbach
             </p>
             <h1 className="mt-3 font-display text-4xl font-black sm:text-5xl">Demande de devis</h1>
             <p className="mt-4 max-w-2xl text-white/70">
@@ -244,7 +248,7 @@ function QuotePage() {
                   rows={6}
                   minLength={10}
                   className="input resize-y"
-                  placeholder="Décrivez les symptômes, les travaux demandés et toute information utile…"
+                  placeholder="Pour des pneus : dimensions (ex. 205/55 R16), quantité, été/hiver/4 saisons. Pour la mécanique : décrivez les travaux ou symptômes…"
                 />
               </Field>
             </FormSection>
@@ -273,8 +277,8 @@ function QuotePage() {
             <label className="flex gap-3 text-sm leading-relaxed text-steel">
               <input required type="checkbox" className="mt-1 size-4" />
               <span>
-                J’accepte que mes informations soient utilisées par CAO57 uniquement pour traiter
-                cette demande de devis.
+                J’accepte que mes informations soient utilisées par Pneus du Bruch uniquement pour
+                traiter cette demande de devis.
               </span>
             </label>
 
@@ -300,13 +304,14 @@ function QuotePage() {
             </div>
             <h2 className="mt-5 font-display text-3xl font-black">Demande envoyée</h2>
             <p className="mt-3 text-steel">
-              Votre demande a été enregistrée et transmise au garage par e-mail.
+              {emailSent
+                ? "Votre demande a été enregistrée et transmise au garage par e-mail."
+                : "Votre demande a été enregistrée. Vous pouvez aussi appeler le garage au 06 20 43 11 91 pour la suivre."}
             </p>
             {whatsappUrl && (
               <>
                 <p className="mt-3 text-sm text-steel">
-                  Le WhatsApp du garage n’est pas encore relié à l’envoi automatique. Vous pouvez
-                  aussi transmettre la demande en un clic.
+                  Vous pouvez également transmettre votre demande au garage sur WhatsApp.
                 </p>
                 <a
                   href={whatsappUrl}
@@ -330,7 +335,7 @@ function QuotePage() {
       )}
 
       <footer className="bg-ink px-6 py-8 text-center text-xs text-white/60">
-        CAO57 · Centre Auto Occasion 57 · Forbach · 06 20 43 11 91
+        Pneus du Bruch · Forbach · 06 20 43 11 91
       </footer>
     </div>
   );

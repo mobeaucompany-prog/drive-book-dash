@@ -43,7 +43,7 @@ function formatDate(value: string) {
 
 function buildGarageMessage(data: QuoteNotificationData) {
   return [
-    "Nouvelle demande de devis CAO57",
+    "Nouvelle demande de devis Pneus du Bruch",
     "",
     `Client : ${data.customerName}`,
     `Téléphone : ${data.customerPhone}`,
@@ -68,7 +68,7 @@ async function sendGarageEmail(data: QuoteNotificationData) {
     html: `
       <div style="font-family:Arial,sans-serif;max-width:680px;margin:auto;color:#111827">
         <div style="background:#0f1114;color:white;padding:24px;border-radius:8px 8px 0 0">
-          <p style="margin:0;color:#60a5fa;font-weight:700">CAO57 · NOUVELLE DEMANDE</p>
+          <p style="margin:0;color:#60a5fa;font-weight:700">Pneus du Bruch · NOUVELLE DEMANDE</p>
           <h1 style="margin:10px 0 0;font-size:26px">Demande de devis automobile</h1>
         </div>
         <div style="border:1px solid #e5e7eb;padding:24px;border-radius:0 0 8px 8px">

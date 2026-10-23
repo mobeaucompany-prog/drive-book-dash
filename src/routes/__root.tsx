@@ -17,16 +17,16 @@ function NotFoundComponent() {
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="max-w-md text-center">
         <h1 className="text-7xl font-bold text-foreground">404</h1>
-        <h2 className="mt-4 text-xl font-semibold text-foreground">Page not found</h2>
+        <h2 className="mt-4 text-xl font-semibold text-foreground">Page introuvable</h2>
         <p className="mt-2 text-sm text-muted-foreground">
-          The page you're looking for doesn't exist or has been moved.
+          Cette page n’existe plus ou a été déplacée.
         </p>
         <div className="mt-6">
           <Link
             to="/"
             className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
           >
-            Go home
+            Retour à l’accueil
           </Link>
         </div>
       </div>
@@ -34,7 +34,7 @@ function NotFoundComponent() {
   );
 }
 
-function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
+function ErrorComponent({ error, reset }: { error: unknown; reset: () => void }) {
   console.error(error);
   const router = useRouter();
   useEffect(() => {
@@ -45,10 +45,10 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="max-w-md text-center">
         <h1 className="text-xl font-semibold tracking-tight text-foreground">
-          This page didn't load
+          La page n’a pas pu être chargée
         </h1>
         <p className="mt-2 text-sm text-muted-foreground">
-          Something went wrong on our end. You can try refreshing or head back home.
+          Vous pouvez réessayer ou retourner à l’accueil.
         </p>
         <div className="mt-6 flex flex-wrap justify-center gap-2">
           <button
@@ -58,13 +58,13 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
             }}
             className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
           >
-            Try again
+            Réessayer
           </button>
           <a
             href="/"
             className="inline-flex items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-accent"
           >
-            Go home
+            Retour à l’accueil
           </a>
         </div>
       </div>
@@ -78,27 +78,38 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { name: "google-site-verification", content: "iYoEtAylsVOpcBOeBiyCRPRs9xMrIGo00cBWSgLcbh0" },
-      { title: "CAO57 — Centre Auto Occasion 57 · Forbach" },
+      { title: "Pneus du Bruch · Forbach" },
       {
         name: "description",
         content:
-          "Self-garage, montage de pneus, location et vente de véhicules à Forbach (57). Réservez votre pont élévateur en ligne.",
+          "Pneus neufs et d’occasion, montage, équilibrage et mécanique à Forbach. Ouvert 7j/7 de 8h à 20h.",
       },
-      { name: "author", content: "CAO57" },
-      { property: "og:title", content: "CAO57 — Centre Auto Occasion 57 · Forbach" },
+      { name: "author", content: "Pneus du Bruch" },
+      { property: "og:title", content: "Pneus du Bruch · Forbach" },
       {
         property: "og:description",
         content:
-          "Self-garage, montage de pneus, location et vente de véhicules à Forbach (57). Réservez votre pont élévateur en ligne.",
+          "Pneus neufs et d’occasion, montage, équilibrage et mécanique à Forbach. Ouvert 7j/7 de 8h à 20h.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "CAO57 — Centre Auto Occasion 57 · Forbach" },
-      { name: "twitter:description", content: "Self-garage, montage de pneus, location et vente de véhicules à Forbach (57). Réservez votre pont élévateur en ligne." },
-      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/938c3db5-1a0f-40c1-94d7-9d0c3f476b6a/id-preview-482726a0--7ad90902-7d87-46c2-bd62-7fc8024f9386.lovable.app-1784199134103.png" },
-      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/938c3db5-1a0f-40c1-94d7-9d0c3f476b6a/id-preview-482726a0--7ad90902-7d87-46c2-bd62-7fc8024f9386.lovable.app-1784199134103.png" },
+      { name: "twitter:title", content: "Pneus du Bruch · Forbach" },
+      {
+        name: "twitter:description",
+        content:
+          "Pneus neufs et d’occasion, montage, équilibrage et mécanique à Forbach. Ouvert 7j/7 de 8h à 20h.",
+      },
+      {
+        property: "og:image",
+        content: "https://centreautooccasion57.com/images/atelier-forbach.jpg",
+      },
+      {
+        name: "twitter:image",
+        content: "https://centreautooccasion57.com/images/atelier-forbach.jpg",
+      },
     ],
     links: [
+      { rel: "icon", type: "image/svg+xml", href: "/favicon.svg" },
       {
         rel: "preconnect",
         href: "https://fonts.googleapis.com",
@@ -126,7 +137,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function RootShell({ children }: { children: ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="fr">
       <head>
         <HeadContent />
       </head>

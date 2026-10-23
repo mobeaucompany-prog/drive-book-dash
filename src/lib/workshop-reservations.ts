@@ -216,11 +216,11 @@ export const createWorkshopReservation = createServerFn({ method: "POST" })
     try {
       await sendEmail({
         to: data.customerEmail,
-        subject: "Votre demande atelier CAO57 a bien été reçue",
+        subject: "Votre demande atelier Pneus du Bruch a bien été reçue",
         html: `
         <div style="font-family:Arial,sans-serif;max-width:640px;margin:auto;color:#111827">
           <div style="background:#0f1114;color:white;padding:24px;border-radius:8px 8px 0 0">
-            <p style="margin:0;color:#60a5fa;font-weight:700">CAO57 · DEMANDE REÇUE</p>
+            <p style="margin:0;color:#60a5fa;font-weight:700">Pneus du Bruch · DEMANDE REÇUE</p>
             <h1 style="margin:10px 0 0;font-size:26px">Votre demande est en attente</h1>
           </div>
           <div style="border:1px solid #e5e7eb;padding:24px;border-radius:0 0 8px 8px">
@@ -229,7 +229,7 @@ export const createWorkshopReservation = createServerFn({ method: "POST" })
             <p><strong>Équipement :</strong> ${escapeHtml(equipmentNames[data.equipmentId])}</p>
             <p><strong>Créneaux demandés :</strong></p>
             <ul>${slotsHtml(data.slots)}</ul>
-            <p style="margin-top:24px"><strong>CAO57</strong><br>2 Allée des Cyprès, 57600 Forbach<br>06 20 43 11 91</p>
+            <p style="margin-top:24px"><strong>Pneus du Bruch</strong><br>2 Allée des Cyprès, 57600 Forbach<br>06 20 43 11 91</p>
           </div>
         </div>`,
       });
@@ -248,7 +248,7 @@ export const createWorkshopReservation = createServerFn({ method: "POST" })
               html: `
           <div style="font-family:Arial,sans-serif;max-width:680px;margin:auto;color:#111827">
             <div style="background:#0f1114;color:white;padding:24px;border-radius:8px 8px 0 0">
-              <p style="margin:0;color:#60a5fa;font-weight:700">CAO57 · DEMANDE EN ATTENTE</p>
+              <p style="margin:0;color:#60a5fa;font-weight:700">Pneus du Bruch · DEMANDE EN ATTENTE</p>
               <h1 style="margin:10px 0 0;font-size:26px">Nouvelle réservation atelier</h1>
             </div>
             <div style="border:1px solid #e5e7eb;padding:24px;border-radius:0 0 8px 8px">
@@ -308,12 +308,12 @@ export const decideWorkshopReservation = createServerFn({ method: "POST" })
       await sendEmail({
         to: reservation.customer_email,
         subject: confirmed
-          ? "Votre réservation atelier CAO57 est confirmée"
-          : "Réponse à votre demande atelier CAO57",
+          ? "Votre réservation atelier Pneus du Bruch est confirmée"
+          : "Réponse à votre demande atelier Pneus du Bruch",
         html: `
         <div style="font-family:Arial,sans-serif;max-width:640px;margin:auto;color:#111827">
           <div style="background:#0f1114;color:white;padding:24px;border-radius:8px 8px 0 0">
-            <p style="margin:0;color:#60a5fa;font-weight:700">CAO57 · FORBACH</p>
+            <p style="margin:0;color:#60a5fa;font-weight:700">Pneus du Bruch · FORBACH</p>
             <h1 style="margin:10px 0 0;font-size:26px">${confirmed ? "Réservation confirmée" : "Demande non retenue"}</h1>
           </div>
           <div style="border:1px solid #e5e7eb;padding:24px;border-radius:0 0 8px 8px">
@@ -325,7 +325,7 @@ export const decideWorkshopReservation = createServerFn({ method: "POST" })
             }</p>
             <p><strong>Équipement :</strong> ${escapeHtml(equipmentNames[reservation.equipment_id])}</p>
             <ul>${slotsHtml(reservation.slots)}</ul>
-            <p style="margin-top:24px"><strong>CAO57</strong><br>2 Allée des Cyprès, 57600 Forbach<br>06 20 43 11 91</p>
+            <p style="margin-top:24px"><strong>Pneus du Bruch</strong><br>2 Allée des Cyprès, 57600 Forbach<br>06 20 43 11 91</p>
           </div>
         </div>`,
       });
@@ -448,11 +448,11 @@ export const adminRespondToQuote = createServerFn({ method: "POST" })
     try {
       await sendEmail({
         to: quote.customer_email,
-        subject: `${statusText} — CAO57`,
+        subject: `${statusText} — Pneus du Bruch`,
         html: `
         <div style="font-family:Arial,sans-serif;max-width:640px;margin:auto;color:#111827">
           <div style="background:#0f1114;color:white;padding:24px;border-radius:8px 8px 0 0">
-            <p style="margin:0;color:#60a5fa;font-weight:700">CAO57 · DEVIS</p>
+            <p style="margin:0;color:#60a5fa;font-weight:700">Pneus du Bruch · DEVIS</p>
             <h1 style="margin:10px 0 0;font-size:26px">${statusText}</h1>
           </div>
           <div style="border:1px solid #e5e7eb;padding:24px;border-radius:0 0 8px 8px">
@@ -461,7 +461,7 @@ export const adminRespondToQuote = createServerFn({ method: "POST" })
             <p><strong>Intervention :</strong> ${escapeHtml(quote.intervention_type)}</p>
             ${quote.quoted_amount !== null ? `<p><strong>Montant proposé :</strong> ${Number(quote.quoted_amount).toLocaleString("fr-FR", { style: "currency", currency: "EUR" })}</p>` : ""}
             ${quote.admin_response ? `<p><strong>Réponse du garage :</strong><br>${escapeHtml(quote.admin_response).replaceAll("\n", "<br>")}</p>` : ""}
-            <p style="margin-top:24px">Vous pouvez retrouver ce suivi à tout moment depuis votre espace client CAO57.</p>
+            <p style="margin-top:24px">Vous pouvez retrouver ce suivi à tout moment depuis votre espace client Pneus du Bruch.</p>
           </div>
         </div>`,
       });
@@ -502,12 +502,12 @@ export const adminDecideWorkshopReservation = createServerFn({ method: "POST" })
       await sendEmail({
         to: reservation.customer_email,
         subject: confirmed
-          ? "Votre réservation atelier CAO57 est confirmée"
-          : "Réponse à votre demande atelier CAO57",
+          ? "Votre réservation atelier Pneus du Bruch est confirmée"
+          : "Réponse à votre demande atelier Pneus du Bruch",
         html: `
         <div style="font-family:Arial,sans-serif;max-width:640px;margin:auto;color:#111827">
           <div style="background:#0f1114;color:white;padding:24px;border-radius:8px 8px 0 0">
-            <p style="margin:0;color:#60a5fa;font-weight:700">CAO57 · FORBACH</p>
+            <p style="margin:0;color:#60a5fa;font-weight:700">Pneus du Bruch · FORBACH</p>
             <h1 style="margin:10px 0 0;font-size:26px">${confirmed ? "Réservation confirmée" : "Demande non retenue"}</h1>
           </div>
           <div style="border:1px solid #e5e7eb;padding:24px;border-radius:0 0 8px 8px">
@@ -519,7 +519,7 @@ export const adminDecideWorkshopReservation = createServerFn({ method: "POST" })
             }</p>
             <p><strong>Équipement :</strong> ${escapeHtml(equipmentNames[reservation.equipment_id])}</p>
             <ul>${slotsHtml(reservation.slots)}</ul>
-            <p style="margin-top:24px"><strong>CAO57</strong><br>2 Allée des Cyprès, 57600 Forbach<br>06 20 43 11 91</p>
+            <p style="margin-top:24px"><strong>Pneus du Bruch</strong><br>2 Allée des Cyprès, 57600 Forbach<br>06 20 43 11 91</p>
           </div>
         </div>`,
       });
