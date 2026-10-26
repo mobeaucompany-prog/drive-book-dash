@@ -1298,3 +1298,9 @@ html {
 .account-brand .bruch-brand > img {
   height: 40px;
 }
+
+.language-switch{display:inline-flex;align-items:center;gap:2px;border:1px solid #526878;border-radius:5px;padding:3px;flex-shrink:0;background:#101f2b;color:#c4d3de}
+.language-switch button{border:0;background:transparent;color:inherit;min-height:32px;min-width:33px;padding:5px;font-size:10px;font-weight:750;border-radius:3px;cursor:pointer}
+.language-switch button[aria-pressed=true]{background:#00b8ef;color:#062334}
+.language-switch button:focus-visible{outline:2px solid #f3df32;outline-offset:3px}
+@media(max-width:760px){.bruch-header .nav-inner{gap:10px}.bruch-header .nav-phone{display:none}.bruch-header .bruch-logo{width:170px;max-width:100%;height:auto}.bruch-header .menu-toggle{padding:4px}.bruch-header .language-switch{margin-left:auto}.bruch-header .language-switch button{min-width:28px}.bruch-site:lang(de) h1{font-size:44px;letter-spacing:-2px}.bruch-site:lang(de) .hero-proof{font-size:8px}.bruch-site:lang(de) .hero-photo{top:470px}.bruch-site:lang(de) .hero-price{bottom:60px}}

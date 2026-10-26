@@ -476,7 +476,7 @@ function WorkshopAdminPage() {
               </button>
             )}
           </div>
-          <Link to="/atelier" className="mt-6 inline-block text-sm font-semibold text-racing">
+          <Link to="/admin/stock" className="mt-6 inline-block text-sm font-semibold text-racing">
             ← Retour à l’agenda client
           </Link>
         </section>
@@ -560,10 +560,10 @@ function WorkshopAdminPage() {
           </div>
           <div className="flex items-center gap-3">
             <Link
-              to="/atelier"
+              to="/admin/stock"
               className="rounded-sm border border-border px-4 py-2 text-xs font-bold"
             >
-              Voir l’agenda client
+              Stock de pneus
             </Link>
             <button
               onClick={() => void supabase.auth.signOut()}

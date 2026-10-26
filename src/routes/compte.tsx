@@ -1,3 +1,4 @@
+import { useLanguage, LanguageSwitch } from "@/lib/i18n/context";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useCallback, useEffect, useState } from "react";
 import type { FormEvent } from "react";
@@ -51,8 +52,8 @@ const equipmentNames: Record<ClientReservation["equipment_id"], string> = {
   presse: "Presse 45 T",
 };
 
-function formatDate(value: string, withTime = false) {
-  return new Date(value).toLocaleString("fr-FR", {
+function formatDate(value: string, withTime = false, locale = "fr") {
+  return new Date(value).toLocaleString(locale, {
     weekday: "short",
     day: "2-digit",
     month: "long",
@@ -78,6 +79,7 @@ function quoteStatus(status: ClientQuote["status"]) {
 }
 
 function ClientAccountPage() {
+  const { t, locale } = useLanguage();
   const [session, setSession] = useState<Session | null>(null);
   const [authLoading, setAuthLoading] = useState(true);
   const [authMode, setAuthMode] = useState<AuthMode>("login");
@@ -119,7 +121,7 @@ function ClientAccountPage() {
         isAdmin: boolean;
       };
       if (data.isAdmin) {
-        window.location.replace("/admin/atelier");
+        window.location.replace("/admin/stock");
         return;
       }
       setReservations(data.reservations);
@@ -211,32 +213,29 @@ function ClientAccountPage() {
   };
 
   if (authLoading) {
-    return <div className="grid min-h-screen place-items-center bg-smoke">Chargement…</div>;
+    return <div className="grid min-h-screen place-items-center bg-smoke">{t("Chargement…")}</div>;
   }
 
   if (!session) {
     return (
       <main className="grid min-h-screen place-items-center bg-smoke px-6 py-10">
         <section className="w-full max-w-md rounded-md border border-border bg-white p-8 shadow-sm">
+          <div className="mb-4"><LanguageSwitch /></div>
           <Link to="/" className="inline-flex">
             <span className="account-brand"><Brand variant="on-light" /></span>
           </Link>
-          <p className="mt-6 text-[11px] font-semibold uppercase tracking-[0.2em] text-racing">
-            Espace client
-          </p>
+          <p className="mt-6 text-[11px] font-semibold uppercase tracking-[0.2em] text-racing">{t(" Espace client ")}</p>
           <h1 className="mt-2 font-display text-3xl font-black">
             {authMode === "register"
-              ? "Créer mon compte"
+              ? t("Créer mon compte")
               : authMode === "forgot"
-                ? "Mot de passe oublié"
-                : "Connexion"}
+                ? t("Mot de passe oublié")
+                : t("Connexion")}
           </h1>
-          <p className="mt-3 text-sm leading-relaxed text-steel">
-            Retrouvez vos devis et réservations envoyés avec la même adresse e-mail.
-          </p>
+          <p className="mt-3 text-sm leading-relaxed text-steel">{t(" Retrouvez vos devis et réservations envoyés avec la même adresse e-mail. ")}</p>
           {authMessage && (
             <div className="mt-5 rounded-md border border-green-200 bg-green-50 p-4 text-sm text-green-800">
-              {authMessage}
+              {t(authMessage)}
             </div>
           )}
           <form onSubmit={authenticate} className="mt-6 space-y-4">
@@ -255,39 +254,33 @@ function ClientAccountPage() {
                 name="password"
                 type="password"
                 autoComplete={authMode === "register" ? "new-password" : "current-password"}
-                placeholder="Mot de passe"
+                placeholder={t("Mot de passe")}
                 className="w-full rounded-sm border border-border px-4 py-3"
               />
             )}
-            {authError && <p className="text-sm text-red-600">{authError}</p>}
+            {authError && <p className="text-sm text-red-600">{t(authError)}</p>}
             <button
               disabled={authBusy}
               className="w-full rounded-sm bg-racing px-5 py-3 text-sm font-bold uppercase tracking-wider text-white disabled:opacity-50"
             >
               {authBusy
-                ? "Veuillez patienter…"
+                ? t("Veuillez patienter…")
                 : authMode === "register"
-                  ? "Créer mon compte"
+                  ? t("Créer mon compte")
                   : authMode === "forgot"
-                    ? "Envoyer le lien"
-                    : "Se connecter"}
+                    ? t("Envoyer le lien")
+                    : t("Se connecter")}
             </button>
           </form>
           <div className="mt-5 flex flex-wrap gap-x-4 gap-y-2 text-sm">
             {authMode !== "login" && (
-              <button onClick={() => setAuthMode("login")} className="font-semibold text-racing">
-                Se connecter
-              </button>
+              <button onClick={() => setAuthMode("login")} className="font-semibold text-racing">{t(" Se connecter ")}</button>
             )}
             {authMode !== "register" && (
-              <button onClick={() => setAuthMode("register")} className="font-semibold text-racing">
-                Créer un compte
-              </button>
+              <button onClick={() => setAuthMode("register")} className="font-semibold text-racing">{t(" Créer un compte ")}</button>
             )}
             {authMode !== "forgot" && (
-              <button onClick={() => setAuthMode("forgot")} className="text-steel">
-                Mot de passe oublié
-              </button>
+              <button onClick={() => setAuthMode("forgot")} className="text-steel">{t(" Mot de passe oublié ")}</button>
             )}
           </div>
         </section>
@@ -302,20 +295,18 @@ function ClientAccountPage() {
           onSubmit={saveNewPassword}
           className="w-full max-w-md space-y-4 rounded-md border border-border bg-white p-8"
         >
-          <h1 className="font-display text-3xl font-black">Nouveau mot de passe</h1>
+          <h1 className="font-display text-3xl font-black">{t("Nouveau mot de passe")}</h1>
           <input
             required
             minLength={8}
             name="password"
             type="password"
             autoComplete="new-password"
-            placeholder="8 caractères minimum"
+            placeholder={t("8 caractères minimum")}
             className="w-full rounded-sm border border-border px-4 py-3"
           />
           {authError && <p className="text-sm text-red-600">{authError}</p>}
-          <button className="w-full rounded-sm bg-racing px-5 py-3 font-bold text-white">
-            Enregistrer
-          </button>
+          <button className="w-full rounded-sm bg-racing px-5 py-3 font-bold text-white">{t(" Enregistrer ")}</button>
         </form>
       </main>
     );
@@ -323,7 +314,7 @@ function ClientAccountPage() {
 
   if (!accountReady) {
     return (
-      <div className="grid min-h-screen place-items-center bg-smoke">Vérification du compte…</div>
+      <div className="grid min-h-screen place-items-center bg-smoke">{t("Vérification du compte…")}</div>
     );
   }
 
@@ -334,46 +325,37 @@ function ClientAccountPage() {
           <Link to="/">
             <span className="account-brand"><Brand variant="on-light" /></span>
           </Link>
-          <div className="flex flex-wrap items-center gap-3">
+          <div className="flex flex-wrap items-center gap-3"><LanguageSwitch />
             <button
               onClick={() => void supabase.auth.signOut()}
               className="rounded-sm bg-carbon px-4 py-2 text-xs font-bold uppercase text-white"
-            >
-              Déconnexion
-            </button>
+            >{t(" Déconnexion ")}</button>
           </div>
         </div>
       </header>
 
       <main className="mx-auto max-w-7xl space-y-8 px-6 py-10">
         <div>
-          <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-racing">
-            Espace client · {session.user.email}
+          <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-racing">{t(" Espace client · ")}{session.user.email}
           </p>
-          <h1 className="mt-2 font-display text-4xl font-black">Suivi de mes demandes</h1>
-          <p className="mt-3 text-sm text-steel">
-            Les changements sont actualisés automatiquement toutes les 15 secondes.
-          </p>
+          <h1 className="mt-2 font-display text-4xl font-black">{t("Suivi de mes demandes")}</h1>
+          <p className="mt-3 text-sm text-steel">{t(" Les changements sont actualisés automatiquement toutes les 15 secondes. ")}</p>
         </div>
 
         {error && (
           <div className="rounded-md border border-red-200 bg-red-50 p-4 text-sm text-red-700">
-            {error}
+            {t(error)}
           </div>
         )}
 
         <section className="rounded-md border border-border bg-white p-6">
           <div className="flex flex-wrap items-center justify-between gap-3">
-            <h2 className="font-display text-3xl font-black">Historique de mes réservations atelier</h2>
-            <Link to="/devis" className="text-sm font-bold text-racing">
-              Demander un devis →
-            </Link>
+            <h2 className="font-display text-3xl font-black">{t("Historique de mes réservations atelier")}</h2>
+            <Link to="/devis" className="text-sm font-bold text-racing">{t(" Demander un devis → ")}</Link>
           </div>
           <div className="mt-6 grid gap-4">
             {!loading && reservations.length === 0 && (
-              <p className="rounded-md bg-smoke p-5 text-sm text-steel">
-                Aucune réservation trouvée pour cette adresse e-mail.
-              </p>
+              <p className="rounded-md bg-smoke p-5 text-sm text-steel">{t(" Aucune réservation trouvée pour cette adresse e-mail. ")}</p>
             )}
             {reservations.map((reservation) => {
               const status = reservationStatus(reservation.status);
@@ -382,17 +364,16 @@ function ClientAccountPage() {
                   <div className="flex flex-wrap items-start justify-between gap-3">
                     <div>
                       <p className="text-xs font-bold uppercase text-racing">
-                        {equipmentNames[reservation.equipment_id]}
+                        {t(equipmentNames[reservation.equipment_id])}
                       </p>
                       <h3 className="mt-2 font-display text-xl font-black">
                         {reservation.vehicle}
                       </h3>
-                      <p className="mt-1 text-xs text-steel">
-                        Demande du {formatDate(reservation.created_at)}
+                      <p className="mt-1 text-xs text-steel">{t(" Demande du ")}{formatDate(reservation.created_at, false, locale)}
                       </p>
                     </div>
                     <span className={`rounded-full px-3 py-1 text-xs font-bold ${status.color}`}>
-                      {status.label}
+                      {t(status.label)}
                     </span>
                   </div>
                   <p className="mt-4 text-sm">{reservation.description}</p>
@@ -402,7 +383,7 @@ function ClientAccountPage() {
                         key={slot.slot_start}
                         className="rounded-full bg-smoke px-3 py-1 text-xs"
                       >
-                        {formatDate(slot.slot_start, true)}
+                        {formatDate(slot.slot_start, true, locale)}
                       </span>
                     ))}
                   </div>
@@ -414,16 +395,12 @@ function ClientAccountPage() {
 
         <section className="rounded-md border border-border bg-white p-6">
           <div className="flex flex-wrap items-center justify-between gap-3">
-            <h2 className="font-display text-3xl font-black">Mes demandes de devis</h2>
-            <Link to="/devis" className="text-sm font-bold text-racing">
-              Nouvelle demande →
-            </Link>
+            <h2 className="font-display text-3xl font-black">{t("Mes demandes de devis")}</h2>
+            <Link to="/devis" className="text-sm font-bold text-racing">{t(" Nouvelle demande → ")}</Link>
           </div>
           <div className="mt-6 grid gap-4">
             {!loading && quotes.length === 0 && (
-              <p className="rounded-md bg-smoke p-5 text-sm text-steel">
-                Aucun devis trouvé pour cette adresse e-mail.
-              </p>
+              <p className="rounded-md bg-smoke p-5 text-sm text-steel">{t(" Aucun devis trouvé pour cette adresse e-mail. ")}</p>
             )}
             {quotes.map((quote) => {
               const status = quoteStatus(quote.status);
@@ -437,8 +414,7 @@ function ClientAccountPage() {
                       <h3 className="mt-2 font-display text-xl font-black">
                         {quote.vehicle_make} {quote.vehicle_model}
                       </h3>
-                      <p className="mt-1 text-xs text-steel">
-                        Envoyée le {formatDate(quote.created_at)}
+                      <p className="mt-1 text-xs text-steel">{t(" Envoyée le ")}{formatDate(quote.created_at, false, locale)}
                       </p>
                     </div>
                     <span className={`rounded-full px-3 py-1 text-xs font-bold ${status.color}`}>
@@ -448,9 +424,7 @@ function ClientAccountPage() {
                   <p className="mt-4 text-sm">{quote.description}</p>
                   {(quote.admin_response || quote.quoted_amount !== null) && (
                     <div className="mt-5 rounded-md border border-green-200 bg-green-50 p-5">
-                      <p className="text-xs font-bold uppercase tracking-wider text-green-800">
-                        Réponse du garage
-                      </p>
+                      <p className="text-xs font-bold uppercase tracking-wider text-green-800">{t(" Réponse du garage ")}</p>
                       {quote.quoted_amount !== null && (
                         <p className="mt-2 font-display text-3xl font-black">
                           {Number(quote.quoted_amount).toLocaleString("fr-FR", {
