@@ -1,3 +1,4 @@
+import { useLanguage, LanguageSwitch } from "@/lib/i18n/context";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState, type FormEvent } from "react";
 import { z } from "zod";
@@ -40,6 +41,7 @@ const interventions = [
 ];
 
 function QuotePage() {
+  const { t, locale } = useLanguage();
   const { service } = Route.useSearch();
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
@@ -96,16 +98,12 @@ function QuotePage() {
           <Link to="/" className="flex items-center">
             <Brand />
           </Link>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-4"><LanguageSwitch />
             <Link
               to="/compte"
               className="rounded-sm bg-carbon px-4 py-2.5 text-xs font-bold uppercase tracking-wider text-white"
-            >
-              Connexion
-            </Link>
-            <Link to="/" className="text-sm font-semibold text-white/70 hover:text-racing">
-              ← Retour
-            </Link>
+            >{t(" Connexion ")}</Link>
+            <Link to="/" className="text-sm font-semibold text-white/70 hover:text-racing">{t(" ← Retour ")}</Link>
           </div>
         </div>
       </header>
@@ -116,11 +114,8 @@ function QuotePage() {
             <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-racing">
               Pneus du Bruch · Forbach
             </p>
-            <h1 className="mt-3 font-display text-4xl font-black sm:text-5xl">Demande de devis</h1>
-            <p className="mt-4 max-w-2xl text-white/70">
-              Décrivez votre véhicule et l’intervention souhaitée. Le garage recevra votre demande
-              complète et vous recontactera rapidement.
-            </p>
+            <h1 className="mt-3 font-display text-4xl font-black sm:text-5xl">{t("Demande de devis")}</h1>
+            <p className="mt-4 max-w-2xl text-white/70">{t(" Décrivez votre véhicule et l’intervention souhaitée. Le garage recevra votre demande complète et vous recontactera rapidement. ")}</p>
           </div>
         </section>
 
@@ -130,19 +125,19 @@ function QuotePage() {
             className="space-y-8 rounded-md border border-border bg-white p-6 shadow-sm sm:p-10"
           >
             <FormSection
-              title="Vos coordonnées"
-              description="Pour que le garage puisse vous répondre."
+              title={t("Vos coordonnées")}
+              description={t("Pour que le garage puisse vous répondre.")}
             >
-              <Field label="Nom et prénom" required>
+              <Field label={t("Nom et prénom")} required>
                 <input
                   required
                   name="customerName"
                   autoComplete="name"
                   className="input"
-                  placeholder="Prénom Nom"
+                  placeholder={t("Prénom Nom")}
                 />
               </Field>
-              <Field label="Téléphone" required>
+              <Field label={t("Téléphone")} required>
                 <input
                   required
                   name="customerPhone"
@@ -165,10 +160,10 @@ function QuotePage() {
             </FormSection>
 
             <FormSection
-              title="Votre véhicule"
-              description="Les informations indispensables pour préparer le devis."
+              title={t("Votre véhicule")}
+              description={t("Les informations indispensables pour préparer le devis.")}
             >
-              <Field label="Plaque d’immatriculation" required>
+              <Field label={t("Plaque d’immatriculation")} required>
                 <input
                   required
                   name="registrationPlate"
@@ -176,7 +171,7 @@ function QuotePage() {
                   placeholder="AA-123-AA"
                 />
               </Field>
-              <Field label="Kilométrage" required>
+              <Field label={t("Kilométrage")} required>
                 <input
                   required
                   name="mileage"
@@ -187,13 +182,13 @@ function QuotePage() {
                   placeholder="125000"
                 />
               </Field>
-              <Field label="Marque" required>
+              <Field label={t("Marque")} required>
                 <input required name="vehicleMake" className="input" placeholder="Peugeot" />
               </Field>
-              <Field label="Modèle" required>
+              <Field label={t("Modèle")} required>
                 <input required name="vehicleModel" className="input" placeholder="308" />
               </Field>
-              <Field label="Année (facultatif)">
+              <Field label={t("Année (facultatif)")}>
                 <input
                   name="vehicleYear"
                   inputMode="numeric"
@@ -202,91 +197,86 @@ function QuotePage() {
                   placeholder="2018"
                 />
               </Field>
-              <Field label="Carburant (facultatif)">
+              <Field label={t("Carburant (facultatif)")}>
                 <select name="fuelType" className="input">
-                  <option value="">Non renseigné</option>
-                  <option>Essence</option>
-                  <option>Diesel</option>
-                  <option>Hybride</option>
-                  <option>Électrique</option>
-                  <option>GPL</option>
+                  <option value="">{t("Non renseigné")}</option>
+                  <option value="Essence">{t("Essence")}</option>
+                  <option value="Diesel">Diesel</option>
+                  <option value="Hybride">{t("Hybride")}</option>
+                  <option value="Électrique">{t("Électrique")}</option>
+                  <option value="GPL">{t("GPL")}</option>
                 </select>
               </Field>
-              <Field label="Boîte de vitesses (facultatif)">
+              <Field label={t("Boîte de vitesses (facultatif)")}>
                 <select name="transmission" className="input">
-                  <option value="">Non renseignée</option>
-                  <option>Manuelle</option>
-                  <option>Automatique</option>
+                  <option value="">{t("Non renseignée")}</option>
+                  <option value="Manuelle">{t("Manuelle")}</option>
+                  <option value="Automatique">{t("Automatique")}</option>
                 </select>
               </Field>
             </FormSection>
 
             <FormSection
-              title="Intervention souhaitée"
-              description="Donnez suffisamment de détails pour obtenir une réponse précise."
+              title={t("Intervention souhaitée")}
+              description={t("Donnez suffisamment de détails pour obtenir une réponse précise.")}
             >
-              <Field label="Type d’intervention" required wide>
+              <Field label={t("Type d’intervention")} required wide>
                 <select
                   name="interventionType"
                   required
                   defaultValue={service || ""}
                   className="input"
                 >
-                  <option value="" disabled>
-                    Sélectionnez une intervention
-                  </option>
+                  <option value="" disabled>{t(" Sélectionnez une intervention ")}</option>
                   {interventions.map((item) => (
-                    <option key={item}>{item}</option>
+                    <option key={item} value={item}>{t(item)}</option>
                   ))}
-                  {service && !interventions.includes(service) && <option>{service}</option>}
+                  {service && !interventions.includes(service) && <option value={service}>{t(service)}</option>}
                 </select>
               </Field>
-              <Field label="Détails de la demande" required wide>
+              <Field label={t("Détails de la demande")} required wide>
                 <textarea
                   required
                   name="description"
                   rows={6}
                   minLength={10}
                   className="input resize-y"
-                  placeholder="Pour des pneus : dimensions (ex. 205/55 R16), quantité, été/hiver/4 saisons. Pour la mécanique : décrivez les travaux ou symptômes…"
+                  placeholder={t("Pour des pneus : dimensions (ex. 205/55 R16), quantité, été/hiver/4 saisons. Pour la mécanique : décrivez les travaux ou symptômes…")}
                 />
               </Field>
             </FormSection>
 
             <FormSection
-              title="Dates souhaitées"
-              description="Indiquez jusqu’à trois disponibilités. La première est obligatoire."
+              title={t("Dates souhaitées")}
+              description={t("Indiquez jusqu’à trois disponibilités. La première est obligatoire.")}
             >
-              <Field label="Premier choix" required>
+              <Field label={t("Premier choix")} required>
                 <input required name="preferredDate1" type="date" className="input" />
               </Field>
-              <Field label="Deuxième choix (facultatif)">
+              <Field label={t("Deuxième choix (facultatif)")}>
                 <input name="preferredDate2" type="date" className="input" />
               </Field>
-              <Field label="Troisième choix (facultatif)">
+              <Field label={t("Troisième choix (facultatif)")}>
                 <input name="preferredDate3" type="date" className="input" />
               </Field>
             </FormSection>
 
             {error && (
               <div className="rounded-md border border-red-200 bg-red-50 p-4 text-sm text-red-700">
-                {error}
+                {t(error)}
               </div>
             )}
 
             <label className="flex gap-3 text-sm leading-relaxed text-steel">
               <input required type="checkbox" className="mt-1 size-4" />
-              <span>
-                J’accepte que mes informations soient utilisées par Pneus du Bruch uniquement pour
-                traiter cette demande de devis.
-              </span>
+              <span>{t(" J’accepte que mes informations soient utilisées par Pneus du Bruch uniquement pour traiter cette demande de devis. ")}</span>
             </label>
 
             <button
               disabled={submitting}
               className="w-full rounded-sm bg-racing px-7 py-4 text-[12px] font-bold uppercase tracking-wider text-white hover:bg-racing/90 disabled:opacity-50"
             >
-              {submitting ? "Envoi en cours…" : "Envoyer ma demande de devis →"}
+              {submitting ? t("Envoi en cours…") : t("Envoyer ma demande de devis →")}
             </button>
           </form>
         </section>
@@ -302,34 +292,28 @@ function QuotePage() {
             <div className="mx-auto grid size-14 place-items-center rounded-full bg-green-100 text-2xl font-bold text-green-700">
               ✓
             </div>
-            <h2 className="mt-5 font-display text-3xl font-black">Demande envoyée</h2>
+            <h2 className="mt-5 font-display text-3xl font-black">{t("Demande envoyée")}</h2>
             <p className="mt-3 text-steel">
               {emailSent
-                ? "Votre demande a été enregistrée et transmise au garage par e-mail."
-                : "Votre demande a été enregistrée. Vous pouvez aussi appeler le garage au 06 20 43 11 91 pour la suivre."}
+                ? t("Votre demande a été enregistrée et transmise au garage par e-mail.")
+                : t("Votre demande a été enregistrée. Vous pouvez aussi appeler le garage au 06 20 43 11 91 pour la suivre.")}
             </p>
             {whatsappUrl && (
               <>
-                <p className="mt-3 text-sm text-steel">
-                  Vous pouvez également transmettre votre demande au garage sur WhatsApp.
-                </p>
+                <p className="mt-3 text-sm text-steel">{t(" Vous pouvez également transmettre votre demande au garage sur WhatsApp. ")}</p>
                 <a
                   href={whatsappUrl}
                   target="_blank"
                   rel="noreferrer"
                   className="mt-6 inline-flex w-full justify-center rounded-sm bg-[#25D366] px-6 py-3 text-[12px] font-bold uppercase tracking-wider text-white"
-                >
-                  Transmettre aussi sur WhatsApp
-                </a>
+                >{t(" Transmettre aussi sur WhatsApp ")}</a>
               </>
             )}
             <button
               type="button"
               onClick={() => setSuccess(false)}
               className="mt-3 rounded-sm border border-border px-7 py-3 text-[12px] font-bold uppercase tracking-wider hover:bg-smoke"
-            >
-              Fermer
-            </button>
+            >{t(" Fermer ")}</button>
           </div>
         </div>
       )}
@@ -350,10 +334,11 @@ function FormSection({
   description: string;
   children: React.ReactNode;
 }) {
+  const { t, locale } = useLanguage();
   return (
     <fieldset className="border-b border-border pb-8 last:border-0 last:pb-0">
-      <legend className="font-display text-xl font-bold">{title}</legend>
-      <p className="mt-1 text-sm text-steel">{description}</p>
+      <legend className="font-display text-xl font-bold">{t(title)}</legend>
+      <p className="mt-1 text-sm text-steel">{t(description)}</p>
       <div className="mt-5 grid gap-4 sm:grid-cols-2">{children}</div>
     </fieldset>
   );
@@ -370,10 +355,11 @@ function Field({
   wide?: boolean;
   children: React.ReactNode;
 }) {
+  const { t, locale } = useLanguage();
   return (
     <label className={wide ? "sm:col-span-2" : ""}>
       <span className="mb-2 block text-[11px] font-semibold uppercase tracking-wider text-steel">
-        {label}
+        {t(label)}
         {required && <span className="text-racing"> *</span>}
       </span>
       {children}

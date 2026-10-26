@@ -20,6 +20,7 @@ import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as Char91DotmcpChar93ListToolsRouteImport } from './routes/[.mcp]/list-tools'
 import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
 import { Route as AdminAtelierRouteImport } from './routes/admin/atelier'
+import { Route as AdminStockRouteImport } from './routes/admin/stock'
 import { Route as ReservationTokenRouteImport } from './routes/reservation/$token'
 import { Route as DotlovableOauthConsentRouteImport } from './routes/[.]lovable.oauth.consent'
 import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[.mcp]/invoke-tool/$tool'
@@ -81,6 +82,11 @@ const AdminAtelierRoute = AdminAtelierRouteImport.update({
   path: '/admin/atelier',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminStockRoute = AdminStockRouteImport.update({
+  id: '/admin/stock',
+  path: '/admin/stock',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ReservationTokenRoute = ReservationTokenRouteImport.update({
   id: '/reservation/$token',
   path: '/reservation/$token',
@@ -110,6 +116,7 @@ export interface FileRoutesByFullPath {
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/admin/atelier': typeof AdminAtelierRoute
+  '/admin/stock': typeof AdminStockRoute
   '/reservation/$token': typeof ReservationTokenRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
@@ -126,6 +133,7 @@ export interface FileRoutesByTo {
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/admin/atelier': typeof AdminAtelierRoute
+  '/admin/stock': typeof AdminStockRoute
   '/reservation/$token': typeof ReservationTokenRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
@@ -143,6 +151,7 @@ export interface FileRoutesById {
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/admin/atelier': typeof AdminAtelierRoute
+  '/admin/stock': typeof AdminStockRoute
   '/reservation/$token': typeof ReservationTokenRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
@@ -161,6 +170,7 @@ export interface FileRouteTypes {
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
     | '/admin/atelier'
+    | '/admin/stock'
     | '/reservation/$token'
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
@@ -177,6 +187,7 @@ export interface FileRouteTypes {
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
     | '/admin/atelier'
+    | '/admin/stock'
     | '/reservation/$token'
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
@@ -193,6 +204,7 @@ export interface FileRouteTypes {
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
     | '/admin/atelier'
+    | '/admin/stock'
     | '/reservation/$token'
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
@@ -210,6 +222,7 @@ export interface RootRouteChildren {
   Char91DotmcpChar93ListToolsRoute: typeof Char91DotmcpChar93ListToolsRoute
   Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   AdminAtelierRoute: typeof AdminAtelierRoute
+  AdminStockRoute: typeof AdminStockRoute
   ReservationTokenRoute: typeof ReservationTokenRoute
   DotlovableOauthConsentRoute: typeof DotlovableOauthConsentRoute
   Char91DotmcpChar93InvokeToolToolRoute: typeof Char91DotmcpChar93InvokeToolToolRoute
@@ -294,6 +307,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminAtelierRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/stock': {
+      id: '/admin/stock'
+      path: '/admin/stock'
+      fullPath: '/admin/stock'
+      preLoaderRoute: typeof AdminStockRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/reservation/$token': {
       id: '/reservation/$token'
       path: '/reservation/$token'
@@ -331,6 +351,7 @@ const rootRouteChildren: RootRouteChildren = {
   Char91DotwellKnownChar93OauthProtectedResourceRoute:
     Char91DotwellKnownChar93OauthProtectedResourceRoute,
   AdminAtelierRoute: AdminAtelierRoute,
+  AdminStockRoute: AdminStockRoute,
   ReservationTokenRoute: ReservationTokenRoute,
   DotlovableOauthConsentRoute: DotlovableOauthConsentRoute,
   Char91DotmcpChar93InvokeToolToolRoute: Char91DotmcpChar93InvokeToolToolRoute,
