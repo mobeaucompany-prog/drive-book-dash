@@ -362,6 +362,16 @@ export type Database = {
         Args: { p_block_group_id: string }
         Returns: undefined
       }
+      get_tyre_availability: {
+        Args: { p_diameter: number; p_ratio: number; p_width: number }
+        Returns: {
+          brand: string
+          model: string
+          pairs: number
+          season: string
+          tyre_year: number
+        }[]
+      }
       has_role: {
         Args: {
           p_role: Database["public"]["Enums"]["app_role"]

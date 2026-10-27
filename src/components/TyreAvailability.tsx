@@ -27,7 +27,7 @@ export function TyreAvailability({diameter}:{diameter:number}) {
       finally {if(id===request.current)setBusy(false);}
     }}>
       <div className="public-tyre-fields">
-        <label>{t("Largeur")}<input type="number" min="125" max="355" step="5" required value={width} onChange={e=>{setWidth(e.target.value);setError("");setResult(null);}} /></label>
+        <label>{t("Largeur")}<select value={width} onChange={e=>{setWidth(e.target.value);setError("");setResult(null);}}>{Array.from({length:47},(_,i)=>125+i*5).map(n=><option key={n}>{n}</option>)}</select></label>
         <label>{t("Hauteur")}<select value={ratio} onChange={e=>{setRatio(e.target.value);setError("");setResult(null);}}>{Array.from({length:14},(_,i)=>20+i*5).map(n=><option key={n}>{n}</option>)}</select></label>
       </div>
       <p>{t("Dimensions recherchées :")} <b>{key}</b></p>
