@@ -19,6 +19,7 @@ import {
   CarFront,
 } from "lucide-react";
 import tyreImage from "@/assets/repair-pneus.jpg";
+import { TyreAvailability } from "@/components/TyreAvailability";
 import { Brand } from "@/components/Brand";
 
 const phone = "tel:+33620431191";
@@ -270,7 +271,7 @@ function Home() {
                   <span>{t("DIAMÈTRE EN POUCES")}</span>
                 </div>
                 <div className="diameters" role="group" aria-label={t("Diamètre de vos pneus")}>
-                  {prices.map((_, i) => (
+                  {Array.from({length:11}, (_, i) => (
                     <button
                       key={i}
                       aria-pressed={diameter === i + 13}
@@ -284,10 +285,10 @@ function Home() {
                   <div>
                     <span>{t("PNEUS D’OCCASION · ")}{diameter}{t(" POUCES")}</span>
                     <p>
-                      {prices[diameter - 13]}
+                      {prices[diameter - 13] ?? t("Sur devis")}
                       <small>
                         {" "}
-                        € <span>{t("/ la paire")}</span>
+                        {prices[diameter - 13] ? "€" : ""} <span>{t("/ la paire")}</span>
                       </small>
                     </p>
                   </div>
@@ -296,8 +297,7 @@ function Home() {
                 <p className="price-includes">
                   <Check size={16} />{t(" Montage & équilibrage compris ")}</p>
                 <p className="price-note">{t(" *Prix selon l’état et la marque. Disponibilité à confirmer auprès du garage. Tarif dès 50 € pour la paire en 13″. ")}</p>
-                <a href={phone} className="bruch-button blue">{t(" Vérifier la disponibilité ")}<Phone size={17} />
-                </a>
+                <TyreAvailability key={diameter} diameter={diameter} />
                 <details className="all-prices">
                   <summary>{t("Voir tous les tarifs")}</summary>
                   <table>

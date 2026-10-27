@@ -47,4 +47,11 @@ await test('empty archive retains history',async()=>{row=await mutate({action:'a
 await identity('authenticated',customer);
 await test('customer cannot see inventory or audit history',async()=>{assert.equal((await db.query('select * from tyre_stock')).rows.length,0);assert.equal((await db.query('select * from tyre_stock_movements')).rows.length,0)});
 await test('customer cannot inspect idempotency records',()=>assert.rejects(db.query('select * from tyre_stock_requests'),/permission denied/));
+await db.exec('reset role');
+await db.exec(await readFile(new URL('../supabase/migrations/20261027010000_public_tyre_availability.sql', import.meta.url), 'utf8'));
+await identity('anon',null);
+await test('anonymous can search matching positive public stock',async()=>{const r=await db.query('select * from get_tyre_availability(205,55,16)');assert.ok(r.rows.length>0);assert.ok(r.rows.every(r=>r.pairs>0));assert.deepEqual(Object.keys(r.rows[0]).sort(),['brand','model','pairs','season','tyre_year']);});
+await test('public search excludes archived and empty references',async()=>{const r=await db.query('select * from get_tyre_availability(205,55,16)');assert.ok(r.rows.every(r=>r.model!=='Alpin 7'));});
+await test('public search does not return other dimensions',async()=>{assert.equal((await db.query('select * from get_tyre_availability(125,20,23)')).rows.length,0);});
+await test('public catalogue does not grant direct stock access',()=>assert.rejects(db.query('select * from tyre_stock'),/permission denied/));
 console.log(`${checks} database checks passed`);await db.close();

@@ -1304,3 +1304,19 @@ html {
 .language-switch button[aria-pressed=true]{background:#00b8ef;color:#062334}
 .language-switch button:focus-visible{outline:2px solid #f3df32;outline-offset:3px}
 @media(max-width:760px){.bruch-header .nav-inner{gap:10px}.bruch-header .nav-phone{display:none}.bruch-header .bruch-logo{width:170px;max-width:100%;height:auto}.bruch-header .menu-toggle{padding:4px}.bruch-header .language-switch{margin-left:auto}.bruch-header .language-switch button{min-width:28px}.bruch-site:lang(de) h1{font-size:44px;letter-spacing:-2px}.bruch-site:lang(de) .hero-proof{font-size:8px}.bruch-site:lang(de) .hero-photo{top:470px}.bruch-site:lang(de) .hero-price{bottom:60px}}
+
+/* Public dimension search and external new-tyre ordering. */
+.public-tyre-search { margin-top:24px; }
+.public-tyre-fields { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+.public-tyre-fields label { display:grid; gap:8px; font-weight:600; }
+.public-tyre-fields input,.public-tyre-fields select { width:100%; min-width:0; padding:12px; border:1px solid #cbd5e1; border-radius:6px; background:white; color:#17232e; font:inherit; }
+.public-tyre-search p { margin:16px 0; line-height:1.6; }
+.public-tyre-search .bruch-button { width:100%; white-space:normal; text-align:center; }
+.public-tyre-search button:disabled { opacity:.6; cursor:wait; }
+.public-tyre-results,.new-tyre-order { margin-top:24px; padding:20px; border:1px solid #d9e2ea; border-radius:8px; background:#f4f8fb; }
+.public-tyre-search h4 { font-size:20px; margin:0; }
+.public-tyre-results ul { list-style:none; margin:12px 0; padding:0; }
+.public-tyre-results li { display:grid; gap:5px; padding:14px 0; border-bottom:1px solid #d9e2ea; }
+.public-tyre-results li span { font-size:14px; }
+.new-tyre-order address { font-style:normal; padding:14px; background:white; border-left:3px solid #008ccc; line-height:1.6; }
+.new-tyre-order small { display:block; margin-top:12px; line-height:1.5; }

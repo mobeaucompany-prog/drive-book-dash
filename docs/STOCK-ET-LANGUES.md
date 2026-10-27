@@ -21,3 +21,9 @@ Le choix manuel FR/DE est mémorisé dans le navigateur. Sans choix, les en-têt
 Compilation TypeScript, production Vite, contrôles PostgreSQL isolés (rôles, quantités, doublons, répétition après coupure, historique et archivage), et aperçu visuel ordinateur/mobile. Les données de démonstration utilisées pour les captures ne sont pas livrées dans le site. La synchronisation réelle entre appareils reste à vérifier après installation de la migration.
 
 Test base : installer `@electric-sql/pglite` dans un répertoire temporaire, puis lancer `PGLITE_MODULE=/chemin/vers/pglite/dist/index.js node tests/stock-database.mjs`.
+
+## Recherche publique par dimensions
+
+Après la migration du stock privé, exécuter `supabase/migrations/20261027010000_public_tyre_availability.sql`. Cette fonction autorise les visiteurs à consulter uniquement la saison, marque, modèle, année et quantité positive des références actives correspondant exactement à largeur/hauteur/diamètre. Aucun accès direct aux tables, à l’historique ou aux modifications n’est ouvert. La consultation ne réserve pas de pneus. Une erreur de connexion est affichée séparément d’un stock vide.
+
+Dans « Quelle est votre dimension ? », les diamètres 13 à 23 sont disponibles ; 21 à 23 restent sur devis faute de tarif fourni. Le bouton CentralePneus ouvre leur accueil dans un nouvel onglet. Le client doit y saisir dimensions et adresse de livraison : Pneus du Bruch, 2 Allée des Cyprès, 57600 Forbach, France. Aucune commande, adresse ou donnée personnelle n’est transmise automatiquement, aucun partenariat ni commission n’est supposé. Le montage des pneus achetés à l’extérieur est réglé au garage.

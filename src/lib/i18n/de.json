@@ -310,5 +310,18 @@
   "Cette référence a changé sur un autre appareil. Actualisez avant de recommencer.": "Dieser Artikel wurde auf einem anderen Gerät geändert. Aktualisieren Sie ihn und versuchen Sie es erneut.",
   "Retirez les paires restantes avant d’archiver cette référence.": "Entnehmen Sie die verbleibenden Paare, bevor Sie den Artikel archivieren.",
   "Cette référence existe déjà. Ajoutez les paires à la référence existante.": "Dieser Artikel existiert bereits. Fügen Sie die Paare zum vorhandenen Artikel hinzu.",
-  "Connexion interrompue ou session expirée. Réessayez la même opération pour vérifier son enregistrement, sans la compter deux fois.": "Verbindung unterbrochen oder Sitzung abgelaufen. Wiederholen Sie denselben Vorgang, um die Speicherung zu prüfen, ohne doppelt zu buchen."
+  "Connexion interrompue ou session expirée. Réessayez la même opération pour vérifier son enregistrement, sans la compter deux fois.": "Verbindung unterbrochen oder Sitzung abgelaufen. Wiederholen Sie denselben Vorgang, um die Speicherung zu prüfen, ohne doppelt zu buchen.",
+  "Sur devis": "Auf Anfrage",
+  "Dimensions recherchées :": "Gesuchte Reifengröße:",
+  "Recherche…": "Suche…",
+  "Vérifier le stock d’occasion": "Gebrauchtreifen-Verfügbarkeit prüfen",
+  "Le stock ne peut pas être consulté pour le moment. Appelez-nous pour vérifier la disponibilité.": "Der Bestand kann derzeit nicht abgerufen werden. Bitte rufen Sie uns an, um die Verfügbarkeit zu prüfen.",
+  "Stock d’occasion disponible": "Verfügbare Gebrauchtreifen",
+  "Stock consulté à l’instant, sous réserve de vente. Appelez-nous pour confirmer avant de vous déplacer.": "Soeben abgefragter Bestand, Zwischenverkauf vorbehalten. Bitte rufen Sie vor Ihrer Anfahrt zur Bestätigung an.",
+  "Aucune paire disponible dans cette dimension pour le moment.": "Derzeit ist kein Reifenpaar in dieser Größe verfügbar.",
+  "Vous préférez des pneus neufs ?": "Sie möchten lieber Neureifen?",
+  "Commandez sur CentralePneus et renseignez notre adresse pour la livraison :": "Bestellen Sie auf CentralePneus und geben Sie unsere Lieferadresse an:",
+  "Indiquez votre nom et votre numéro de commande pour que nous puissions identifier vos pneus. Contactez-nous pour organiser le montage après réception.": "Teilen Sie uns Ihren Namen und Ihre Bestellnummer mit, damit wir Ihre Reifen zuordnen können. Vereinbaren Sie mit uns die Montage nach der Lieferung.",
+  "Commander sur CentralePneus": "Auf CentralePneus bestellen",
+  "Nouvel onglet. Commande et paiement sur CentralePneus. Dimensions et adresse de livraison à saisir sur leur site. Montage à régler au garage.": "Neuer Tab. Bestellung und Zahlung auf CentralePneus. Reifengröße und Lieferadresse dort eingeben. Die Montage wird in der Werkstatt bezahlt."
 }
