@@ -83,6 +83,122 @@ export type Database = {
         }
         Relationships: []
       }
+      tyre_stock: {
+        Row: {
+          archived_at: string | null
+          aspect_ratio: number
+          brand: string
+          created_at: string
+          diameter: number
+          id: string
+          model: string
+          pairs: number
+          season: string
+          tyre_year: number
+          updated_at: string
+          version: number
+          width: number
+        }
+        Insert: {
+          archived_at?: string | null
+          aspect_ratio: number
+          brand: string
+          created_at?: string
+          diameter: number
+          id?: string
+          model: string
+          pairs?: number
+          season: string
+          tyre_year: number
+          updated_at?: string
+          version?: number
+          width: number
+        }
+        Update: {
+          archived_at?: string | null
+          aspect_ratio?: number
+          brand?: string
+          created_at?: string
+          diameter?: number
+          id?: string
+          model?: string
+          pairs?: number
+          season?: string
+          tyre_year?: number
+          updated_at?: string
+          version?: number
+          width?: number
+        }
+        Relationships: []
+      }
+      tyre_stock_movements: {
+        Row: {
+          action: string
+          actor_id: string
+          balance: number
+          created_at: string
+          delta: number
+          id: string
+          reason: string
+          reference: Json
+          stock_id: string
+        }
+        Insert: {
+          action: string
+          actor_id: string
+          balance: number
+          created_at?: string
+          delta: number
+          id?: string
+          reason?: string
+          reference: Json
+          stock_id: string
+        }
+        Update: {
+          action?: string
+          actor_id?: string
+          balance?: number
+          created_at?: string
+          delta?: number
+          id?: string
+          reason?: string
+          reference?: Json
+          stock_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tyre_stock_movements_stock_id_fkey"
+            columns: ["stock_id"]
+            isOneToOne: false
+            referencedRelation: "tyre_stock"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tyre_stock_requests: {
+        Row: {
+          actor_id: string
+          created_at: string
+          payload: Json
+          request_id: string
+          result: Json
+        }
+        Insert: {
+          actor_id: string
+          created_at?: string
+          payload: Json
+          request_id: string
+          result: Json
+        }
+        Update: {
+          actor_id?: string
+          created_at?: string
+          payload?: Json
+          request_id?: string
+          result?: Json
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
@@ -252,6 +368,11 @@ export type Database = {
           p_user_id: string
         }
         Returns: boolean
+      }
+      is_stock_admin: { Args: never; Returns: boolean }
+      mutate_tyre_stock: {
+        Args: { p_payload: Json; p_request_id: string }
+        Returns: Json
       }
     }
     Enums: {
