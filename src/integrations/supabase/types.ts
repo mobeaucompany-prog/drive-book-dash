@@ -14,6 +14,27 @@ export type Database = {
   }
   public: {
     Tables: {
+      form_rate_limits: {
+        Row: {
+          bucket: string
+          created_at: string
+          id: string
+          key_hash: string
+        }
+        Insert: {
+          bucket: string
+          created_at?: string
+          id?: string
+          key_hash: string
+        }
+        Update: {
+          bucket?: string
+          created_at?: string
+          id?: string
+          key_hash?: string
+        }
+        Relationships: []
+      }
       quote_requests: {
         Row: {
           admin_response: string | null
