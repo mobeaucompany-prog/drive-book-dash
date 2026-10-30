@@ -11,9 +11,13 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AtelierRouteImport } from './routes/atelier'
+import { Route as CguRouteImport } from './routes/cgu'
+import { Route as CgvRouteImport } from './routes/cgv'
 import { Route as CompteRouteImport } from './routes/compte'
+import { Route as ConfidentialiteRouteImport } from './routes/confidentialite'
 import { Route as DevisRouteImport } from './routes/devis'
 import { Route as McpRouteImport } from './routes/mcp'
+import { Route as MentionsLegalesRouteImport } from './routes/mentions-legales'
 import { Route as OccasionsRouteImport } from './routes/occasions'
 import { Route as ReparationsRouteImport } from './routes/reparations'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
@@ -36,9 +40,24 @@ const AtelierRoute = AtelierRouteImport.update({
   path: '/atelier',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CguRoute = CguRouteImport.update({
+  id: '/cgu',
+  path: '/cgu',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CgvRoute = CgvRouteImport.update({
+  id: '/cgv',
+  path: '/cgv',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CompteRoute = CompteRouteImport.update({
   id: '/compte',
   path: '/compte',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ConfidentialiteRoute = ConfidentialiteRouteImport.update({
+  id: '/confidentialite',
+  path: '/confidentialite',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DevisRoute = DevisRouteImport.update({
@@ -49,6 +68,11 @@ const DevisRoute = DevisRouteImport.update({
 const McpRoute = McpRouteImport.update({
   id: '/mcp',
   path: '/mcp',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MentionsLegalesRoute = MentionsLegalesRouteImport.update({
+  id: '/mentions-legales',
+  path: '/mentions-legales',
   getParentRoute: () => rootRouteImport,
 } as any)
 const OccasionsRoute = OccasionsRouteImport.update({
@@ -114,9 +138,13 @@ const LovableEmailTransactionalPreviewRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/atelier': typeof AtelierRoute
+  '/cgu': typeof CguRoute
+  '/cgv': typeof CgvRoute
   '/compte': typeof CompteRoute
+  '/confidentialite': typeof ConfidentialiteRoute
   '/devis': typeof DevisRoute
   '/mcp': typeof McpRoute
+  '/mentions-legales': typeof MentionsLegalesRoute
   '/occasions': typeof OccasionsRoute
   '/reparations': typeof ReparationsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -132,9 +160,13 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/atelier': typeof AtelierRoute
+  '/cgu': typeof CguRoute
+  '/cgv': typeof CgvRoute
   '/compte': typeof CompteRoute
+  '/confidentialite': typeof ConfidentialiteRoute
   '/devis': typeof DevisRoute
   '/mcp': typeof McpRoute
+  '/mentions-legales': typeof MentionsLegalesRoute
   '/occasions': typeof OccasionsRoute
   '/reparations': typeof ReparationsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -151,9 +183,13 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/atelier': typeof AtelierRoute
+  '/cgu': typeof CguRoute
+  '/cgv': typeof CgvRoute
   '/compte': typeof CompteRoute
+  '/confidentialite': typeof ConfidentialiteRoute
   '/devis': typeof DevisRoute
   '/mcp': typeof McpRoute
+  '/mentions-legales': typeof MentionsLegalesRoute
   '/occasions': typeof OccasionsRoute
   '/reparations': typeof ReparationsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -171,9 +207,13 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/atelier'
+    | '/cgu'
+    | '/cgv'
     | '/compte'
+    | '/confidentialite'
     | '/devis'
     | '/mcp'
+    | '/mentions-legales'
     | '/occasions'
     | '/reparations'
     | '/sitemap.xml'
@@ -189,9 +229,13 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/atelier'
+    | '/cgu'
+    | '/cgv'
     | '/compte'
+    | '/confidentialite'
     | '/devis'
     | '/mcp'
+    | '/mentions-legales'
     | '/occasions'
     | '/reparations'
     | '/sitemap.xml'
@@ -207,9 +251,13 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/atelier'
+    | '/cgu'
+    | '/cgv'
     | '/compte'
+    | '/confidentialite'
     | '/devis'
     | '/mcp'
+    | '/mentions-legales'
     | '/occasions'
     | '/reparations'
     | '/sitemap.xml'
@@ -226,9 +274,13 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AtelierRoute: typeof AtelierRoute
+  CguRoute: typeof CguRoute
+  CgvRoute: typeof CgvRoute
   CompteRoute: typeof CompteRoute
+  ConfidentialiteRoute: typeof ConfidentialiteRoute
   DevisRoute: typeof DevisRoute
   McpRoute: typeof McpRoute
+  MentionsLegalesRoute: typeof MentionsLegalesRoute
   OccasionsRoute: typeof OccasionsRoute
   ReparationsRoute: typeof ReparationsRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
@@ -258,11 +310,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AtelierRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/cgu': {
+      id: '/cgu'
+      path: '/cgu'
+      fullPath: '/cgu'
+      preLoaderRoute: typeof CguRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/cgv': {
+      id: '/cgv'
+      path: '/cgv'
+      fullPath: '/cgv'
+      preLoaderRoute: typeof CgvRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/compte': {
       id: '/compte'
       path: '/compte'
       fullPath: '/compte'
       preLoaderRoute: typeof CompteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/confidentialite': {
+      id: '/confidentialite'
+      path: '/confidentialite'
+      fullPath: '/confidentialite'
+      preLoaderRoute: typeof ConfidentialiteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/devis': {
@@ -277,6 +350,13 @@ declare module '@tanstack/react-router' {
       path: '/mcp'
       fullPath: '/mcp'
       preLoaderRoute: typeof McpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mentions-legales': {
+      id: '/mentions-legales'
+      path: '/mentions-legales'
+      fullPath: '/mentions-legales'
+      preLoaderRoute: typeof MentionsLegalesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/occasions': {
@@ -362,9 +442,13 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AtelierRoute: AtelierRoute,
+  CguRoute: CguRoute,
+  CgvRoute: CgvRoute,
   CompteRoute: CompteRoute,
+  ConfidentialiteRoute: ConfidentialiteRoute,
   DevisRoute: DevisRoute,
   McpRoute: McpRoute,
+  MentionsLegalesRoute: MentionsLegalesRoute,
   OccasionsRoute: OccasionsRoute,
   ReparationsRoute: ReparationsRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
