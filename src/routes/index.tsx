@@ -21,6 +21,7 @@ import {
 import tyreImage from "@/assets/repair-pneus.jpg";
 import { TyreAvailability } from "@/components/TyreAvailability";
 import { Brand } from "@/components/Brand";
+import { LegalLinks } from "@/components/LegalLinks";
 
 const phone = "tel:+33620431191";
 const directions =
@@ -35,8 +36,11 @@ export const Route = createFileRoute("/")({
       { name: "description", content: description },
       { property: "og:title", content: "Pneus du Bruch · Forbach" },
       { property: "og:description", content: description },
+      { property: "og:url", content: "https://pneusdubruch.com/" },
+      { property: "og:image", content: "https://pneusdubruch.com/images/atelier-forbach-og.jpg" },
+      { name: "twitter:image", content: "https://pneusdubruch.com/images/atelier-forbach-og.jpg" },
     ],
-    links: [{ rel: "canonical", href: "https://centreautooccasion57.com" }],
+    links: [{ rel: "canonical", href: "https://pneusdubruch.com/" }],
     scripts: [
       {
         type: "application/ld+json",
@@ -45,8 +49,8 @@ export const Route = createFileRoute("/")({
           "@type": "AutoRepair",
           name: "Pneus du Bruch",
           telephone: "+33620431191",
-          url: "https://centreautooccasion57.com",
-          image: "https://centreautooccasion57.com/images/atelier-forbach.jpg",
+          url: "https://pneusdubruch.com",
+          image: "https://pneusdubruch.com/images/atelier-forbach.jpg",
           address: {
             "@type": "PostalAddress",
             streetAddress: "2 Allée des Cyprès",
@@ -146,7 +150,9 @@ function Home() {
         <section className="bruch-hero">
           <div className="hero-photo">
             <img
-              src="/images/atelier-forbach.jpg"
+              src="/images/atelier-forbach.webp"
+              width={1206}
+              height={1589}
               alt={t("L’atelier à Forbach et ses stocks de pneus")}
               fetchPriority="high"
             />
@@ -230,7 +236,7 @@ function Home() {
               <CircleDot className="tyre-watermark" aria-hidden="true" />
             </article>
             <article className="new-card">
-              <img src={tyreImage} alt={t("Montage de pneumatiques en atelier")} loading="lazy" />
+              <img src={tyreImage} alt={t("Montage de pneumatiques en atelier")} loading="lazy" width={800} height={600} />
               <div>
                 <span className="pill">{t("UN GRAND CHOIX")}</span>
                 <h3>{t(" Le neuf. ")}<br />{t("À votre mesure. ")}</h3>
@@ -365,7 +371,7 @@ function Home() {
           </div>
           <a
             className="bruch-button outline"
-            href="/images/offre-pneus.png"
+            href="/images/offre-pneus.webp"
             target="_blank"
             rel="noreferrer"
           >{t(" Voir notre offre hiver ")}<ArrowUpRight size={18} />
@@ -471,6 +477,7 @@ function Home() {
         <Link to="/admin/stock">{t("Gestion du stock")}</Link>
         <Link to="/compte">{t(" Espace client ")}<ArrowUpRight size={14} />
         </Link>
+        <LegalLinks className="bruch-legal-links" />
       </footer>
       <div className="mobile-contact">
         <a href={phone}>

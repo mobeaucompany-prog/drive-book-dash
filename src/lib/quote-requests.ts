@@ -18,11 +18,15 @@ const quoteRequestSchema = z.object({
     .array(z.string().regex(/^\d{4}-\d{2}-\d{2}$/))
     .min(1)
     .max(3),
+  website: z.string().max(0).optional(),
 });
 
 export const createQuoteRequest = createServerFn({ method: "POST" })
   .validator(quoteRequestSchema)
   .handler(async ({ data }) => {
+    if (data.website) return { id: "", emailSent: false, whatsappSent: false, whatsappUrl: null as string | null };
+    const { enforceRateLimit } = await import("@/lib/rate-limit.server");
+    await enforceRateLimit("quote", 5, 60);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     // Database types will include quote_requests after the migration is applied.
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

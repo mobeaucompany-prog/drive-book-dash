@@ -24,6 +24,8 @@ export const sendContactRequest = createServerFn({ method: "POST" })
   .validator(contactRequestSchema)
   .handler(async ({ data }) => {
     if (data.website) return { success: true };
+    const { enforceRateLimit } = await import("@/lib/rate-limit.server");
+    await enforceRateLimit("contact", 5, 60);
 
     const to = process.env.CONTACT_ADMIN_EMAIL || GARAGE_EMAIL;
     const { sendGmailMessage } = await import("@/lib/gmail.server");

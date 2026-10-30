@@ -180,6 +180,8 @@ export const getWorkshopAvailability = createServerFn({ method: "GET" })
 export const createWorkshopReservation = createServerFn({ method: "POST" })
   .validator(requestSchema)
   .handler(async ({ data }) => {
+    const { enforceRateLimit } = await import("@/lib/rate-limit.server");
+    await enforceRateLimit("workshop", 5, 60);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     // Database types are generated after the migration is applied.
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
