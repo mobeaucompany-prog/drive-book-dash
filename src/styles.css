@@ -1320,3 +1320,5 @@ html {
 .public-tyre-results li span { font-size:14px; }
 .new-tyre-order address { font-style:normal; padding:14px; background:white; border-left:3px solid #008ccc; line-height:1.6; }
 .new-tyre-order small { display:block; margin-top:12px; line-height:1.5; }
+
+.bruch-legal-links { display: flex; flex-wrap: wrap; gap: 1rem; font-size: 0.75rem; opacity: 0.8; }

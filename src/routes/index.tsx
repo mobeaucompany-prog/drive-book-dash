@@ -37,6 +37,8 @@ export const Route = createFileRoute("/")({
       { property: "og:title", content: "Pneus du Bruch · Forbach" },
       { property: "og:description", content: description },
       { property: "og:url", content: "https://pneusdubruch.com/" },
+      { property: "og:image", content: "https://pneusdubruch.com/images/atelier-forbach-og.jpg" },
+      { name: "twitter:image", content: "https://pneusdubruch.com/images/atelier-forbach-og.jpg" },
     ],
     links: [{ rel: "canonical", href: "https://pneusdubruch.com/" }],
     scripts: [
@@ -369,7 +371,7 @@ function Home() {
           </div>
           <a
             className="bruch-button outline"
-            href="/images/offre-pneus.png"
+            href="/images/offre-pneus.webp"
             target="_blank"
             rel="noreferrer"
           >{t(" Voir notre offre hiver ")}<ArrowUpRight size={18} />

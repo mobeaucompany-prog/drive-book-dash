@@ -1,4 +1,8 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://centreautooccasion57.com/sitemap.xml
+Disallow: /admin/
+Disallow: /compte
+Disallow: /reservation/
+
+Sitemap: https://pneusdubruch.com/sitemap.xml
