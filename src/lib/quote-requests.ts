@@ -24,7 +24,7 @@ const quoteRequestSchema = z.object({
 export const createQuoteRequest = createServerFn({ method: "POST" })
   .validator(quoteRequestSchema)
   .handler(async ({ data }) => {
-    if (data.website) return { id: "", emailSent: false, whatsappUrl: null };
+    if (data.website) return { id: "", emailSent: false, whatsappSent: false, whatsappUrl: null as string | null };
     const { enforceRateLimit } = await import("@/lib/rate-limit.server");
     await enforceRateLimit("quote", 5, 60);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");

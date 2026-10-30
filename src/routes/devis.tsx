@@ -3,6 +3,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState, type FormEvent } from "react";
 import { z } from "zod";
 import { Brand } from "@/components/Brand";
+import { LegalLinks } from "@/components/LegalLinks";
 import { createQuoteRequest } from "@/lib/quote-requests";
 
 const searchSchema = z.object({
@@ -19,8 +20,11 @@ export const Route = createFileRoute("/devis")({
         content:
           "Demandez un devis automobile à Pneus du Bruch Forbach en renseignant votre véhicule, l’intervention et vos dates souhaitées.",
       },
+      { property: "og:title", content: "Demande de devis — Pneus du Bruch Forbach" },
+      { property: "og:description", content: "Demandez un devis pneus ou mécanique à Pneus du Bruch, Forbach." },
+      { property: "og:url", content: "https://pneusdubruch.com/devis" },
     ],
-    links: [{ rel: "canonical", href: "https://centreautooccasion57.com/devis" }],
+    links: [{ rel: "canonical", href: "https://pneusdubruch.com/devis" }],
   }),
   component: QuotePage,
 });
@@ -76,6 +80,7 @@ function QuotePage() {
           interventionType: String(values.get("interventionType") || ""),
           description: String(values.get("description") || ""),
           preferredDates,
+          website: String(values.get("website") || "") || undefined,
         },
       });
       setWhatsappUrl(result.whatsappUrl);
@@ -269,8 +274,11 @@ function QuotePage() {
 
             <label className="flex gap-3 text-sm leading-relaxed text-steel">
               <input required type="checkbox" className="mt-1 size-4" />
-              <span>{t(" J’accepte que mes informations soient utilisées par Pneus du Bruch uniquement pour traiter cette demande de devis. ")}</span>
+              <span>{t(" J’accepte que mes informations soient utilisées par Pneus du Bruch uniquement pour traiter cette demande de devis. ")}{" "}<Link to="/confidentialite" className="underline">{t("Politique de confidentialité")}</Link></span>
             </label>
+            <div aria-hidden="true" style={{ position: "absolute", left: "-10000px", width: 1, height: 1, overflow: "hidden" }}>
+              <label>Website<input name="website" type="text" tabIndex={-1} autoComplete="off" /></label>
+            </div>
 
             <button
               disabled={submitting}
@@ -320,6 +328,7 @@ function QuotePage() {
 
       <footer className="bg-ink px-6 py-8 text-center text-xs text-white/60">
         Pneus du Bruch · Forbach · 06 20 43 11 91
+        <LegalLinks className="mt-3 flex flex-wrap justify-center gap-4" />
       </footer>
     </div>
   );

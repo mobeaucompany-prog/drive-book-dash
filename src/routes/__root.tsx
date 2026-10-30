@@ -100,14 +100,6 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         content:
           "Pneus neufs et d’occasion, montage, équilibrage et mécanique à Forbach. Ouvert 7j/7 de 8h à 20h.",
       },
-      {
-        property: "og:image",
-        content: "https://centreautooccasion57.com/images/atelier-forbach.jpg",
-      },
-      {
-        name: "twitter:image",
-        content: "https://centreautooccasion57.com/images/atelier-forbach.jpg",
-      },
     ],
     links: [
       { rel: "icon", type: "image/png", href: "/favicon.png" },
